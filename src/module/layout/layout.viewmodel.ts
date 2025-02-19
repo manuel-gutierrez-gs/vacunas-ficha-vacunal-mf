@@ -17,9 +17,9 @@ export class LayoutViewModel extends LitElement {
       value: 'Example',
     },
     {
-      label: 'Guardar',
-      icon: 'favorite',
-      value: 'Second',
+      label: 'Contador',
+      icon: 'calculate',
+      value: 'Counter',
     },
   ];
 

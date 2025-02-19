@@ -9,5 +9,13 @@ export const ROUTES: SticRoute[] = [
       await import('../module/example/stic-example.view');
     },
   },
+  {
+    path: '/counter',
+    component: 'counter-component',
+    name: 'Counter',
+    action: async () => {
+      await import('../module/counter/counter.view');
+    },
+  },
   ...sticBaseRoutes,
 ];

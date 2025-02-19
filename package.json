@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@sas/lib-stic-route": "1.X.X",
+    "@sas/wc-stic-button": "1.x.x",
     "@sas/wc-stic-header": "1.x.x",
     "@sas/wc-stic-navigation": "1.x.x",
     "@sas/wc-stic-theme": "1.X.X",
