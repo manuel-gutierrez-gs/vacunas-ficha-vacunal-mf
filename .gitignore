@@ -1,0 +1,32 @@
+## editors
+/.idea
+/.vscode
+
+#plugins
+.prettierrc
+
+## system files
+.DS_Store
+
+## npm
+**/node_modules/
+/npm-debug.log
+
+## testing
+/coverage/
+
+## temp folders
+/.tmp/
+
+# build
+/_site/
+/dist/
+/out-tsc/
+/types/
+
+**/dist
+**/*.log
+**/*_bck.json
+**/*.7z
+
+package-lock.json

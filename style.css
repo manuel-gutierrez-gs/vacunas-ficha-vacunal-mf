@@ -1,0 +1,6 @@
+:root body {
+  font-size: var(--theme-typography-body-font-size);
+  font-family: var(--theme-typography-body-font-family);
+  font-weight: var(--theme-typography-body-font-weight);
+  margin: 0;
+}

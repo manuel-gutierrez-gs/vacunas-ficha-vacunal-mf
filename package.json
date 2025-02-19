@@ -1,0 +1,50 @@
+{
+  "name": "@sas/app-stic-no-name",
+  "version": "0.0.0-SNAPSHOT.1",
+  "description": "no-description",
+  "author": "SAS",
+  "license": "SAS",
+  "type": "module",
+  "scripts": {
+    "version": "node -v && npm -v",
+    "clean": "npx -y rimraf -rf dist package-lock.json node_modules",
+    "test": "wtr --coverage",
+    "test:watch": "wtr --coverage --watch",
+    "build": "npm run version && npm run clean && npm i && vite build",
+    "build:dev": "vite build",
+    "start": "vite",
+    "start:wds": "wds",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@sas/lib-stic-route": "1.X.X",
+    "@sas/wc-stic-theme": "1.X.X",
+    "lit": "2.7.4"
+  },
+  "devDependencies": {
+    "@open-wc/testing": "4.0.0",
+    "@types/mocha": "10.0.6",
+    "@web/dev-server": "0.4.3",
+    "@web/dev-server-esbuild": "1.0.2",
+    "@web/test-runner": "0.18.1",
+    "@web/test-runner-puppeteer": "0.16.0",
+    "tslib": "2.6.2",
+    "typescript": "4.9.5",
+    "vite": "5.2.7"
+  },
+  "workspaces": [
+    "./packages/**"
+  ],
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "printWidth": 100
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
