@@ -9,7 +9,7 @@ export class LayoutView extends LayoutViewModel {
   ];
 
   protected override render(): TemplateResult {
-    return html`${this.renderHeader()}${this.renderNavigation()}${this.renderContent()}`;
+    return html`${this.renderNavigation()}${this.renderHeader()}${this.renderContent()}`;
   }
 
   protected renderHeader(): TemplateResult {
@@ -24,10 +24,23 @@ export class LayoutView extends LayoutViewModel {
 
   protected renderNavigation(): TemplateResult {
     import('@sas/wc-stic-navigation');
-    return html`<stic-navigation .dataSource=${this.sticNavigationItems}></stic-navigation>`;
+    return html`<stic-navigation
+      open
+      .dataSource=${this.sticNavigationItems}
+      @navigation:clickitem=${this.handelNavigationClickEvent}
+    ></stic-navigation>`;
   }
 
   protected renderContent(): TemplateResult {
-    return html``;
+    import('../../routing/stic-appname-router.view');
+    return html`<stic-appname-router .route=${this.routeName}></stic-appname-router>`;
+  }
+}
+
+window.customElements.define('layout-container', LayoutView);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'layout-container': LayoutView;
   }
 }

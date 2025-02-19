@@ -8,11 +8,6 @@ export class SticAppNameRouterView extends SticAppNameRouterViewModel {
   }
   public render() {
     return html`
-      <nav>
-        <ul>
-          ${this._routes.map(route => html`<li><a href="${route.path}">${route.name}</a></li>`)}
-        </ul>
-      </nav>
       <slot></slot>
     `;
   }

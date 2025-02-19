@@ -2,7 +2,7 @@ import { SticRoute, sticBaseRoutes } from '@sas/lib-stic-route';
 
 export const ROUTES: SticRoute[] = [
   {
-    path: '',
+    path: '/stic-example',
     component: 'stic-example',
     name: 'Example',
     action: async () => {

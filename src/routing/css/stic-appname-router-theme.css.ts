@@ -4,7 +4,6 @@ export class SticAppNameRouterTheme {
   static cssBase: CSSResult = css`
     :host {
       display: block;
-      height: 100vh;
     }
   `;
 

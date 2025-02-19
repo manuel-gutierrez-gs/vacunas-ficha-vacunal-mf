@@ -2,37 +2,31 @@ import { css, CSSResult, CSSResultOrNative } from 'lit';
 
 export class LayoutTheme {
   static readonly cssBase: CSSResult = css`
-    /* :host {
+    :host {
       display: grid;
       grid-template-areas:
-        "header header"
-        "sidebar content";
+        'header header'
+        'nav content';
       grid-template-columns: auto 1fr;
       grid-template-rows: auto 1fr;
       height: 100vh;
       width: 100vw;
     }
 
-    sidebar-menu {
-      grid-area: sidebar;
-      max-width: 300px;
-      width: 100%;
-      height: 100vh;
+    stic-navigation {
+      grid-area: nav;
     }
 
-    header-container {
+    stic-header {
       grid-area: header;
-      width: 100%;
-      display: flex;
-      align-items: center;
     }
 
-    content-container {
+    stic-appname-router {
       grid-area: content;
       padding: 20px;
       overflow-y: auto;
       width: 90%;
-    } */
+    }
   `;
 
   static readonly LayoutTheme: CSSResultOrNative[] = [LayoutTheme.cssBase];
