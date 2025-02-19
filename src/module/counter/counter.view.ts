@@ -4,7 +4,11 @@ import { CounterViewModel } from './counter.viewmodel';
 export class CounterView extends CounterViewModel {
   protected override render(): TemplateResult {
     import('@sas/wc-stic-button');
-    return html`<stic-button variant="primary" label=${`Contador es ${this.count}`} @button:click=${() => this.count++}></stic-button>`;
+    return html`<stic-button
+      variant="primary"
+      label=${`Contador es ${this.count}`}
+      @button:click=${() => this.count++}
+    ></stic-button>`;
   }
 }
 
