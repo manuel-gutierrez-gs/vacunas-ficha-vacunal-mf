@@ -11,12 +11,12 @@ export default defineConfig({
     watch: {},
   },
   build: {
-    lib: {
-      entry: 'index.html',
-      formats: ['es'],
-    },
     rollupOptions: {
-      // external: /^lit/,
+      external: ['lit', /^lit\//],
+      output: {
+        entryFileNames: 'mfe-entry.js',
+        chunkFileNames: 'assets/[name].js',
+      },
     },
   },
 });

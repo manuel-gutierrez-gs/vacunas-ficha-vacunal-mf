@@ -1,6 +1,33 @@
 # Arquetipo Front
 
+Arquetipo de microfrontend con Vite, Lit y Web Components (stack SAS `@sas/*`).
 
+## Desarrollo
+
+```bash
+npm ci          # instalación reproducible (usar en CI y tras clonar)
+npm run dev     # servidor de desarrollo (Vite, puerto 4200)
+npm run build   # typecheck + build de producción → dist/
+npm run preview # previsualizar el artefacto de dist/
+```
+
+Servidor alternativo Open Web Components: `npm run start:wds` (solo si el equipo lo requiere; el flujo recomendado es Vite).
+
+## CI
+
+En pipelines (GitLab CI u otro), instalar dependencias con **`npm ci`** (no `npm install`) para respetar `package-lock.json`. Ejecutar la validación completa:
+
+```bash
+npm ci
+npm run ci
+```
+
+El script `ci` ejecuta `typecheck`, tests con cobertura y `build`. No ejecutar `clean` sobre `node_modules` ni regenerar el lockfile en cada build.
+
+## Contrato MFE
+
+- Artefacto principal: `dist/mfe-entry.js` (exportado en `package.json` → `exports`).
+- `lit` está en `peerDependencies` y se externaliza en el build; el shell debe proveer la misma versión vía import map o dependencia compartida.
 
 ## Getting started
 

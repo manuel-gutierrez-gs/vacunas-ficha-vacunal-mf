@@ -28,5 +28,3 @@
 **/*.log
 **/*_bck.json
 **/*.7z
-
-package-lock.json
