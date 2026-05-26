@@ -1,120 +1,180 @@
 # Arquetipo Front
 
-Arquetipo de microfrontend con Vite, Lit y Web Components (stack SAS `@sas/*`).
+Arquetipo de **microfrontend** (MFE) con Vite, Lit y TypeScript, pensado para integrarse en un **shell** (aplicación host). Punto de entrada del repositorio y del sistema de documentación por capas.
 
-## Desarrollo
+---
 
-```bash
-npm ci          # instalación reproducible (usar en CI y tras clonar)
-npm run dev     # servidor de desarrollo (Vite, puerto 4200)
-npm run build   # typecheck + build de producción → dist/
-npm run preview # previsualizar el artefacto de dist/
+## ¿Qué es este repositorio?
+
+- **Propósito:** plantilla para crear un MFE del ecosistema SAS: pantallas, componentes y rutas de dominio en un paquete front desacoplado.
+- **Relación con el shell:** en producción el host carga el artefacto de build y provee dependencias compartidas de runtime. Las obligaciones técnicas están en [SHELL-CONTRACT.md](SHELL-CONTRACT.md).
+- **Stack:** Vite · TypeScript · Lit · Web Components · paquetes internos `@sas/*`.
+
+| Ámbito | Dónde profundizar |
+|--------|-------------------|
+| Desarrollo en local | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) |
+| Estructura modular y MVVM | [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) |
+| Diseño y decisiones | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Integración en el shell | [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) |
+| CI/CD y publicación | [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) |
+
+---
+
+## Arquitectura modular frontend
+
+Este repositorio sigue una **estructura modular por dominio** bajo `src/module/`, con patrón **MVVM** (vista / viewmodel) y tests en `test/` espejo del código de módulos. Objetivo: equipos grandes, ownership claro y revisiones predecibles.
+
+**Normativa y detalle:** [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md)  
+**Razonamiento arquitectónico:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+Árbol resumido:
+
+```
+src/
+  index.ts
+  module/<modulo>/
+    component/<componente>/
+      *.view.ts | *.viewmodel.ts | css/ | events/ | model/
+  shared/ …
+  routing/ …   # transversal según arquetipo
+test/
+  <modulo>/<componente>/*.test.ts
 ```
 
-Servidor alternativo Open Web Components: `npm run start:wds` (solo si el equipo lo requiere; el flujo recomendado es Vite).
+---
 
-## CI
+## Inicio rápido
 
-En pipelines (GitLab CI u otro), instalar dependencias con **`npm ci`** (no `npm install`) para respetar `package-lock.json`. Ejecutar la validación completa:
+### Requisitos
+
+| Herramienta | Versión |
+|-------------|---------|
+| Node.js | >= 18 |
+| npm | >= 9 |
+
+```bash
+npm run env:check
+```
+
+### Instalación
 
 ```bash
 npm ci
+```
+
+Usar `npm ci` (no `npm install`) cuando exista `package-lock.json`.
+
+### Desarrollo local
+
+```bash
+npm run dev
+```
+
+Servidor Vite en **http://localhost:4200** (equivalente: `npm start`). Editar código en `src/`, no en `dist/`.
+
+### Build
+
+```bash
+npm run build
+```
+
+Ejecuta comprobación de tipos y genera la salida en `dist/`. Previsualización local:
+
+```bash
+npm run preview
+```
+
+### Tests
+
+```bash
+npm test
 npm run ci
 ```
 
-El script `ci` ejecuta `typecheck`, tests con cobertura y `build`. No ejecutar `clean` sobre `node_modules` ni regenerar el lockfile en cada build.
+`npm run ci` ejecuta `typecheck`, tests con cobertura y `build` (alineado con pipeline). Más comandos en la tabla [Scripts útiles](#scripts-útiles).
 
-## Contrato MFE
+Detalle del flujo diario: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 
-- Artefacto principal: `dist/mfe-entry.js` (exportado en `package.json` → `exports`).
-- `lit` está en `peerDependencies` y se externaliza en el build; el shell debe proveer la misma versión vía import map o dependencia compartida.
+---
 
-## Getting started
+## Sistema de documentación
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Documentación organizada en **capas** con una sola fuente normativa y documentos especializados sin solapamiento de reglas.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+| Necesidad | Documento | Capa |
+|-----------|-----------|------|
+| Reglas obligatorias shell ↔ MFE | [SHELL-CONTRACT.md](SHELL-CONTRACT.md) | Contrato |
+| Estructura modular frontend (MVVM, carpetas) | [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) | Normativa interna front |
+| Arquitectura y decisiones | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitectura |
+| Integración con el shell | [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) | Integración |
+| CI/CD y despliegue | [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) | Despliegue |
+| Onboarding y flujo diario | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) | Onboarding |
 
-## Add your files
+**Regla:** si afecta al comportamiento en runtime entre shell y MFE, debe estar en el contrato. Ver [SHELL-CONTRACT.md](SHELL-CONTRACT.md).
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+---
 
-```
-cd existing_repo
-git remote add origin https://umane.emeal.nttdata.com/git/HEALTHDEVSTRANSVERSA/arquetipos/arquetipo-front.git
-git branch -M main
-git push -uf origin main
-```
+## Flujo recomendado de lectura
 
-## Integrate with your tools
+| Rol | Orden sugerido |
+|-----|----------------|
+| **Desarrollador nuevo** | Este README → [GETTING_STARTED](docs/GETTING_STARTED.md) → [FRONTEND_STRUCTURE](docs/FRONTEND_STRUCTURE.md) |
+| **Senior / arquitecto** | [ARCHITECTURE](docs/ARCHITECTURE.md) → [FRONTEND_STRUCTURE](docs/FRONTEND_STRUCTURE.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) |
+| **Plataforma / shell** | [SHELL-CONTRACT](SHELL-CONTRACT.md) → [SHELL_INTEGRATION](docs/SHELL_INTEGRATION.md) |
+| **DevOps / CI** | [DOCKER_DEPLOYMENT](docs/DOCKER_DEPLOYMENT.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) (artefacto **D**, **V**) |
 
-- [ ] [Set up project integrations](https://umane.emeal.nttdata.com/git/HEALTHDEVSTRANSVERSA/arquetipos/arquetipo-front/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Scripts útiles
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+| Script | Descripción |
+|--------|-------------|
+| `npm run env:check` | Muestra versiones de Node y npm |
+| `npm ci` | Instalación reproducible de dependencias |
+| `npm run dev` / `npm start` | Servidor de desarrollo (Vite) |
+| `npm run start:wds` | Servidor alternativo (Web Dev Server) |
+| `npm run build` | Typecheck + build de producción |
+| `npm run build:dev` | Build en modo development |
+| `npm run preview` | Sirve `dist/` en local (puerto 4200) |
+| `npm run typecheck` | Solo comprobación TypeScript |
+| `npm test` | Tests (Web Test Runner) |
+| `npm run test:watch` | Tests en modo watch |
+| `npm run test:coverage` | Tests con cobertura |
+| `npm run test:ci` | Tests con cobertura (CI) |
+| `npm run ci` | Typecheck + tests + build |
+| `npm run clean` | Borra `dist/`, `coverage/`, `out-tsc/` |
+| `npm run format` | Formatea con Prettier |
+| `npm run format:check` | Comprueba formato sin escribir |
 
-## Test and Deploy
+---
 
-Use the built-in continuous integration in GitLab.
+## Principios del repositorio
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- **Contrato único** — [SHELL-CONTRACT.md](SHELL-CONTRACT.md) concentra reglas verificables shell ↔ MFE.
+- **Artefacto `dist/`** — generado por build; no editar manualmente; publicar el paquete completo según contrato (**D**).
+- **Shell como host** — el MFE no sustituye al shell en producción; integración documentada por capas.
+- **Documentación por capas** — contrato shell, normativa front (`FRONTEND_STRUCTURE`), arquitectura, integración, despliegue y onboarding.
+- **Estructura modular** — dominio bajo `src/module/`; detalle en [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md).
 
-***
+---
 
-# Editing this README
+## Contribución
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+1. Crear rama desde la política del equipo.
+2. Desarrollar en `src/`; validar con `npm test` y `npm run build` o `npm run ci`.
+3. No modificar `dist/` a mano.
+4. Si el cambio afecta la estructura modular o convenciones de código: actualizar [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) si aplica.
+5. Si el cambio afecta integración, artefacto o runtime compartido con el shell: actualizar [SHELL-CONTRACT.md](SHELL-CONTRACT.md) **antes** del merge y coordinar con plataforma.
 
-## Suggestions for a good README
+Checklist de desarrollo: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+---
 
-## Name
-Choose a self-explaining name for your project.
+## Referencias
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- [SHELL-CONTRACT.md](SHELL-CONTRACT.md) — reglas obligatorias
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura y trade-offs
+- [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) — integración con ejemplos
+- [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) — pipeline y Nginx
+- [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) — guía para empezar a desarrollar
+- [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) — estructura modular y MVVM
