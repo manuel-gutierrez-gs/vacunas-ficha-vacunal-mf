@@ -1,11 +1,11 @@
 import { CSSResultGroup, CSSResultOrNative, html, TemplateResult } from 'lit';
-import { LayoutViewModel } from './layout.viewmodel';
-import { LayoutTheme } from './css/layout-theme.css';
+import { SticExampleMfTheme } from './css/stic-example-theme.css';
+import { SticExampleMfViewModel } from './stic-example-mf.viewmodel';
 
-export class LayoutView extends LayoutViewModel {
+export class SticExampleMfView extends SticExampleMfViewModel {
   static override readonly finalizeStyles = (styles?: CSSResultGroup): CSSResultOrNative[] => [
     ...super.finalizeStyles(styles),
-    ...LayoutTheme.LayoutTheme,
+    ...SticExampleMfTheme.SticExampleMfTheme,
   ];
 
   protected override render(): TemplateResult {
@@ -21,15 +21,19 @@ export class LayoutView extends LayoutViewModel {
   }
 
   protected renderContent(): TemplateResult {
-    import('../../routing/stic-appname-router.view');
-    return html`<stic-appname-router .route=${this.routeName}></stic-appname-router>`;
+    import('@routing/stic-appname-router.view');
+    return html`<stic-appname-router
+      .route=${this.routeName}
+      .ruta=${this.ruta}
+      .text=${this.texto}
+    ></stic-appname-router>`;
   }
 }
 
-window.customElements.define('layout-container', LayoutView);
+window.customElements.define('stic-example-mf', SticExampleMfView);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'layout-container': LayoutView;
+    'stic-example-mf': SticExampleMfView;
   }
 }

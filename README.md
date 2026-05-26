@@ -1,8 +1,99 @@
 # Arquetipo Front
 
-Arquetipo de **microfrontend** (MFE) con Vite, Lit y TypeScript, pensado para integrarse en un **shell** (aplicación host). Punto de entrada del repositorio y del sistema de documentación por capas.
+Microfrontend del ecosistema SAS. Este README está organizado en **dos capas**: contrato externo para el shell e información interna para desarrollo del repositorio.
 
 ---
+
+# `<stic-example-mf>`
+
+Microfrontend basado en arquitectura modular MVVM. Se integra en un **shell** (aplicación host) como custom element estándar. **Esta sección es lo único relevante para el shell.**
+
+## Uso básico
+
+```html
+<stic-example-mf></stic-example-mf>
+```
+
+## Propiedades
+
+| Propiedad | Tipo | Por defecto | Descripción |
+|-----------|------|-------------|-------------|
+| `ruta` | `string` | `''` | Define la ruta inicial del microfrontend. Valores posibles: `/avisos`, `/errores`. Si no se proporciona, se usa la primera ruta definida en `routes.ts` (`/stic-avisos`). |
+| `texto` | `string` | `''` | Texto propagado a los módulos activos del MF y mostrado en las vistas. |
+
+## Eventos
+
+| Evento | Clase del evento | `bubbles` | `composed` | `detail` | Descripción |
+|--------|------------------|-----------|------------|----------|-------------|
+| `stic-mf:warning:click` | `SticMfWarningClickEvent` | `true` | `true` | `undefined` | Se dispara al pulsar el botón principal del módulo de avisos. |
+| `stic-mf:error:click` | `SticMfErrorClickEvent` | `true` | `true` | `undefined` | Se dispara al pulsar el botón principal del módulo de errores. |
+
+```ts
+export class SticMfWarningClickEvent extends BaseEmptyDetailEvent {
+  constructor() {
+    super('stic-mf:warning:click');
+  }
+}
+```
+
+```ts
+export class SticMfErrorClickEvent extends BaseEmptyDetailEvent {
+  constructor() {
+    super('stic-mf:error:click');
+  }
+}
+```
+
+## Ejemplo de uso (shell)
+
+### HTML
+
+```html
+<!-- Cargar entry del MF -->
+<script type="module" src="{BASE}/mfe-entry.js"></script>
+
+<!-- Montar el componente con configuración inicial -->
+<stic-example-mf ruta="/errores" texto="hola"></stic-example-mf>
+
+<p id="mfe-event-output"></p>
+```
+
+### JavaScript
+
+```javascript
+const mfe = document.querySelector('stic-example-mf');
+const output = document.getElementById('mfe-event-output');
+
+mfe.addEventListener('stic-mf:error:click', () => {
+  output.textContent = 'Evento stic-mf:error:click recibido';
+});
+
+// Cambiar ruta o texto dinámicamente
+mfe.ruta = '/avisos';
+mfe.texto = 'Nuevo texto desde el shell';
+```
+
+### Instalación del artefacto
+
+El MF se publica como artefacto estático (`dist/`). El shell debe:
+
+1. Servir el contenido de `dist/` en una URL base accesible.
+2. Cargar `mfe-entry.js` como módulo ES.
+3. Proveer `lit@2.7.4` (vía import map o bundle compartido).
+
+Más detalles en [SHELL-CONTRACT.md](SHELL-CONTRACT.md) y [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md).
+
+## Comportamiento del MF
+
+- El routing interno está **completamente encapsulado**; el shell no tiene que conocerlo ni controlarlo.
+- Si `ruta` no se proporciona, el MF arranca en la **primera ruta de `routes.ts`** (`/stic-avisos`).
+- El valor de `texto` se propaga internamente a los módulos activos **sin intervención del shell**.
+
+---
+
+# Documentación interna del repositorio
+
+Información para desarrollo, mantenimiento y contribución al arquetipo. **No es necesaria para consumir el MF desde el shell.**
 
 ## ¿Qué es este repositorio?
 
@@ -17,8 +108,6 @@ Arquetipo de **microfrontend** (MFE) con Vite, Lit y TypeScript, pensado para in
 | Diseño y decisiones | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Integración en el shell | [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) |
 | CI/CD y publicación | [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) |
-
----
 
 ## Arquitectura modular frontend
 
@@ -40,8 +129,6 @@ src/
 test/
   <modulo>/<componente>/*.test.ts
 ```
-
----
 
 ## Inicio rápido
 
@@ -95,8 +182,6 @@ npm run ci
 
 Detalle del flujo diario: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
 
----
-
 ## Sistema de documentación
 
 Documentación organizada en **capas** con una sola fuente normativa y documentos especializados sin solapamiento de reglas.
@@ -112,8 +197,6 @@ Documentación organizada en **capas** con una sola fuente normativa y documento
 
 **Regla:** si afecta al comportamiento en runtime entre shell y MFE, debe estar en el contrato. Ver [SHELL-CONTRACT.md](SHELL-CONTRACT.md).
 
----
-
 ## Flujo recomendado de lectura
 
 | Rol | Orden sugerido |
@@ -122,8 +205,6 @@ Documentación organizada en **capas** con una sola fuente normativa y documento
 | **Senior / arquitecto** | [ARCHITECTURE](docs/ARCHITECTURE.md) → [FRONTEND_STRUCTURE](docs/FRONTEND_STRUCTURE.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) |
 | **Plataforma / shell** | [SHELL-CONTRACT](SHELL-CONTRACT.md) → [SHELL_INTEGRATION](docs/SHELL_INTEGRATION.md) |
 | **DevOps / CI** | [DOCKER_DEPLOYMENT](docs/DOCKER_DEPLOYMENT.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) (artefacto **D**, **V**) |
-
----
 
 ## Scripts útiles
 
@@ -146,8 +227,6 @@ Documentación organizada en **capas** con una sola fuente normativa y documento
 | `npm run format` | Formatea con Prettier |
 | `npm run format:check` | Comprueba formato sin escribir |
 
----
-
 ## Principios del repositorio
 
 - **Contrato único** — [SHELL-CONTRACT.md](SHELL-CONTRACT.md) concentra reglas verificables shell ↔ MFE.
@@ -155,8 +234,6 @@ Documentación organizada en **capas** con una sola fuente normativa y documento
 - **Shell como host** — el MFE no sustituye al shell en producción; integración documentada por capas.
 - **Documentación por capas** — contrato shell, normativa front (`FRONTEND_STRUCTURE`), arquitectura, integración, despliegue y onboarding.
 - **Estructura modular** — dominio bajo `src/module/`; detalle en [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md).
-
----
 
 ## Contribución
 
@@ -167,8 +244,6 @@ Documentación organizada en **capas** con una sola fuente normativa y documento
 5. Si el cambio afecta integración, artefacto o runtime compartido con el shell: actualizar [SHELL-CONTRACT.md](SHELL-CONTRACT.md) **antes** del merge y coordinar con plataforma.
 
 Checklist de desarrollo: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
-
----
 
 ## Referencias
 

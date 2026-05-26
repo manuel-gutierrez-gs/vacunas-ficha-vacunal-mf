@@ -3,8 +3,11 @@ import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { SticAppNameTheme } from '@shared/theme/stic-appname-theme';
 
-export class LayoutViewModel extends LitElement {
+export class SticExampleMfViewModel extends LitElement {
+  @property({ type: String }) ruta = '';
+  @property({ type: String }) texto = '';
   @property({ type: String }) routeName = '';
+
   protected sticNavigationItems: SticNavigationItems = [
     {
       label: 'Avisos',

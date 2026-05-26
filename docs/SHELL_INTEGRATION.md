@@ -117,7 +117,7 @@ Ver **E5**, **S4**, **D2**, **E6**.
   await import(`${BASE}/mfe-entry.js`);
 
   document.getElementById('mfe-root').innerHTML =
-    '<layout-container></layout-container>';
+    '<stic-example-mf></stic-example-mf>';
 </script>
 ```
 
@@ -144,7 +144,7 @@ export async function mountArquetipoMfe(
   }
 
   await import(/* @vite-ignore */ `${MFE_BASE}/mfe-entry.js`);
-  container.replaceChildren(document.createElement('layout-container'));
+  container.replaceChildren(document.createElement('stic-example-mf'));
 }
 ```
 
@@ -191,7 +191,7 @@ Ver **E6**.
 
 ```html
 <div id="mfe-root">
-  <layout-container></layout-container>
+  <stic-example-mf></stic-example-mf>
 </div>
 ```
 

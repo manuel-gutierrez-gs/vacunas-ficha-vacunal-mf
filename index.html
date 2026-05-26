@@ -13,6 +13,36 @@
   </head>
 
   <body>
-    <layout-container></layout-container>
+    <style>
+      body {
+        position: relative;
+      }
+      #output {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      z-index: 1000;
+      }
+    </style>
+    <stic-example-mf ruta="/errores" texto="Prueba de texto manolo"></stic-example-mf>
+    <div id="output">Esperando evento...</div>
+
+    <script>
+      const mf = document.querySelector('stic-example-mf');
+      const output = document.querySelector('#output');
+  
+      mf.addEventListener('stic-mf:warning:click', () => {
+        output.textContent = 'Evento warning recibido desde el microfrontend';
+      });
+
+      mf.addEventListener('stic-mf:error:click', () => {
+        output.textContent = 'Evento error recibido desde el microfrontend';
+      });
+    
+    </script>
   </body>
 </html>

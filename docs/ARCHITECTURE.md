@@ -44,7 +44,7 @@ Detalle normativo: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 Ejemplo actual del arquetipo:
 
 ```1:4:src/index.ts
-import './module/layout/layout.view';
+import './app/stic-example-mf.view';
 import './routing/stic-appname-router.view';
 import { SticAppNameTheme } from './shared/theme/stic-appname-theme';
 new SticAppNameTheme().loadHeadStyles();

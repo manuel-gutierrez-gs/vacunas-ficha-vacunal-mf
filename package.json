@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@sas/lib-stic-route": "^1.0.0",
+    "@sas/lib-stic-kernel": "^1.0.0",
     "@sas/wc-stic-button": "^1.0.0",
     "@sas/wc-stic-header": "^1.0.0",
     "@sas/wc-stic-navigation": "^1.0.0",

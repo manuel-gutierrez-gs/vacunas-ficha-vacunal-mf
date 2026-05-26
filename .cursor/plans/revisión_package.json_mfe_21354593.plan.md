@@ -123,7 +123,7 @@ flowchart LR
 ### Ecosistema MFE (prioridad media, arquitectura)
 
 1. Definir **`exports`** del paquete apuntando al entry ESM del MFE (p. ej. `./dist/assets/index-*.js` estabilizado con `entryFileNames` fijo en Vite).
-2. Documentar en README del arquetipo: contrato con shell, lista de **shared dependencies**, y si el MFE se carga por ruta o custom element raíz (`layout-container` en [`index.html`](index.html)).
+2. Documentar en README del arquetipo: contrato con shell, lista de **shared dependencies**, y si el MFE se carga por ruta o custom element raíz (`stic-example-mf` en [`index.html`](index.html)).
 3. Eliminar `workspaces` hasta existir `packages/`, o añadir paquete ejemplo `packages/shared-types`.
 4. Campo `"packageManager": "npm@9.x.x"` junto a `engines`.
 

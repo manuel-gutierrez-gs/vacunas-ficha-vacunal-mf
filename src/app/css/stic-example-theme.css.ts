@@ -1,6 +1,6 @@
 import { css, CSSResult, CSSResultOrNative } from 'lit';
 
-export class LayoutTheme {
+export class SticExampleMfTheme {
   static readonly cssBase: CSSResult = css`
     :host {
       display: grid;
@@ -11,16 +11,14 @@ export class LayoutTheme {
 
     stic-navigation {
       grid-column: 1;
-      height: 100%;
     }
 
     stic-appname-router {
       grid-column: 2;
-      height: 100%;
       overflow: auto;
       padding: 20px;
     }
   `;
 
-  static readonly LayoutTheme: CSSResultOrNative[] = [LayoutTheme.cssBase];
+  static readonly SticExampleMfTheme: CSSResultOrNative[] = [SticExampleMfTheme.cssBase];
 }

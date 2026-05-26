@@ -1,17 +1,26 @@
-import { html, TemplateResult } from 'lit';
+import { CSSResultGroup, CSSResultOrNative, html, TemplateResult } from 'lit';
 import { SticErroresViewModel } from './stic-errores.viewmodel';
+import { SticErroresTheme } from './css/stic-errores-theme.css';
+import('@sas/wc-stic-button');
 
 export class SticErroresView extends SticErroresViewModel {
-  protected override render(): TemplateResult {
-    import('@sas/wc-stic-button');
+
+  static finalizeStyles = (styles?: CSSResultGroup): CSSResultOrNative[] => [
+    ...super.finalizeStyles(styles),
+    ...SticErroresTheme.SticErroresTheme,
+  ];
+  
+  render(): TemplateResult {
     return html`
-    <h1>Errores</h1>
-    <p>Introducción al módulo de errores.</p>
-    <stic-button
-      variant="primary"
-      label=${`Enviar error`}
-      @button:click=${() => console.error('Enviando error')}
-    ></stic-button>`;
+      <h1>Errores</h1>
+      <p>Introducción al módulo de errores.</p>
+      <p>${this.text}</p>
+      <stic-button
+        variant="primary"
+        label="Enviar error"
+        @button:click=${this.handleErrorButtonClick}
+      ></stic-button>
+    `;
   }
 }
 

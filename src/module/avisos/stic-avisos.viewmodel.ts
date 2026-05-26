@@ -1,6 +1,11 @@
 import { LitElement } from 'lit';
-import { state } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { SticMfWarningClickEvent } from './events/warning-click.event';
 
 export class SticAvisosViewModel extends LitElement {
-  @state() text = 'Este es el texto del modilo de avisos interno!';
+  @property({ type: String }) text = '';
+
+  protected handleWarningButtonClick(): void {
+    this.dispatchEvent(new SticMfWarningClickEvent());
+  }
 }

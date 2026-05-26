@@ -9,10 +9,16 @@ export class SticAvisosView extends SticAvisosViewModel {
   ];
 
   render() {
+    import('@sas/wc-stic-button');
     return html`
       <h1>Avisos</h1>
       <p>Introducción al módulo de avisos.</p>
       <p>${this.text}</p>
+      <stic-button
+        variant="primary"
+        label="Enviar warning"
+        @button:click=${this.handleWarningButtonClick}
+      ></stic-button>
     `;
   }
 }
