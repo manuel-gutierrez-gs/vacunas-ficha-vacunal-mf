@@ -2,19 +2,19 @@ import { SticRoute, sticBaseRoutes } from '@sas/lib-stic-route';
 
 export const ROUTES: SticRoute[] = [
   {
-    path: '/stic-example',
-    component: 'stic-example',
-    name: 'Example',
+    path: '/stic-avisos',
+    component: 'stic-avisos',
+    name: 'Avisos',
     action: async () => {
-      await import('../module/example/stic-example.view');
+      await import('@module/avisos/stic-avisos.view');
     },
   },
   {
-    path: '/counter',
-    component: 'counter-component',
-    name: 'Counter',
+    path: '/stic-errores',
+    component: 'stic-errores',
+    name: 'Errores',
     action: async () => {
-      await import('../module/counter/counter.view');
+      await import('@module/errores/stic-errores.view');
     },
   },
   ...sticBaseRoutes,

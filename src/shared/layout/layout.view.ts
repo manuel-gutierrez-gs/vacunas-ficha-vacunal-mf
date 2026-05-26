@@ -9,23 +9,12 @@ export class LayoutView extends LayoutViewModel {
   ];
 
   protected override render(): TemplateResult {
-    return html`${this.renderNavigation()}${this.renderHeader()}${this.renderContent()}`;
-  }
-
-  protected renderHeader(): TemplateResult {
-    import('@sas/wc-stic-header');
-    return html`<stic-header
-      logo="sas"
-      avatarIcon="person"
-      text="Aplicación de ejemplo"
-      dividers="all"
-    ></stic-header>`;
+    return html`${this.renderNavigation()}${this.renderContent()}`;
   }
 
   protected renderNavigation(): TemplateResult {
     import('@sas/wc-stic-navigation');
     return html`<stic-navigation
-      open
       .dataSource=${this.sticNavigationItems}
       @navigation:clickitem=${this.handelNavigationClickEvent}
     ></stic-navigation>`;

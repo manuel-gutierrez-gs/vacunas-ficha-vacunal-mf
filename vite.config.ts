@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
-// https://vitejs.dev/config/
+
 export default defineConfig({
-  // mantiene los enlaces simboicos, para hacer referencia a paquetes externos en local sin necesidad de tenerlos publicados
-  resolve: { preserveSymlinks: true },
+  resolve: { 
+    preserveSymlinks: true,
+    alias: {
+      '@module': resolve(__dirname, 'src/module'),
+      '@routing': resolve(__dirname, 'src/routing'),
+      '@shared': resolve(__dirname, 'src/shared'),
+    },
+  },
   server: {
     port: 4200,
     host: 'localhost',

@@ -1,25 +1,20 @@
 import { SticNavigationClickedItemEvent, SticNavigationItems } from '@sas/wc-stic-navigation';
 import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { SticAppNameTheme } from '../../shared/theme/stic-appname-theme';
+import { SticAppNameTheme } from '@shared/theme/stic-appname-theme';
 
 export class LayoutViewModel extends LitElement {
   @property({ type: String }) routeName = '';
   protected sticNavigationItems: SticNavigationItems = [
     {
-      icon: 'menu',
-      label: '',
-      value: 'menu'
-    },
-    {
       label: 'Avisos',
       icon: 'warning',
-      value: 'Example',
+      value: 'Avisos',
     },
     {
-      label: 'Contador',
-      icon: 'calculate',
-      value: 'Counter',
+      label: 'Errores',
+      icon: 'error',
+      value: 'Errores',
     },
   ];
 
