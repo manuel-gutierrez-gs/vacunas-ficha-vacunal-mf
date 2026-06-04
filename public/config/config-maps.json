@@ -1,0 +1,15 @@
+{
+  "urlApiAlergiasYContraindicacionesS039": "http://vacunas.des.sas.junta-andalucia.es/consulta-alergias-contraindicaciones-api/api/v1",
+  "urlApiConfigAccionVacunal": "http://vacunas.des.sas.junta-andalucia.es/accion-vacunal-api/api/v1",
+  "urlApiConfigCalendarios": "http://vacunas.des.sas.junta-andalucia.es/calendario-vacunal-api/api/v1",
+  "urlApiConfigPacientes": "http://vacunas.des.sas.junta-andalucia.es/configuracion-de-paciente-api/api/v1",
+  "urlApiContraindicaciones": "http://vacunas.des.sas.junta-andalucia.es/contraindicaciones-api/api/v1",
+  "urlApiCriterio": "http://vacunas.des.sas.junta-andalucia.es/criterios-vacunacion-paciente-api/api/v1",
+  "urlApiFichaVacunal": "http://vacunas.des.sas.junta-andalucia.es/ficha-vacunal-api/api/v1",
+  "urlApiInventarioLotes": "http://vacunas.des.sas.junta-andalucia.es/vacunas-inventario-lotes/api/v1/inventario",
+  "urlApiLotes": "http://vacunas.des.sas.junta-andalucia.es/vacunas-lotes/api/v1/lotes",
+  "urlApiMarcasComerciales": "http://vacunas.des.sas.junta-andalucia.es/consulta-marcas-comerciales-api/api/v1",
+  "urlApiMovimientos": "http://vacunas.des.sas.junta-andalucia.es/vacunas-movimientos/api/v1/movimientos",
+  "urlApiProductosInmunizacion": "http://vacunas.des.sas.junta-andalucia.es/consulta-productos-inmunizacion-api/api/v1",
+  "urlApiReaccionesAdversas": "http://vacunas.des.sas.junta-andalucia.es/reacciones-adversas-api/api/v1"
+}

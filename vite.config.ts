@@ -1,27 +1,33 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
-
 export default defineConfig({
-  resolve: { 
+  resolve: {
     preserveSymlinks: true,
     alias: {
+      '@app': resolve(__dirname, 'src/app'),
       '@module': resolve(__dirname, 'src/module'),
-      '@routing': resolve(__dirname, 'src/routing'),
       '@shared': resolve(__dirname, 'src/shared'),
     },
   },
+
   server: {
     port: 4200,
     host: 'localhost',
     open: true,
-    watch: {},
   },
+
   build: {
+    lib: {
+      entry: 'src/index.ts',  
+      fileName: () => 'vacunas-ficha-vacunal-mf.js',
+      formats: ['es'],
+    },
+
     rollupOptions: {
-      external: ['lit', /^lit\//],
+      external: ['lit', /^lit\//, /^@sas\//],
       output: {
-        entryFileNames: 'mfe-entry.js',
+        entryFileNames: 'vacunas-ficha-vacunal-mf.js',
         chunkFileNames: 'assets/[name].js',
       },
     },

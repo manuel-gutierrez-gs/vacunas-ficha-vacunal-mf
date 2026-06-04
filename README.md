@@ -1,255 +1,69 @@
-# Arquetipo Front
+# vacunas-ficha-vacunal-mf
 
-Microfrontend del ecosistema SAS. Este README está organizado en **dos capas**: contrato externo para el shell e información interna para desarrollo del repositorio.
+Microfrontend de ficha vacunal basado en Lit y arquitectura MVVM. Expone un custom element para integrarse en un shell host.
 
----
-
-# `<stic-example-mf>`
-
-Microfrontend basado en arquitectura modular MVVM. Se integra en un **shell** (aplicación host) como custom element estándar. **Esta sección es lo único relevante para el shell.**
-
-## Uso básico
-
-```html
-<stic-example-mf></stic-example-mf>
-```
-
-## Propiedades
-
-| Propiedad | Tipo | Por defecto | Descripción |
-|-----------|------|-------------|-------------|
-| `ruta` | `string` | `''` | Define la ruta inicial del microfrontend. Valores posibles: `/avisos`, `/errores`. Si no se proporciona, se usa la primera ruta definida en `routes.ts` (`/stic-avisos`). |
-| `texto` | `string` | `''` | Texto propagado a los módulos activos del MF y mostrado en las vistas. |
-
-## Eventos
-
-| Evento | Clase del evento | `bubbles` | `composed` | `detail` | Descripción |
-|--------|------------------|-----------|------------|----------|-------------|
-| `stic-mf:warning:click` | `SticMfWarningClickEvent` | `true` | `true` | `undefined` | Se dispara al pulsar el botón principal del módulo de avisos. |
-| `stic-mf:error:click` | `SticMfErrorClickEvent` | `true` | `true` | `undefined` | Se dispara al pulsar el botón principal del módulo de errores. |
-
-```ts
-export class SticMfWarningClickEvent extends BaseEmptyDetailEvent {
-  constructor() {
-    super('stic-mf:warning:click');
-  }
-}
-```
-
-```ts
-export class SticMfErrorClickEvent extends BaseEmptyDetailEvent {
-  constructor() {
-    super('stic-mf:error:click');
-  }
-}
-```
-
-## Ejemplo de uso (shell)
-
-### HTML
-
-```html
-<!-- Cargar entry del MF -->
-<script type="module" src="{BASE}/mfe-entry.js"></script>
-
-<!-- Montar el componente con configuración inicial -->
-<stic-example-mf ruta="/errores" texto="hola"></stic-example-mf>
-
-<p id="mfe-event-output"></p>
-```
-
-### JavaScript
-
-```javascript
-const mfe = document.querySelector('stic-example-mf');
-const output = document.getElementById('mfe-event-output');
-
-mfe.addEventListener('stic-mf:error:click', () => {
-  output.textContent = 'Evento stic-mf:error:click recibido';
-});
-
-// Cambiar ruta o texto dinámicamente
-mfe.ruta = '/avisos';
-mfe.texto = 'Nuevo texto desde el shell';
-```
-
-### Instalación del artefacto
-
-El MF se publica como artefacto estático (`dist/`). El shell debe:
-
-1. Servir el contenido de `dist/` en una URL base accesible.
-2. Cargar `mfe-entry.js` como módulo ES.
-3. Proveer `lit@2.7.4` (vía import map o bundle compartido).
-
-Más detalles en [SHELL-CONTRACT.md](SHELL-CONTRACT.md) y [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md).
-
-## Comportamiento del MF
-
-- El routing interno está **completamente encapsulado**; el shell no tiene que conocerlo ni controlarlo.
-- Si `ruta` no se proporciona, el MF arranca en la **primera ruta de `routes.ts`** (`/stic-avisos`).
-- El valor de `texto` se propaga internamente a los módulos activos **sin intervención del shell**.
-
----
-
-# Documentación interna del repositorio
-
-Información para desarrollo, mantenimiento y contribución al arquetipo. **No es necesaria para consumir el MF desde el shell.**
-
-## ¿Qué es este repositorio?
-
-- **Propósito:** plantilla para crear un MFE del ecosistema SAS: pantallas, componentes y rutas de dominio en un paquete front desacoplado.
-- **Relación con el shell:** en producción el host carga el artefacto de build y provee dependencias compartidas de runtime. Las obligaciones técnicas están en [SHELL-CONTRACT.md](SHELL-CONTRACT.md).
-- **Stack:** Vite · TypeScript · Lit · Web Components · paquetes internos `@sas/*`.
-
-| Ámbito | Dónde profundizar |
-|--------|-------------------|
-| Desarrollo en local | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) |
-| Estructura modular y MVVM | [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) |
-| Diseño y decisiones | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Integración en el shell | [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) |
-| CI/CD y publicación | [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) |
-
-## Arquitectura modular frontend
-
-Este repositorio sigue una **estructura modular por dominio** bajo `src/module/`, con patrón **MVVM** (vista / viewmodel) y tests en `test/` espejo del código de módulos. Objetivo: equipos grandes, ownership claro y revisiones predecibles.
-
-**Normativa y detalle:** [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md)  
-**Razonamiento arquitectónico:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-
-Árbol resumido:
-
-```
-src/
-  index.ts
-  module/<modulo>/
-    component/<componente>/
-      *.view.ts | *.viewmodel.ts | css/ | events/ | model/
-  shared/ …
-  routing/ …   # transversal según arquetipo
-test/
-  <modulo>/<componente>/*.test.ts
-```
-
-## Inicio rápido
-
-### Requisitos
-
-| Herramienta | Versión |
-|-------------|---------|
-| Node.js | >= 18 |
-| npm | >= 9 |
-
-```bash
-npm run env:check
-```
-
-### Instalación
+## Arranque local
 
 ```bash
 npm ci
-```
-
-Usar `npm ci` (no `npm install`) cuando exista `package-lock.json`.
-
-### Desarrollo local
-
-```bash
 npm run dev
 ```
 
-Servidor Vite en **http://localhost:4200** (equivalente: `npm start`). Editar código en `src/`, no en `dist/`.
-
-### Build
+## Build
 
 ```bash
 npm run build
 ```
 
-Ejecuta comprobación de tipos y genera la salida en `dist/`. Previsualización local:
+Genera `dist/vacunas-ficha-vacunal-mf.js`.
 
-```bash
-npm run preview
-```
-
-### Tests
+## Tests
 
 ```bash
 npm test
-npm run ci
+npm run typecheck
 ```
 
-`npm run ci` ejecuta `typecheck`, tests con cobertura y `build` (alineado con pipeline). Más comandos en la tabla [Scripts útiles](#scripts-útiles).
+## Integracion en shell host
 
-Detalle del flujo diario: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
+1. Servir `dist/` y cargar `vacunas-ficha-vacunal-mf.js` como modulo ES.
+2. Asegurar que el host sirve `config/config-maps.json`.
+3. Montar el custom element:
 
-## Sistema de documentación
+```html
+<vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
+```
 
-Documentación organizada en **capas** con una sola fuente normativa y documentos especializados sin solapamiento de reglas.
+## Runtime config (`config/config-maps.json`)
 
-| Necesidad | Documento | Capa |
-|-----------|-----------|------|
-| Reglas obligatorias shell ↔ MFE | [SHELL-CONTRACT.md](SHELL-CONTRACT.md) | Contrato |
-| Estructura modular frontend (MVVM, carpetas) | [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) | Normativa interna front |
-| Arquitectura y decisiones | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitectura |
-| Integración con el shell | [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) | Integración |
-| CI/CD y despliegue | [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) | Despliegue |
-| Onboarding y flujo diario | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) | Onboarding |
+El MF lee la configuracion en runtime desde `/config/config-maps.json` antes de registrarse.
 
-**Regla:** si afecta al comportamiento en runtime entre shell y MFE, debe estar en el contrato. Ver [SHELL-CONTRACT.md](SHELL-CONTRACT.md).
+Campos minimos:
 
-## Flujo recomendado de lectura
+```json
+{
+  "urlApiFichaVacunal": "/api/vacunas/ficha-vacunal",
+  "urlApiConfigPacientes": "/api/vacunas/configuracion-pacientes"
+}
+```
 
-| Rol | Orden sugerido |
-|-----|----------------|
-| **Desarrollador nuevo** | Este README → [GETTING_STARTED](docs/GETTING_STARTED.md) → [FRONTEND_STRUCTURE](docs/FRONTEND_STRUCTURE.md) |
-| **Senior / arquitecto** | [ARCHITECTURE](docs/ARCHITECTURE.md) → [FRONTEND_STRUCTURE](docs/FRONTEND_STRUCTURE.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) |
-| **Plataforma / shell** | [SHELL-CONTRACT](SHELL-CONTRACT.md) → [SHELL_INTEGRATION](docs/SHELL_INTEGRATION.md) |
-| **DevOps / CI** | [DOCKER_DEPLOYMENT](docs/DOCKER_DEPLOYMENT.md) → [SHELL-CONTRACT](SHELL-CONTRACT.md) (artefacto **D**, **V**) |
+Si falta o es invalido, el MF falla en arranque con `CONFIG_MISSING` o `CONFIG_INVALID`.
 
-## Scripts útiles
+## API publica
 
-| Script | Descripción |
-|--------|-------------|
-| `npm run env:check` | Muestra versiones de Node y npm |
-| `npm ci` | Instalación reproducible de dependencias |
-| `npm run dev` / `npm start` | Servidor de desarrollo (Vite) |
-| `npm run start:wds` | Servidor alternativo (Web Dev Server) |
-| `npm run build` | Typecheck + build de producción |
-| `npm run build:dev` | Build en modo development |
-| `npm run preview` | Sirve `dist/` en local (puerto 4200) |
-| `npm run typecheck` | Solo comprobación TypeScript |
-| `npm test` | Tests (Web Test Runner) |
-| `npm run test:watch` | Tests en modo watch |
-| `npm run test:coverage` | Tests con cobertura |
-| `npm run test:ci` | Tests con cobertura (CI) |
-| `npm run ci` | Typecheck + tests + build |
-| `npm run clean` | Borra `dist/`, `coverage/`, `out-tsc/` |
-| `npm run format` | Formatea con Prettier |
-| `npm run format:check` | Comprueba formato sin escribir |
+- Custom element: `vacunas-ficha-vacunal-mf`
+- Funcion de registro: `defineVacunasFichaVacunalMfElement`
+- Eventos:
+  - `vacunas-ficha-vacunal-mf:loaded`
+  - `vacunas-ficha-vacunal-mf:error`
+  - `vacunas-ficha-vacunal-mf:card-selected`
 
-## Principios del repositorio
+## Arquitectura resumida
 
-- **Contrato único** — [SHELL-CONTRACT.md](SHELL-CONTRACT.md) concentra reglas verificables shell ↔ MFE.
-- **Artefacto `dist/`** — generado por build; no editar manualmente; publicar el paquete completo según contrato (**D**).
-- **Shell como host** — el MFE no sustituye al shell en producción; integración documentada por capas.
-- **Documentación por capas** — contrato shell, normativa front (`FRONTEND_STRUCTURE`), arquitectura, integración, despliegue y onboarding.
-- **Estructura modular** — dominio bajo `src/module/`; detalle en [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md).
-
-## Contribución
-
-1. Crear rama desde la política del equipo.
-2. Desarrollar en `src/`; validar con `npm test` y `npm run build` o `npm run ci`.
-3. No modificar `dist/` a mano.
-4. Si el cambio afecta la estructura modular o convenciones de código: actualizar [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) y [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) si aplica.
-5. Si el cambio afecta integración, artefacto o runtime compartido con el shell: actualizar [SHELL-CONTRACT.md](SHELL-CONTRACT.md) **antes** del merge y coordinar con plataforma.
-
-Checklist de desarrollo: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md).
-
-## Referencias
-
-- [SHELL-CONTRACT.md](SHELL-CONTRACT.md) — reglas obligatorias
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura y trade-offs
-- [docs/SHELL_INTEGRATION.md](docs/SHELL_INTEGRATION.md) — integración con ejemplos
-- [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) — pipeline y Nginx
-- [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) — guía para empezar a desarrollar
-- [docs/FRONTEND_STRUCTURE.md](docs/FRONTEND_STRUCTURE.md) — estructura modular y MVVM
+```text
+src/
+  app/                     # composicion y root del MF
+  module/ficha-vacunal/    # dominio funcional (adapter/service/model/components)
+  shared/                  # infraestructura transversal
+  index.ts                 # entrypoint unico y API publica
+```

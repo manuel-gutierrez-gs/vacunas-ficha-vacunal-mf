@@ -117,7 +117,7 @@ Ver **E5**, **S4**, **D2**, **E6**.
   await import(`${BASE}/mfe-entry.js`);
 
   document.getElementById('mfe-root').innerHTML =
-    '<stic-example-mf></stic-example-mf>';
+    '<vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>';
 </script>
 ```
 
@@ -144,7 +144,9 @@ export async function mountArquetipoMfe(
   }
 
   await import(/* @vite-ignore */ `${MFE_BASE}/mfe-entry.js`);
-  container.replaceChildren(document.createElement('stic-example-mf'));
+  const el = document.createElement('vacunas-ficha-vacunal-mf');
+  el.setAttribute('nuhsa', 'NUHSA001');
+  container.replaceChildren(el);
 }
 ```
 
@@ -191,7 +193,7 @@ Ver **E6**.
 
 ```html
 <div id="mfe-root">
-  <stic-example-mf></stic-example-mf>
+  <vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
 </div>
 ```
 

@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2020",
     "module": "esnext",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "lib": ["es2017", "dom"],
+    "lib": ["es2020", "dom"],
     "strict": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -17,8 +17,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@app/*": ["src/app/*"],
       "@module/*": ["src/module/*"],
-      "@routing/*": ["src/routing/*"],
       "@shared/*": ["src/shared/*"]
     }
   },

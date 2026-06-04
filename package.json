@@ -1,5 +1,5 @@
 {
-  "name": "@sas/app-stic-no-name",
+  "name": "@sas/vacunas-ficha-vacunal-mf",
   "version": "0.0.0-SNAPSHOT.1",
   "description": "no-description",
   "author": "SAS",
@@ -8,7 +8,7 @@
   "private": true,
   "files": ["dist"],
   "exports": {
-    ".": "./dist/mfe-entry.js"
+    ".": "./dist/vacunas-ficha-vacunal-mf.js"
   },
   "scripts": {
     "env:check": "node -v && npm -v",
@@ -29,13 +29,20 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@sas/lib-stic-route": "^1.0.0",
-    "@sas/lib-stic-kernel": "^1.0.0",
-    "@sas/wc-stic-button": "^1.0.0",
-    "@sas/wc-stic-header": "^1.0.0",
-    "@sas/wc-stic-navigation": "^1.0.0",
-    "@sas/wc-stic-theme": "^1.0.0",
-    "lit": "2.7.4"
+    "@sas/lib-stic-kernel": "1.75.0",
+    "@sas/lib-stic-route": "1.75.0",
+    "@sas/wc-stic-button": "1.75.0",
+    "@sas/wc-stic-divider": "1.75.0",
+    "@sas/wc-stic-filters-area": "1.75.0",
+    "@sas/wc-stic-header": "1.75.0",
+    "@sas/wc-stic-icon": "1.75.0",
+    "@sas/wc-stic-infinity-scroll": "1.75.0",
+    "@sas/wc-stic-modal": "1.75.0",
+    "@sas/wc-stic-navigation": "1.75.0",
+    "@sas/wc-stic-sheet": "1.75.0",
+    "@sas/wc-stic-tag-set": "1.75.0",
+    "@sas/wc-stic-text": "1.75.0",
+    "@sas/wc-stic-theme": "1.75.0"
   },
   "peerDependencies": {
     "lit": "^2.7.4"

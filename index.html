@@ -5,44 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="Description" content="no-description" />
     <base href="/" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>Arquetipo Front</title>
+    <title>Vacunas Ficha Vacunal Mf</title>
+
     <link rel="stylesheet" href="style.css" />
-    <script src="./src/index.ts" type="module"></script>
+    <script type="module" src="/src/index.ts"></script>
   </head>
 
   <body>
-    <style>
-      body {
-        position: relative;
-      }
-      #output {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f0f0f0;
-      z-index: 1000;
-      }
-    </style>
-    <stic-example-mf ruta="/errores" texto="Prueba de texto manolo"></stic-example-mf>
-    <div id="output">Esperando evento...</div>
+    <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN0496015662"></vacunas-ficha-vacunal-mf>
+    <!-- <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN1561112451"></vacunas-ficha-vacunal-mf> -->
+    <!-- <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN0602654735"></vacunas-ficha-vacunal-mf> -->
+    <!-- <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN0571703247"></vacunas-ficha-vacunal-mf> -->
 
+    <div id="log"></div>
     <script>
-      const mf = document.querySelector('stic-example-mf');
-      const output = document.querySelector('#output');
-  
-      mf.addEventListener('stic-mf:warning:click', () => {
-        output.textContent = 'Evento warning recibido desde el microfrontend';
+      const log = document.getElementById('log');
+      const mf = document.getElementById('mf');
+      const append = (line) => {
+        log.textContent += line + '\n';
+      };
+      mf.addEventListener('vacunas-ficha-vacunal-mf:loaded', (e) => {
+        append('loaded: ' + JSON.stringify(e.detail));
       });
-
-      mf.addEventListener('stic-mf:error:click', () => {
-        output.textContent = 'Evento error recibido desde el microfrontend';
+      mf.addEventListener('vacunas-ficha-vacunal-mf:error', (e) => {
+        append('error: ' + JSON.stringify(e.detail));
       });
-    
+      mf.addEventListener('vacunas-ficha-vacunal-mf:card-selected', (e) => {
+        append('card-selected: ' + JSON.stringify(e.detail));
+      });
     </script>
   </body>
 </html>
