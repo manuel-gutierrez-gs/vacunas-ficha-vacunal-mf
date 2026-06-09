@@ -17,22 +17,5 @@
     <!-- <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN0602654735"></vacunas-ficha-vacunal-mf> -->
     <!-- <vacunas-ficha-vacunal-mf id="mf" nuhsa="AN0571703247"></vacunas-ficha-vacunal-mf> -->
 
-    <div id="log"></div>
-    <script>
-      const log = document.getElementById('log');
-      const mf = document.getElementById('mf');
-      const append = (line) => {
-        log.textContent += line + '\n';
-      };
-      mf.addEventListener('vacunas-ficha-vacunal-mf:loaded', (e) => {
-        append('loaded: ' + JSON.stringify(e.detail));
-      });
-      mf.addEventListener('vacunas-ficha-vacunal-mf:error', (e) => {
-        append('error: ' + JSON.stringify(e.detail));
-      });
-      mf.addEventListener('vacunas-ficha-vacunal-mf:card-selected', (e) => {
-        append('card-selected: ' + JSON.stringify(e.detail));
-      });
-    </script>
   </body>
 </html>

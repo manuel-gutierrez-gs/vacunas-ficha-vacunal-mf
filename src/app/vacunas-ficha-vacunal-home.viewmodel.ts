@@ -34,7 +34,7 @@ import type {
   PublicElementStatus,
 } from './model/public-state';
 
-export class VacunasFichaVacunalMfViewModel extends LitElement {
+export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
   @property({ attribute: false }) runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
@@ -50,6 +50,19 @@ export class VacunasFichaVacunalMfViewModel extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     verifySticThemeLoaded();
+
+    if (!this.nuhsa) {
+      const router = this.closest('vacunas-ficha-vacunal-mf') as any;
+      if (router && router.nuhsa) {
+        this.nuhsa = router.nuhsa;
+      } else if (router && router.getAttribute('nuhsa')) {
+        this.nuhsa = router.getAttribute('nuhsa');
+      }
+      if (router && router.runtimeConfig) {
+        this.runtimeConfig = router.runtimeConfig;
+      }
+    }
+
     void this.bootstrap();
   }
 

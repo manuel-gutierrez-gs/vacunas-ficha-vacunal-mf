@@ -1,6 +1,6 @@
 import { css } from 'lit';
 
-export const vacunasFichaVacunalMfStyles = [
+export const vacunasFichaVacunalHomeStyles = [
   css`
     :host {
       background-color: rgb(238, 238, 238);

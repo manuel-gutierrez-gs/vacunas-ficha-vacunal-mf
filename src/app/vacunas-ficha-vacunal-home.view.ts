@@ -5,11 +5,11 @@ import '@module/ficha-vacunal/components/sheet/sheet.view';
 
 import { html, nothing } from 'lit';
 
-import { vacunasFichaVacunalMfStyles } from './css/vacunas-ficha-vacunal-mf.css';
-import { VacunasFichaVacunalMfViewModel } from './vacunas-ficha-vacunal-mf.viewmodel';
+import { vacunasFichaVacunalHomeStyles } from './css/vacunas-ficha-vacunal-home.css';
+import { VacunasFichaVacunalHomeViewModel } from './vacunas-ficha-vacunal-home.viewmodel';
 
-export class VacunasFichaVacunalMfView extends VacunasFichaVacunalMfViewModel {
-  static styles = vacunasFichaVacunalMfStyles;
+export class VacunasFichaVacunalHomeView extends VacunasFichaVacunalHomeViewModel {
+  static styles = vacunasFichaVacunalHomeStyles;
 
   render() {
     if (this.status === 'loading' || this.status === 'idle') {
@@ -77,9 +77,9 @@ export class VacunasFichaVacunalMfView extends VacunasFichaVacunalMfViewModel {
   }
 }
 
-window.customElements.define('vacunas-ficha-vacunal-mf', VacunasFichaVacunalMfView);
+window.customElements.define('vacunas-ficha-vacunal-home', VacunasFichaVacunalHomeView);
 declare global {
   interface HTMLElementTagNameMap {
-    'vacunas-ficha-vacunal-mf': VacunasFichaVacunalMfView;
+    'vacunas-ficha-vacunal-home': VacunasFichaVacunalHomeView;
   }
 }
