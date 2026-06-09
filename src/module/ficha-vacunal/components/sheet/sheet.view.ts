@@ -26,31 +26,48 @@ export class FichaVacunalSheetView extends FichaVacunalSheetViewModel {
         @sheet:closed=${this.onClose}
       >
         <div class="ficha-vacunal-sheet__container">
-          <div class="box">
-            <stic-result-grid readonly .dataSource=${this.itemsDatosSuperiores}></stic-result-grid>
-          </div>
+          <section class="ficha-vacunal-sheet__section ficha-vacunal-sheet__section--main">
+            <stic-result-grid
+              readonly
+              class="ficha-vacunal-sheet__grid"
+              .dataSource=${this.itemsDatosSuperiores}
+            ></stic-result-grid>
+          </section>
 
-          <stic-divider></stic-divider>
+          <stic-divider class="ficha-vacunal-sheet__divider"></stic-divider>
 
-          <div class="box">
-            <div class="title">Reacciones Adversas</div>
+          <section class="ficha-vacunal-sheet__section ficha-vacunal-sheet__section--reactions">
+            <h3 class="ficha-vacunal-sheet__title">Reacciones Adversas</h3>
 
-            <div>
+            <div class="ficha-vacunal-sheet__counter">
               <stic-text text="Asociadas (${this.itemsReacciones?.length ?? 0})"></stic-text>
             </div>
-            <div>
+
+            <div class="ficha-vacunal-sheet__list">
               ${this.itemsReacciones?.length
-                ? html` <stic-result-list .dataSource=${this.itemsReacciones}></stic-result-list> `
+                ? html`
+                    <stic-result-list
+                      class="ficha-vacunal-sheet__result-list"
+                      .dataSource=${this.itemsReacciones}
+                    ></stic-result-list>
+                  `
                 : html` <stic-text text="No hay reacciones adversas asociadas"></stic-text> `}
             </div>
-            <div class="title">Disponibles</div>
 
-            <stic-input-v2-text labelText="Buscar" labelIcon="search" value=""></stic-input-v2-text>
+            <h3 class="ficha-vacunal-sheet__title">Disponibles</h3>
 
-            <div class="empty-state">
+            <div class="ficha-vacunal-sheet__search">
+              <stic-input-v2-text
+                labelText="Buscar"
+                labelIcon="search"
+                value=""
+              ></stic-input-v2-text>
+            </div>
+
+            <div class="ficha-vacunal-sheet__empty">
               <stic-text text="No hay reacciones adversas disponibles"></stic-text>
             </div>
-          </div>
+          </section>
         </div>
       </stic-sheet-modal-overlay>
     `;
