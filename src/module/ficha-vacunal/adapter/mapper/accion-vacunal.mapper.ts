@@ -9,6 +9,7 @@ export function mapAccionVacunalResponse(data: any): AccionVacunal {
     profesional: data.profesional,
     productoInmunizacion: data.productoInmunizacion,
     comentarios: data.comentarios,
+    descripcion: data.descripcion,
   };
 
   switch (data.tipoAccionVacunal) {

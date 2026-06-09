@@ -8,6 +8,8 @@ export function createMockConfig(
   return {
     urlApiFichaVacunal: 'https://mock.local/ficha',
     urlApiConfigPacientes: 'https://mock.local/config',
+    urlApiConfigAccionVacunal: 'https://mock.local/acciones',
+    urlApiConfigCalendarios: 'https://mock.local/calendarios',
     ...overrides,
   };
 }

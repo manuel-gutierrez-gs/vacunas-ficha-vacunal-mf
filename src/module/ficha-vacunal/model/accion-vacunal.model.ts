@@ -12,6 +12,8 @@ export interface AccionVacunal {
 
   comentarios?: string;
 
+  descripcion?: string;
+
   localizacion?: {
     codigo?: string;
     denominacion?: string;

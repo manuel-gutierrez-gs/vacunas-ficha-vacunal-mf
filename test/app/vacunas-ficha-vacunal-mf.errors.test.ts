@@ -1,17 +1,15 @@
 import { expect, oneEvent } from '@open-wc/testing';
 import { resetRuntimeConfigCache, RUNTIME_CONFIG_URL } from '@shared/config/runtime-config';
 import { MF_EVENT_ERROR, MF_TAG_NAME } from '@shared/contract/vacunas-ficha-vacunal.contract';
-import {
-  defineVacunasFichaVacunalMfElement,
-  VacunasFichaVacunalMfViewModel,
-} from '../../src/app/vacunas-ficha-vacunal-mf.viewmodel';
+import { VacunasFichaVacunalMfViewModel } from '../../src/app/vacunas-ficha-vacunal-mf.viewmodel';
+import '../../src/app/vacunas-ficha-vacunal-mf.view';
 import { createMockConfig } from '../helpers/mock-data';
 
 describe('vacunas-ficha-vacunal-mf errors', () => {
   const originalFetch = globalThis.fetch;
 
   before(() => {
-    defineVacunasFichaVacunalMfElement();
+    // Component is already defined via import
   });
 
   afterEach(() => {

@@ -1,6 +1,6 @@
 import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
 
-import { fetchAccionVacunal } from '../adapter/api/accion-vacunal.api';
+import { fetchAccionVacunalById } from '../adapter/api/accion-vacunal.api';
 
 import { fetchCalendarioById } from '../adapter/api/calendario.api';
 
@@ -8,7 +8,7 @@ export async function loadAccionVacunal(
   accionVacunalId: number,
   config: VacunasFichaVacunalRuntimeConfig
 ) {
-  const accion = await fetchAccionVacunal(accionVacunalId, config);
+  const accion = await fetchAccionVacunalById(accionVacunalId, config);
 
   let calendarioNombre = '';
 

@@ -42,9 +42,9 @@ export class VacunasFichaVacunalMfView extends VacunasFichaVacunalMfViewModel {
             <div class="mf-root__header-title">Ficha Vacunación</div>
 
             <div class="mf-root__header-actions">
-              <stic-icon-button icon="settings" size="md" disabled></stic-icon-button>
+              <stic-icon-button class="mf-root__actions-button" icon="settings" size="md" disabled></stic-icon-button>
               <stic-divider vertical></stic-divider>
-              <stic-icon-button icon="download" size="md" disabled></stic-icon-button>
+              <stic-icon-button class="mf-root__actions-button" icon="download" size="md" disabled></stic-icon-button>
               <stic-button
                 label="Nueva vacuna aislada"
                 variant="primary"
@@ -70,11 +70,8 @@ export class VacunasFichaVacunalMfView extends VacunasFichaVacunalMfViewModel {
         <ficha-vacunal-sheet
           .open=${this.sheetOpen}
           .accion=${this.selectedAccion}
-          .calendarioNombre=${this.calendarioNombre}
-          .accionVacunalPreviaNombre=${this.accionVacunalPreviaNombre}
           @sheet-closed=${this.handleSheetClosed}
         ></ficha-vacunal-sheet>
-        
       </div>
     `;
   }

@@ -21,11 +21,4 @@ export const fichaVacunalSheetStyles = css`
     --stic-result-item-background-color: white;
     --color-background-2: white;
   }
-    
-  .grid-2 {
-    --stic-result-grid-template-columns: repeat(1, 1fr);
-    --stic-result-grid-gap: 1px 150px;
-    --stic-result-item-background-color: white;
-    --color-background-2: white;
-  }
 `;

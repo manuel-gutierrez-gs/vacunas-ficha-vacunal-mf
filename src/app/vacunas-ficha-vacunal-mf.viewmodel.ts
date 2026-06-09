@@ -1,6 +1,5 @@
 import type { Inmunizacion } from '@module/ficha-vacunal/model/ficha-vacunal.model';
-import type { AccionVacunalDetalleUI } from '@module/ficha-vacunal/model/accion-vacunal-ui.model';
-import { mapAccionVacunalToUI } from '@module/ficha-vacunal/adapter/mapper/accion-vacunal-ui.mapper';
+import type { AccionVacunalUI } from '@module/ficha-vacunal/model/accion-vacunal-ui.model';
 import { fetchAccionVacunalById } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
 
@@ -17,12 +16,9 @@ import { verifySticThemeLoaded } from '@shared/ui/stic-theme-loader';
 import { LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
-
 import {
-  MF_EVENT_CARD_SELECTED,
   MF_EVENT_ERROR,
   MF_EVENT_LOADED,
-  type MfCardSelectedEventDetail,
   type MfErrorEventDetail,
   type MfLoadedEventDetail,
 } from '@shared/contract/vacunas-ficha-vacunal.contract';
@@ -31,7 +27,6 @@ import { loadFichaVacunalAggregate } from '@module/ficha-vacunal/service/ficha-v
 import { bootstrapVacunasFichaVacunalMf } from '@app/bootstrap/bootstrap';
 
 import { fetchCalendarioById } from '@module/ficha-vacunal/adapter/api/calendario.api';
-import { AccionVacunal } from '@module/ficha-vacunal/model/accion-vacunal.model';
 
 import type {
   PublicElementErrorState,
@@ -47,10 +42,7 @@ export class VacunasFichaVacunalMfViewModel extends LitElement {
   @state() errorState: PublicElementErrorState | null = null;
   @state() readyState: PublicElementReadyState | null = null;
 
-  @state() calendarioNombre = '';
-  @state() accionVacunalPreviaNombre = '';
-  
-  @state() selectedAccion: AccionVacunalDetalleUI | null = null;
+  @state() selectedAccion: AccionVacunalUI | null = null;
   @state() sheetOpen = false;
 
   private loadGeneration = 0;
@@ -88,31 +80,60 @@ export class VacunasFichaVacunalMfViewModel extends LitElement {
   }
 
   async handleCardSelect(e: CustomEvent<Inmunizacion>): Promise<void> {
-    const accion = e.detail;
+    const detalleFichaSeleccionada = e.detail;
 
-    const payload: MfCardSelectedEventDetail = {
-      nuhsa: this.nuhsa,
-      accionVacunalId: accion.accionVacunalId,
-      productoInmunizacionAlias: accion.productoInmunizacion?.alias,
-      situacionEnum: accion.situacion,
-    };
-
-    this.dispatchEvent(
-      new CustomEvent(MF_EVENT_CARD_SELECTED, {
-        detail: payload,
-        bubbles: true,
-        composed: true,
-      })
-    );
-
-    if (!accion.accionVacunalId) return;
+    if (!detalleFichaSeleccionada.accionVacunalId) return;
 
     try {
       const config = resolveRuntimeConfig(this.runtimeConfig);
 
-      const detalle = await fetchAccionVacunalById(Number(accion.accionVacunalId), config);
+      const detalleAccionVacunal = await fetchAccionVacunalById(
+        Number(detalleFichaSeleccionada.accionVacunalId),
+        config
+      );
 
-      const uiModel = await mapAccionVacunalToUI(detalle, config);
+      let calendarioNombre;
+      if (detalleAccionVacunal.calendario) {
+        try {
+          const calendario = await fetchCalendarioById(
+            Number(detalleAccionVacunal.calendario),
+            config
+          );
+
+          calendarioNombre = calendario.nombre;
+        } catch(error) {
+          console.error(`No se pudo cargar el calendario ${detalleAccionVacunal.calendario}`, error);
+        }
+      }
+
+      let accionPreviaNombre;
+      const idAccionPrevia =
+        detalleAccionVacunal.tipoAccionVacunal === 'NO_VACUNACION'
+          ? detalleAccionVacunal.datosNoVacunacion?.idAccionPrevia
+          : undefined;
+
+      if (idAccionPrevia) {
+        try {
+          const accionPrevia = await fetchAccionVacunalById(Number(idAccionPrevia), config);
+
+          accionPreviaNombre = accionPrevia.descripcion;
+        } catch(error) {
+            console.error(`No se pudo cargar la acción previa ${idAccionPrevia}`, error);
+        }
+      }
+
+      const uiModel: AccionVacunalUI = {
+        detalleAccionVacunal,
+        detalleFichaVacunalSeleccionada: {
+          administradaPorEntePrivado: detalleFichaSeleccionada.administradaPorEntePrivado,
+          documentada: detalleFichaSeleccionada.documentada,
+          negacionDePaciente: detalleFichaSeleccionada.negacionDePaciente,
+          situacion: detalleFichaSeleccionada.situacion,
+        },
+
+        calendarioNombre,
+        accionPreviaNombre,
+      };
 
       this.selectedAccion = uiModel;
 

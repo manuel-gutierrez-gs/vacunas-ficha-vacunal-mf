@@ -34,7 +34,7 @@ export class TarjetaView extends TarjetaViewModel {
 
           <div class="ficha-vacunal-card__footer">
             ${tags.length
-              ? html` <stic-tag-set .dataSource=${tags} size="md" wrap></stic-tag-set> `
+              ? html` <stic-tag-set .dataSource=${tags} size="md" wrap></stic-tag-set>`
               : nothing}
             ${pendiente && detalle
               ? html` <span class="ficha-vacunal-card__detalle"> ${detalle} </span> `

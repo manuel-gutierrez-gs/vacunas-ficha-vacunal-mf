@@ -42,23 +42,20 @@ export const vacunasFichaVacunalMfStyles = [
       font-size: 18px;
       font-weight: bold;
       margin-left: 10px;
+      display: inline-flex;
+      align-items: center;
     }
 
     .mf-root__header-actions {
       margin-left: auto;
       display: inline-flex;
+      column-gap: 14px;
+      align-items: center;
     }
 
-    .mf-root__header-settings {
-      margin-left: 10px;
-      margin-right: 20px;
-      margin-top: 6px;
-    }
-
-    .mf-root__header-download {
-      margin-left: 10px;
-      margin-right: 20px;
-      margin-top: 6px;
+    .mf-root__actions-button {
+      height: 30px;
+      width: 30px;
     }
 
     .mf-root__header-isolated-vaccine-button {
