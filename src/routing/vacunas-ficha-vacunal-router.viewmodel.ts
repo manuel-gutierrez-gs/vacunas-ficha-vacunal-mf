@@ -1,7 +1,12 @@
 import { SticRoute, SticRouterViewModel } from '@sas/lib-stic-route';
 import { ROUTES } from './routes';
 import { property } from 'lit/decorators.js';
-import { PropertyValueMap } from 'lit';
+
+import {
+  MF_EVENT_NAVIGATE_HOME,
+  MF_EVENT_NAVIGATE_DETALLE,
+  MfNavigateDetalleEventDetail,
+} from '@shared/contract/vacunas-ficha-vacunal.contract';
 
 export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
   @property({ type: String }) route = '';
@@ -9,28 +14,26 @@ export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
 
   protected _routes: SticRoute[] = ROUTES;
 
-  setRuntimeConfig(config: any): void {
-    this.runtimeConfig = config;
-    // Pass it to the active view if it's already rendered
-    const child = this.querySelector('vacunas-ficha-vacunal-home') as any;
-    if (child && typeof child.setRuntimeConfig === 'function') {
-      child.setRuntimeConfig(config);
-    }
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.addEventListener(MF_EVENT_NAVIGATE_HOME, this.onNavigateHome);
+    this.addEventListener(MF_EVENT_NAVIGATE_DETALLE, this.onNavigateDetalle);
   }
 
-  override update(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
-    super.update(changedProperties);
-    if (this.route.length > 1) {
-      this._findRouteToNavigate(this.route);
-    }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener(MF_EVENT_NAVIGATE_HOME, this.onNavigateHome);
+    this.removeEventListener(MF_EVENT_NAVIGATE_DETALLE, this.onNavigateDetalle);
   }
 
-  private _findRouteToNavigate(value: string) {
-    const a = this._routes.find(route => route.name === value);
-    this._navigateToPath(a!);
-  }
+  private onNavigateHome = (): void => {
+    this.currentRoutePath = '/';
+  };
 
-  private _navigateToPath(route: SticRoute) {
-    this._router.internalNavigate(route.path);
-  }
+  private onNavigateDetalle = (e: Event): void => {
+    const detail = (e as CustomEvent<MfNavigateDetalleEventDetail>).detail;
+    const situacion = encodeURIComponent(detail.situacion ?? '');
+
+    this.currentRoutePath = `/detalle/${detail.id}/${situacion}`;
+  };
 }

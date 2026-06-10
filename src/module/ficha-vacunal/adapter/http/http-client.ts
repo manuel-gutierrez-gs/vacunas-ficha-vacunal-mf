@@ -1,4 +1,5 @@
 import { VacunasFichaVacunalMfError } from '@shared/errors/mf-error';
+import { html } from 'lit';
 
 export async function httpGetJson<T>(url: string): Promise<T> {
   let response: Response;
@@ -8,7 +9,10 @@ export async function httpGetJson<T>(url: string): Promise<T> {
       headers: { accept: 'application/json' },
     });
   } catch (cause) {
-    throw new VacunasFichaVacunalMfError('NETWORK_ERROR', `Error de red al consultar ${url}: ${String(cause)}`);
+    throw new VacunasFichaVacunalMfError(
+      'NETWORK_ERROR',
+      `Error de red al consultar ${url}: ${String(cause)}`
+    );
   }
 
   if (!response.ok) {
@@ -21,6 +25,9 @@ export async function httpGetJson<T>(url: string): Promise<T> {
   try {
     return (await response.json()) as T;
   } catch (cause) {
-    throw new VacunasFichaVacunalMfError('MAPPING_ERROR', `Respuesta JSON inválida: ${String(cause)}`);
+    throw new VacunasFichaVacunalMfError(
+      'MAPPING_ERROR',
+      `Respuesta JSON inválida: ${String(cause)}`
+    );
   }
 }

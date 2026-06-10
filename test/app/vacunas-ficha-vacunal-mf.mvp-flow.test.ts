@@ -1,7 +1,7 @@
 import { expect, oneEvent } from '@open-wc/testing';
 import { resetRuntimeConfigCache } from '@shared/config/runtime-config';
 import { MF_EVENT_LOADED, MF_TAG_NAME } from '@shared/contract/vacunas-ficha-vacunal.contract';
-import { VacunasFichaVacunalMfViewModel } from '../../src/app/vacunas-ficha-vacunal-mf.viewmodel';
+import { VacunasFichaVacunalHomeViewModel } from '../../src/app/vacunas-ficha-vacunal-home.viewmodel';
 import '../../src/app/vacunas-ficha-vacunal-mf.view';
 import { createMockConfig } from '../helpers/mock-data';
 
@@ -45,7 +45,7 @@ describe('vacunas-ficha-vacunal-mf mvp flow', () => {
       throw new Error(`Unexpected fetch: ${url}`);
     }) as typeof fetch;
 
-    const el = document.createElement(MF_TAG_NAME) as VacunasFichaVacunalMfViewModel;
+    const el = document.createElement(MF_TAG_NAME) as unknown as VacunasFichaVacunalHomeViewModel;
     el.nuhsa = 'NUHSA001';
     el.runtimeConfig = config;
     document.body.appendChild(el);

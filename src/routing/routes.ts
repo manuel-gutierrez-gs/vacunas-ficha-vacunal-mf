@@ -9,5 +9,12 @@ export const ROUTES: SticRoute[] = [
       await import('../app/vacunas-ficha-vacunal-home.view');
     },
   },
+  {
+    path: '/detalle/:id/:situacion',
+    component: 'ficha-vacunal-detalle',
+    action: async () => {
+      await import('../module/ficha-vacunal/components/detalle/detalle.view');
+    },
+  },
   ...sticBaseRoutes,
 ];

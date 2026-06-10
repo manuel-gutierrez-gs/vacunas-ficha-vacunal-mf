@@ -16,8 +16,6 @@ export class FichaVacunalSheetView extends FichaVacunalSheetViewModel {
   render() {
     if (!this.open || !this.accion) return nothing;
 
-    console.log(this.accion);
-
     return html`
       <stic-sheet-modal-overlay
         .open=${this.open}

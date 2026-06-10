@@ -1,13 +1,14 @@
 export const MF_TAG_NAME = 'vacunas-ficha-vacunal-mf';
 
-export const MF_EVENT_LOADED =
-  'vacunas-ficha-vacunal-mf:loaded';
+export const MF_EVENT_LOADED = 'vacunas-ficha-vacunal-mf:loaded';
 
-export const MF_EVENT_ERROR =
-  'vacunas-ficha-vacunal-mf:error';
+export const MF_EVENT_ERROR = 'vacunas-ficha-vacunal-mf:error';
 
-export const MF_EVENT_CARD_SELECTED =
-  'vacunas-ficha-vacunal-mf:card-selected';
+export const MF_EVENT_CARD_SELECTED = 'vacunas-ficha-vacunal-mf:card-selected';
+
+export const MF_EVENT_NAVIGATE_HOME = 'vacuna:navigate-home';
+
+export const MF_EVENT_NAVIGATE_DETALLE = 'vacuna:navigate-detalle';
 
 export type { VacunasFichaVacunalRuntimeConfig as RuntimeConfig } from '../config/runtime-config';
 
@@ -25,4 +26,9 @@ export type MfCardSelectedEventDetail = {
   accionVacunalId?: string;
   productoInmunizacionAlias?: string;
   situacionEnum?: string;
+};
+
+export type MfNavigateDetalleEventDetail = {
+  id: string;
+  situacion: string;
 };

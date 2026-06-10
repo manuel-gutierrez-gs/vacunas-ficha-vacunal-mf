@@ -34,6 +34,11 @@ import type {
   PublicElementStatus,
 } from './model/public-state';
 
+import {
+  MF_EVENT_NAVIGATE_DETALLE,
+  type MfNavigateDetalleEventDetail,
+} from '@shared/contract/vacunas-ficha-vacunal.contract';
+
 export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
   @property({ attribute: false }) runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
@@ -97,6 +102,8 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
     if (!detalleFichaSeleccionada.accionVacunalId) return;
 
+    const situacionesNavegacion = ['PROGRAMADA', 'FUERA_PLAZO', 'PENDIENTE_EN_PLAZO'];
+
     try {
       const config = resolveRuntimeConfig(this.runtimeConfig);
 
@@ -114,8 +121,11 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
           );
 
           calendarioNombre = calendario.nombre;
-        } catch(error) {
-          console.error(`No se pudo cargar el calendario ${detalleAccionVacunal.calendario}`, error);
+        } catch (error) {
+          console.error(
+            `No se pudo cargar el calendario ${detalleAccionVacunal.calendario}`,
+            error
+          );
         }
       }
 
@@ -130,8 +140,8 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
           const accionPrevia = await fetchAccionVacunalById(Number(idAccionPrevia), config);
 
           accionPreviaNombre = accionPrevia.descripcion;
-        } catch(error) {
-            console.error(`No se pudo cargar la acción previa ${idAccionPrevia}`, error);
+        } catch (error) {
+          console.error(`No se pudo cargar la acción previa ${idAccionPrevia}`, error);
         }
       }
 
@@ -149,6 +159,14 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
       };
 
       this.selectedAccion = uiModel;
+
+      if (situacionesNavegacion.includes(detalleFichaSeleccionada.situacion)) {
+        this.navigateToDetalle(
+          detalleFichaSeleccionada.accionVacunalId,
+          detalleFichaSeleccionada.situacion
+        );
+        return;
+      }
 
       this.sheetOpen = true;
     } catch (error) {
@@ -212,5 +230,15 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
         })
       );
     }
+  }
+
+  private navigateToDetalle(id: string, situacion: string): void {
+    this.dispatchEvent(
+      new CustomEvent<MfNavigateDetalleEventDetail>(MF_EVENT_NAVIGATE_DETALLE, {
+        detail: { id, situacion },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
