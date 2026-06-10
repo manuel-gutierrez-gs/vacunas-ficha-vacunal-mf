@@ -37,4 +37,16 @@ export class FichaVacunalDetalleViewModel extends LitElement {
       })
     );
   }
+
+  protected getCrumbs() {
+    return [
+      { url: '', text: 'Búsqueda de paciente', disabled: false },
+      { url: '', text: 'Ficha vacunal', disabled: false },
+      {
+        url: '',
+        text: this.aliasProductoInmunizacion ?? 'Detalle',
+        disabled: true,
+      },
+    ];
+  }
 }

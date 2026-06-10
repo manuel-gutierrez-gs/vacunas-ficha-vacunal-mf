@@ -3,7 +3,6 @@ import { customElement } from 'lit/decorators.js';
 import { FichaVacunalDetalleViewModel } from './detalle.viewmodel';
 import { FichaVacunalDetalleTheme } from './css/detalle.css';
 import {
-  crumbs,
   itemsLotesExternosRegistrados,
   itemsViasAdministracion,
   itemsDosificaciones,
@@ -28,22 +27,26 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
 
   render() {
     return html`
-      <nav aria-label="breadcrumb">
-        <stic-breadcrumbs .data=${crumbs}></stic-breadcrumbs>
+      <nav aria-label="breadcrumb" class="detalle-ficha-vacunal__breadcrumb">
+        <stic-breadcrumbs .data=${this.getCrumbs()}></stic-breadcrumbs>
       </nav>
-      <div class="container">
-        <div class="page-header">
+
+      <div class="detalle-ficha-vacunal__container">
+        <div class="detalle-ficha-vacunal__header">
           <stic-icon-button icon="arrow_back" @click=${this.navigateBack}></stic-icon-button>
 
-          <h1>${this.aliasProductoInmunizacion || 'Vacuna'}</h1>
+          <h1 class="detalle-ficha-vacunal__title">
+            ${this.aliasProductoInmunizacion || 'Vacuna'}
+          </h1>
 
           <stic-tag
+            class="detalle-ficha-vacunal__status"
             text=${this.situacion || 'Sin estado'}
             color=${this.situacion === 'Pendiente en plazo' ? 'orange' : 'red'}
           ></stic-tag>
         </div>
 
-        <form class="form">
+        <form class="detalle-ficha-vacunal__form">
           ${this.situacion === 'No Administrada'
             ? html`
                 <stic-notification-v2-banner
@@ -63,13 +66,15 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
             .value=${Date.now()}
           ></stic-input-v2-date>
 
-          <div class="field-vaccine">
-            Vacuna
+          <div class="detalle-ficha-vacunal__section">
+            <h3 class="detalle-ficha-vacunal__section-title">Vacuna</h3>
+
             <stic-text text="${this.aliasProductoInmunizacion}"></stic-text>
           </div>
 
-          <div class="field-action">
-            <h3 class="title">Acción</h3>
+          <div class="detalle-ficha-vacunal__section">
+            <h3 class="detalle-ficha-vacunal__section-title">Acción</h3>
+
             <stic-radio-group
               .items=${[
                 { label: 'Vacuna administrada', value: 'vacunar' },
@@ -84,20 +89,20 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
 
           <stic-divider></stic-divider>
 
-          <!-- Información del lote (vacunación externa) -->
           ${this.tipoAccion === 'documentada'
             ? html`
-                <section class="section">
-                  <h3 class="section-title">Información del lote</h3>
+                <section class="detalle-ficha-vacunal__section">
+                  <h3 class="detalle-ficha-vacunal__section-title">Información del lote</h3>
 
-                  <span class="muted block">Lugar donde se realizó la vacunación</span>
+                  <span class="detalle-ficha-vacunal__muted">
+                    Lugar donde se realizó la vacunación
+                  </span>
 
                   <stic-input-v2-radio
                     name="lugarVacunacion"
                     value="andalucia"
                     labelText="Andalucía"
                     ?checked=${this.lugarVacunacion === 'andalucia'}
-                    @radio:changed=${() => {}}
                   ></stic-input-v2-radio>
 
                   <stic-input-v2-radio
@@ -105,7 +110,6 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                     value="otraCCAA"
                     labelText="Otra comunidad autónoma"
                     ?checked=${this.lugarVacunacion === 'otraCCAA'}
-                    @radio:changed=${() => {}}
                   ></stic-input-v2-radio>
 
                   <stic-input-v2-radio
@@ -113,19 +117,17 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                     value="fueraEspanna"
                     labelText="Fuera de España"
                     ?checked=${this.lugarVacunacion === 'fueraEspanna'}
-                    @radio:changed=${() => {}}
                   ></stic-input-v2-radio>
 
                   ${this.lugarVacunacion !== 'fueraEspanna'
                     ? html`
-                        <span class="muted block">Lote conocido</span>
+                        <span class="detalle-ficha-vacunal__muted"> Lote conocido </span>
 
                         <stic-input-v2-radio
                           name="loteConocido"
                           value="si"
                           labelText="Sí"
                           ?checked=${this.loteConocido === 'si'}
-                          @radio:changed=${() => {}}
                         ></stic-input-v2-radio>
 
                         <stic-input-v2-radio
@@ -133,50 +135,28 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                           value="no"
                           labelText="No"
                           ?checked=${this.loteConocido === 'no'}
-                          @radio:changed=${() => {}}
                         ></stic-input-v2-radio>
 
                         ${this.loteConocido === 'si'
                           ? html`
-                              <span class="muted block">Lotes</span>
+                              <span class="detalle-ficha-vacunal__muted"> Lotes </span>
 
-                              <stic-input-v2-radio
-                                name="tipoLoteExterno"
-                                value="registrado"
-                                labelText="Lote registrado"
-                                ?checked=${this.tipoLoteDocumentado === 'registrado'}
-                                @radio:changed=${() => {}}
-                              ></stic-input-v2-radio>
+                              <div class="detalle-ficha-vacunal__lote-row">
+                                <stic-select-v2
+                                  .dataSource=${itemsLotesExternosRegistrados}
+                                  label="Lote"
+                                ></stic-select-v2>
 
-                              <stic-input-v2-radio
-                                name="tipoLoteExterno"
-                                value="nuevo"
-                                labelText="Nuevo lote"
-                                ?checked=${this.tipoLoteDocumentado === 'nuevo'}
-                                @radio:changed=${() => {}}
-                              ></stic-input-v2-radio>
-                              ${this.tipoLoteDocumentado === 'registrado'
-                                ? html`
-                                    <stic-select-v2
-                                      .dataSource=${itemsLotesExternosRegistrados}
-                                      anchor="select"
-                                      label="Lote"
-                                    ></stic-select-v2>
+                                <stic-select-v2
+                                  .dataSource=${itemsViasAdministracion}
+                                  label="Vía de administración"
+                                ></stic-select-v2>
 
-                                    <div class="lote-row">
-                                      <stic-select-v2
-                                        .dataSource=${itemsViasAdministracion}
-                                        anchor="select"
-                                        label="Vía de administración"
-                                      ></stic-select-v2>
-                                      <stic-select-v2
-                                        .dataSource=${itemsDosificaciones}
-                                        anchor="select"
-                                        label="Dosificación"
-                                      ></stic-select-v2>
-                                    </div>
-                                  `
-                                : null}
+                                <stic-select-v2
+                                  .dataSource=${itemsDosificaciones}
+                                  label="Dosificación"
+                                ></stic-select-v2>
+                              </div>
                             `
                           : null}
                       `
@@ -187,21 +167,20 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
 
           <stic-divider></stic-divider>
 
-          <section class="section">
-            <h3 class="section-title">Detalle de la vacunación</h3>
+          <section class="detalle-ficha-vacunal__section">
+            <h3 class="detalle-ficha-vacunal__section-title">Detalle de la vacunación</h3>
 
             ${this.tipoAccion === 'vacunar'
               ? html`
                   <stic-select-v2
                     .dataSource=${itemsMotivosVacunacion}
-                    anchor="select"
                     label="Motivo de Vacunación"
                   ></stic-select-v2>
                 `
               : null}
             ${this.tipoAccion === 'documentada'
               ? html`
-                  <div class="comentarios">
+                  <div class="detalle-ficha-vacunal__textarea">
                     <stic-input-v2-textarea
                       labelText="Descripción vacunación externa"
                     ></stic-input-v2-textarea>
@@ -212,14 +191,13 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
               ? html`
                   <stic-select-v2
                     .dataSource=${itemsContraindicaciones}
-                    anchor="select"
                     label="Contraindicación"
                   ></stic-select-v2>
                 `
               : null}
             ${this.tipoAccion === 'negacion'
               ? html`
-                  <div class="comentarios">
+                  <div class="detalle-ficha-vacunal__textarea">
                     <stic-input-v2-textarea
                       labelText="Motivos negación de usuario"
                     ></stic-input-v2-textarea>
@@ -227,8 +205,8 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                 `
               : null}
 
-            <div class="comentarios">
-              <stic-input-v2-textarea labelText="Comentarios (Opcional)"> </stic-input-v2-textarea>
+            <div class="detalle-ficha-vacunal__textarea">
+              <stic-input-v2-textarea labelText="Comentarios (Opcional)"></stic-input-v2-textarea>
             </div>
           </section>
         </form>

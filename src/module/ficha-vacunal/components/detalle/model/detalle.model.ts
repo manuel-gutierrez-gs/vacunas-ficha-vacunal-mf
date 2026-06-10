@@ -1,13 +1,3 @@
-export interface FichaVacunalDetalleModel {
-  accionVacunalId?: string;
-  situacion?: string;
-  productoInmunizacionAlias?: string;
-  tipoAccion?: string;
-  lugarVacunacion?: string;
-  loteConocido?: string;
-  tipoLoteExterno?: string;
-}
-
 export const crumbs = [
   { url: '', text: 'Búsqueda de paciente', disabled: false },
   { url: '', text: 'Ficha vacunal', disabled: false },
