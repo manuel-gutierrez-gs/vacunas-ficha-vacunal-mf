@@ -14,10 +14,10 @@ export const itemsLotesUsuario = [
   { displayName: 'Lote usuario 2', value: 'u2' },
   { displayName: 'Lote usuario 3', value: 'u3' },
 ];
-export const itemsLotesExternosRegistrados = [
-  { displayName: 'Lote Externo 1', value: 'ler1' },
-  { displayName: 'Lote Externo 2', value: 'ler2' },
-  { displayName: 'Lote Externo 3', value: 'ler3' },
+export const itemsLotesDocumentadosRegistrados = [
+  { displayName: 'Lote documentado 1', value: 'ler1' },
+  { displayName: 'Lote documentado 2', value: 'ler2' },
+  { displayName: 'Lote documentado 3', value: 'ler3' },
 ];
 export const itemsViasAdministracion = [
   { displayName: 'Vía administración 1', value: 'va1' },
@@ -39,3 +39,42 @@ export const itemsContraindicaciones = [
   { displayName: 'Contraindicación 2', value: 'c2' },
   { displayName: 'Contraindicación 3', value: 'c3' },
 ];
+
+export type TipoAccion = 'vacunar' | 'documentada' | 'excluir' | 'negacion';
+
+export type LugarVacunacion = 'andalucia' | 'otraCCAA' | 'fueraEspanna';
+
+export type LoteConocido = 'si' | 'no';
+
+export type TipoLoteDocumentado = 'registrado' | 'nuevo';
+
+export type LoteAdquiridoPor = 'sspa' | 'usuario';
+
+export const accionesVacunales = [
+  {
+    label: 'Vacuna administrada',
+    value: 'vacunar',
+  },
+  {
+    label: 'Vacuna documentada',
+    value: 'documentada',
+  },
+  {
+    label: 'Excluir',
+    value: 'excluir',
+  },
+  {
+    label: 'Negación de usuario',
+    value: 'negacion',
+  },
+];
+
+export const DEFAULT_TIPO_ACCION: TipoAccion = 'vacunar';
+
+export const DEFAULT_LOTE_ADQUIRIDO_POR: LoteAdquiridoPor = 'sspa';
+
+export const DEFAULT_LUGAR_VACUNACION: LugarVacunacion = 'andalucia';
+
+export const DEFAULT_LOTE_CONOCIDO: LoteConocido = 'si';
+
+export const DEFAULT_TIPO_LOTE_DOCUMENTADO: TipoLoteDocumentado = 'registrado';

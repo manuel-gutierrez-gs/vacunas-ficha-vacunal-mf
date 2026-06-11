@@ -3,11 +3,14 @@ import { customElement } from 'lit/decorators.js';
 import { FichaVacunalDetalleViewModel } from './detalle.viewmodel';
 import { FichaVacunalDetalleTheme } from './css/detalle.css';
 import {
-  itemsLotesExternosRegistrados,
+  accionesVacunales,
+  itemsLotesDocumentadosRegistrados,
   itemsViasAdministracion,
   itemsDosificaciones,
   itemsMotivosVacunacion,
   itemsContraindicaciones,
+  itemsLotesSSPA,
+  itemsLotesUsuario,
 } from './model/detalle.model';
 
 import '@sas/wc-stic-breadcrumbs';
@@ -15,8 +18,10 @@ import '@sas/wc-stic-button';
 import '@sas/wc-stic-divider';
 import '@sas/wc-stic-input-v2';
 import '@sas/wc-stic-notification-v2';
+import '@sas/wc-stic-radio-group';
 import '@sas/wc-stic-tag';
 import '@sas/wc-stic-text';
+import { capitalize } from '@module/ficha-vacunal/utils/string.utils';
 
 @customElement('ficha-vacunal-detalle')
 export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
@@ -41,20 +46,19 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
 
           <stic-tag
             class="detalle-ficha-vacunal__status"
-            text=${this.situacion || 'Sin estado'}
+            text=${capitalize(this.situacion!) || 'Sin estado'}
             color=${this.situacion === 'Pendiente en plazo' ? 'orange' : 'red'}
           ></stic-tag>
         </div>
 
         <form class="detalle-ficha-vacunal__form">
-          ${this.situacion === 'No Administrada'
+          ${this.situacion === 'NO_ADMINISTRADA' || this.situacion === 'FUERA_PLAZO'
             ? html`
                 <stic-notification-v2-banner
                   isAccent
                   ?showNotification=${true}
                   isCloseable
-                  title="Vacunación fuera de plazo"
-                  description="Descripción de ejemplo"
+                  title="Vacunación ${capitalize(this.situacion!)}"
                   semantic="warning"
                 ></stic-notification-v2-banner>
               `
@@ -76,21 +80,69 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
             <h3 class="detalle-ficha-vacunal__section-title">Acción</h3>
 
             <stic-radio-group
-              .items=${[
-                { label: 'Vacuna administrada', value: 'vacunar' },
-                { label: 'Vacuna documentada', value: 'documentar' },
-                { label: 'Excluir', value: 'excluir' },
-                { label: 'Negación de usuario', value: 'negacion' },
-              ]}
-              .value=""
-              @radiogroup:changed=${() => {}}
+              .items=${accionesVacunales}
+              .value=${this.tipoAccion}
+              @radiogroup:changed=${this.onAccionChanged}
             ></stic-radio-group>
           </div>
 
-          <stic-divider></stic-divider>
+          ${this.tipoAccion === 'vacunar'
+            ? html`
+                <stic-divider></stic-divider>
 
+                <section class="detalle-ficha-vacunal__section">
+                  <h3 class="detalle-ficha-vacunal__section-title">Información del lote</h3>
+
+                  <span class="detalle-ficha-vacunal__muted"> Procedencia del lote </span>
+
+                  <stic-input-v2-radio
+                    name="loteAdquiridoPor"
+                    value="sspa"
+                    labelText="Adquirido por el SSPA"
+                    ?checked=${this.loteAdquiridoPor === 'sspa'}
+                    @radio:changed=${(e: CustomEvent) => {
+                      if (e.detail.checked) {
+                        this.setLoteAdquiridoPor(e.detail.value);
+                      }
+                    }}
+                  ></stic-input-v2-radio>
+
+                  ${this.loteAdquiridoPor === 'sspa'
+                    ? html`
+                        <stic-select-v2
+                          .dataSource=${itemsLotesSSPA}
+                          label="Lotes"
+                        ></stic-select-v2>
+                      `
+                    : null}
+
+                  <stic-input-v2-radio
+                    name="loteAdquiridoPor"
+                    value="usuario"
+                    labelText="Adquirido por el usuario"
+                    ?checked=${this.loteAdquiridoPor === 'usuario'}
+                    @radio:changed=${(e: CustomEvent) => {
+                      if (e.detail.checked) {
+                        this.setLoteAdquiridoPor(e.detail.value);
+                      }
+                    }}
+                  ></stic-input-v2-radio>
+
+                  ${this.loteAdquiridoPor === 'usuario'
+                    ? html`
+                        <stic-select-v2
+                          .dataSource=${itemsLotesUsuario}
+                          label="Lotes"
+                        ></stic-select-v2>
+                      `
+                    : null}
+                </section>
+              `
+            : null}
           ${this.tipoAccion === 'documentada'
             ? html`
+                <stic-divider></stic-divider>
+
                 <section class="detalle-ficha-vacunal__section">
                   <h3 class="detalle-ficha-vacunal__section-title">Información del lote</h3>
 
@@ -103,6 +155,11 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                     value="andalucia"
                     labelText="Andalucía"
                     ?checked=${this.lugarVacunacion === 'andalucia'}
+                    @radio:changed=${(e: CustomEvent) => {
+                      if (e.detail.checked) {
+                        this.setLugarVacunacion(e.detail.value);
+                      }
+                    }}
                   ></stic-input-v2-radio>
 
                   <stic-input-v2-radio
@@ -110,6 +167,11 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                     value="otraCCAA"
                     labelText="Otra comunidad autónoma"
                     ?checked=${this.lugarVacunacion === 'otraCCAA'}
+                    @radio:changed=${(e: CustomEvent) => {
+                      if (e.detail.checked) {
+                        this.setLugarVacunacion(e.detail.value);
+                      }
+                    }}
                   ></stic-input-v2-radio>
 
                   <stic-input-v2-radio
@@ -117,6 +179,11 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                     value="fueraEspanna"
                     labelText="Fuera de España"
                     ?checked=${this.lugarVacunacion === 'fueraEspanna'}
+                    @radio:changed=${(e: CustomEvent) => {
+                      if (e.detail.checked) {
+                        this.setLugarVacunacion(e.detail.value);
+                      }
+                    }}
                   ></stic-input-v2-radio>
 
                   ${this.lugarVacunacion !== 'fueraEspanna'
@@ -128,6 +195,11 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                           value="si"
                           labelText="Sí"
                           ?checked=${this.loteConocido === 'si'}
+                          @radio:changed=${(e: CustomEvent) => {
+                            if (e.detail.checked) {
+                              this.setLoteConocido(e.detail.value);
+                            }
+                          }}
                         ></stic-input-v2-radio>
 
                         <stic-input-v2-radio
@@ -135,6 +207,11 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
                           value="no"
                           labelText="No"
                           ?checked=${this.loteConocido === 'no'}
+                          @radio:changed=${(e: CustomEvent) => {
+                            if (e.detail.checked) {
+                              this.setLoteConocido(e.detail.value);
+                            }
+                          }}
                         ></stic-input-v2-radio>
 
                         ${this.loteConocido === 'si'
@@ -143,7 +220,7 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
 
                               <div class="detalle-ficha-vacunal__lote-row">
                                 <stic-select-v2
-                                  .dataSource=${itemsLotesExternosRegistrados}
+                                  .dataSource=${itemsLotesDocumentadosRegistrados}
                                   label="Lote"
                                 ></stic-select-v2>
 
@@ -182,7 +259,7 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
               ? html`
                   <div class="detalle-ficha-vacunal__textarea">
                     <stic-input-v2-textarea
-                      labelText="Descripción vacunación externa"
+                      labelText="Descripción vacunación documentada"
                     ></stic-input-v2-textarea>
                   </div>
                 `
@@ -210,6 +287,16 @@ export class FichaVacunalDetalleView extends FichaVacunalDetalleViewModel {
             </div>
           </section>
         </form>
+
+        <div class="button-group">
+          <stic-button variant="primary" size="md" label="Aceptar" disabled></stic-button>
+          <stic-button
+            variant="secondary"
+            size="md"
+            label="Cancelar"
+            @click=${this.navigateBack}
+          ></stic-button>
+        </div>
       </div>
     `;
   }

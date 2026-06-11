@@ -1,6 +1,19 @@
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 
+import {
+  DEFAULT_TIPO_ACCION,
+  DEFAULT_LOTE_ADQUIRIDO_POR,
+  DEFAULT_LUGAR_VACUNACION,
+  DEFAULT_LOTE_CONOCIDO,
+  DEFAULT_TIPO_LOTE_DOCUMENTADO,
+  TipoAccion,
+  LugarVacunacion,
+  LoteConocido,
+  TipoLoteDocumentado,
+  LoteAdquiridoPor,
+} from './model/detalle.model';
+
 import { MF_EVENT_NAVIGATE_HOME } from '@shared/contract/vacunas-ficha-vacunal.contract';
 import { fetchAccionVacunalById } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
 import { resolveRuntimeConfig } from '@shared/index';
@@ -8,6 +21,12 @@ import { resolveRuntimeConfig } from '@shared/index';
 export class FichaVacunalDetalleViewModel extends LitElement {
   @state() aliasProductoInmunizacion?: string;
   @state() situacion?: string;
+
+  @state() tipoAccion = DEFAULT_TIPO_ACCION;
+  @state() loteAdquiridoPor = DEFAULT_LOTE_ADQUIRIDO_POR;
+  @state() lugarVacunacion = DEFAULT_LUGAR_VACUNACION;
+  @state() loteConocido = DEFAULT_LOTE_CONOCIDO;
+  @state() tipoLoteDocumentado = DEFAULT_TIPO_LOTE_DOCUMENTADO;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -27,6 +46,46 @@ export class FichaVacunalDetalleViewModel extends LitElement {
     const config = resolveRuntimeConfig((this as any).runtimeConfig);
     const accion = await fetchAccionVacunalById(Number(id), config);
     this.aliasProductoInmunizacion = accion.productoInmunizacion?.alias;
+  }
+
+  protected setTipoAccion(valor: TipoAccion): void {
+    if (this.tipoAccion !== valor) {
+      this.tipoAccion = valor;
+      if (valor === 'documentada') {
+        this.lugarVacunacion = 'andalucia';
+        this.loteConocido = 'si';
+        this.tipoLoteDocumentado = 'registrado';
+      }
+    }
+  }
+
+  protected setLoteAdquiridoPor(valor: LoteAdquiridoPor): void {
+    this.loteAdquiridoPor = valor;
+  }
+
+  protected setLugarVacunacion(valor: LugarVacunacion): void {
+    this.lugarVacunacion = valor;
+    this.loteConocido = valor === 'fueraEspanna' ? 'no' : 'si';
+
+    if (valor !== 'fueraEspanna') {
+      this.tipoLoteDocumentado = 'registrado';
+    }
+  }
+
+  protected setLoteConocido(valor: LoteConocido): void {
+    this.loteConocido = valor;
+  }
+
+  protected setTipoLoteDocumentado(valor: TipoLoteDocumentado): void {
+    this.tipoLoteDocumentado = valor;
+  }
+
+  protected onAccionChanged(e: CustomEvent): void {
+    const selected = e.detail.radioItems?.find((r: any) => r.checked);
+
+    if (selected) {
+      this.setTipoAccion(selected.value);
+    }
   }
 
   protected navigateBack(): void {

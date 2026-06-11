@@ -102,7 +102,12 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
     if (!detalleFichaSeleccionada.accionVacunalId) return;
 
-    const situacionesNavegacion = ['PROGRAMADA', 'FUERA_PLAZO', 'PENDIENTE_EN_PLAZO'];
+    const situacionesNavegacion = [
+      'PROGRAMADA',
+      'FUERA_PLAZO',
+      'PENDIENTE_EN_PLAZO',
+      'NO_ADMINISTRADA',
+    ];
 
     try {
       const config = resolveRuntimeConfig(this.runtimeConfig);
