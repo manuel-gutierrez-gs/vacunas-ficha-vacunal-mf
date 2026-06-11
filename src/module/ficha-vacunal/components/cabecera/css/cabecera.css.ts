@@ -3,33 +3,44 @@ import { CSSResult, css, CSSResultOrNative } from 'lit';
 export class FichaVacunalCabeceraThemeCss {
   static cssBase: CSSResult = css`
     :host {
-      padding: 1em;
-      font-family: 'Noto Sans';
+      background-color: #fff;
       display: block;
-      background-color: #FFF;
+      font-family: 'Noto Sans';
+      padding: 1em;
     }
 
     .header-container {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .header-container__left {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
+    .header-container__right {
+      display: flex;
+      justify-content: flex-end;
+    }
+
     .ficha-vacunal-cabecera__name {
+      font-family: 'Noto Sans';
       font-size: 18px;
       font-weight: bold;
       margin-left: 10px;
-      font-family: 'Noto Sans';
     }
 
     .ficha-vacunal-cabecera__info {
-      display: flex;
       align-items: center;
+      color: #333;
+      display: flex;
       flex-wrap: wrap;
+      font-size: 14px;
       gap: 8px;
       margin-left: 10px;
-      font-size: 14px;
-      color: #333;
       max-width: 100%;
     }
 
