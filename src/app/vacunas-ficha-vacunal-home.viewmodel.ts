@@ -1,6 +1,6 @@
 import type { Inmunizacion } from '@module/ficha-vacunal/model/ficha-vacunal.model';
 import type { AccionVacunalUI } from '@module/ficha-vacunal/model/accion-vacunal-ui.model';
-import { fetchAccionVacunalById } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
+import { fetchAccionVacunalCached } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
 
 import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
@@ -26,7 +26,7 @@ import {
 import { loadFichaVacunalAggregate } from '@module/ficha-vacunal/service/ficha-vacunal.service';
 import { bootstrapVacunasFichaVacunalMf } from '@app/bootstrap/bootstrap';
 
-import { fetchCalendarioById } from '@module/ficha-vacunal/adapter/api/calendario.api';
+import { fetchCalendarioCached } from '@module/ficha-vacunal/adapter/api/calendario.api';
 
 import type {
   PublicElementErrorState,
@@ -51,7 +51,7 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @state() sheetOpen = false;
 
   private loadGeneration = 0;
-
+  private _loadedAccionId?: string;
   connectedCallback(): void {
     super.connectedCallback();
     verifySticThemeLoaded();
@@ -109,10 +109,22 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
       'NO_ADMINISTRADA',
     ];
 
+    if (this._loadedAccionId === detalleFichaSeleccionada.accionVacunalId && this.selectedAccion) {
+      if (situacionesNavegacion.includes(detalleFichaSeleccionada.situacion)) {
+        this.navigateToDetalle(
+          detalleFichaSeleccionada.accionVacunalId,
+          detalleFichaSeleccionada.situacion
+        );
+        return;
+      }
+      this.sheetOpen = true;
+      return;
+    }
+
     try {
       const config = resolveRuntimeConfig(this.runtimeConfig);
 
-      const detalleAccionVacunal = await fetchAccionVacunalById(
+      const detalleAccionVacunal = await fetchAccionVacunalCached(
         Number(detalleFichaSeleccionada.accionVacunalId),
         config
       );
@@ -120,7 +132,7 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
       let calendarioNombre;
       if (detalleAccionVacunal.calendario) {
         try {
-          const calendario = await fetchCalendarioById(
+          const calendario = await fetchCalendarioCached(
             Number(detalleAccionVacunal.calendario),
             config
           );
@@ -142,7 +154,7 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
       if (idAccionPrevia) {
         try {
-          const accionPrevia = await fetchAccionVacunalById(Number(idAccionPrevia), config);
+          const accionPrevia = await fetchAccionVacunalCached(Number(idAccionPrevia), config);
 
           accionPreviaNombre = accionPrevia.descripcion;
         } catch (error) {
@@ -164,6 +176,7 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
       };
 
       this.selectedAccion = uiModel;
+      this._loadedAccionId = detalleFichaSeleccionada.accionVacunalId;
 
       if (situacionesNavegacion.includes(detalleFichaSeleccionada.situacion)) {
         this.navigateToDetalle(

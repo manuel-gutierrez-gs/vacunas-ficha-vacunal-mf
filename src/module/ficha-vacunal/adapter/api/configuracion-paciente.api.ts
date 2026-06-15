@@ -18,12 +18,10 @@ export function fetchConfiguracionPacienteCached(
   config: VacunasFichaVacunalRuntimeConfig
 ): Promise<ConfiguracionPacienteData> {
   if (configuracionPacienteCache.has(nuhsa)) {
-    console.log('[CONFIG PACIENTE CACHE HIT]', nuhsa);
     return Promise.resolve(configuracionPacienteCache.get(nuhsa)!);
   }
 
-  console.log('[CONFIG PACIENTE FETCH]', nuhsa);
-  const promise = fetchConfiguracionPacienteByNuhsa(nuhsa, config).catch((error) => {
+  const promise = fetchConfiguracionPacienteByNuhsa(nuhsa, config).catch(error => {
     configuracionPacienteCache.clear(nuhsa);
     throw error;
   });

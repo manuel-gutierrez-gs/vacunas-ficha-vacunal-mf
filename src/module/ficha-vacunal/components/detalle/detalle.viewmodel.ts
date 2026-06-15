@@ -15,12 +15,14 @@ import {
 } from './model/detalle.model';
 
 import { MF_EVENT_NAVIGATE_HOME } from '@shared/contract/vacunas-ficha-vacunal.contract';
-import { fetchAccionVacunalById } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
+import { fetchAccionVacunalCached } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
 import { resolveRuntimeConfig } from '@shared/index';
 
 export class FichaVacunalDetalleViewModel extends LitElement {
   @state() aliasProductoInmunizacion?: string;
   @state() situacion?: string;
+
+  private _loadedId?: string;
 
   @state() tipoAccion = DEFAULT_TIPO_ACCION;
   @state() loteAdquiridoPor = DEFAULT_LOTE_ADQUIRIDO_POR;
@@ -39,12 +41,15 @@ export class FichaVacunalDetalleViewModel extends LitElement {
 
     this.situacion = situacion;
 
-    this.loadDetalle(id);
+    if (this._loadedId !== id) {
+      this._loadedId = id;
+      this.loadDetalle(id);
+    }
   }
 
   private async loadDetalle(id: string): Promise<void> {
     const config = resolveRuntimeConfig((this as any).runtimeConfig);
-    const accion = await fetchAccionVacunalById(Number(id), config);
+    const accion = await fetchAccionVacunalCached(Number(id), config);
     this.aliasProductoInmunizacion = accion.productoInmunizacion?.alias;
   }
 

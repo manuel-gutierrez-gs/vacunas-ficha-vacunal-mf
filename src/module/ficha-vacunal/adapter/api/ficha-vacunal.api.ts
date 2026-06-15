@@ -18,17 +18,15 @@ export async function fetchFichaVacunalCached(
   config: VacunasFichaVacunalRuntimeConfig
 ): Promise<FichaVacunalData> {
   if (fichaVacunalCache.has(nuhsa)) {
-    console.log('[FICHA CACHE HIT]', nuhsa);
     return fichaVacunalCache.get(nuhsa)!;
   }
 
-  console.log('[FICHA FETCH]', nuhsa);
   const promise = fetchFichaVacunalByNuhsa(nuhsa, config)
-    .then((data) => {
+    .then(data => {
       fichaVacunalCache.set(nuhsa, data);
       return data;
     })
-    .catch((error) => {
+    .catch(error => {
       fichaVacunalCache.clear(nuhsa);
       throw error;
     });
