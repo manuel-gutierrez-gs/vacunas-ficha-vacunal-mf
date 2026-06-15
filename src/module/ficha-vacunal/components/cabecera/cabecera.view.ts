@@ -38,8 +38,8 @@ export class VacFichaVacunalCabeceraView extends FichaVacunalCabeceraViewModel {
         <div class="header-container__right">
           <vacunas-alergia-button
             label="Alergias/Contraind."
-            variant="technical-error"
-            nuhsa=${this.nuhsaDisplay}
+            .variant=${this.alergiasVariant}
+            .nuhsa=${this.nuhsaDisplay}
           ></vacunas-alergia-button>
         </div>
       </div>

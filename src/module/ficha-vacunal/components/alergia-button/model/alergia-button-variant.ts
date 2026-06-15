@@ -1,4 +1,5 @@
 export type VacunasAlergiaButtonVariant =
+  | 'loading'
   | 'no-allergies'
   | 'verify'
   | 'has-allergies'
@@ -38,5 +39,11 @@ export const VARIANT_CONFIG: Record<
     filled: true,
     color: '#828282',
     tooltip: 'Ha habido un error en la carga de datos',
+  },
+  loading: {
+    icon: 'sync',
+    filled: true,
+    color: '',
+    tooltip: '',
   },
 };
