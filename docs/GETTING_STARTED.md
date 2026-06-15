@@ -1,26 +1,21 @@
-# Guía de inicio — Arquetipo Front
+# Guía de inicio — Microfrontend Ficha Vacunal
 
 Onboarding de **desarrollo local**. Sin mecánica de integración shell ni detalle de CI/CD.
 
-| Necesidad | Documento |
-|-----------|-----------|
-| Desarrollo local | Este archivo |
+| Necesidad                 | Documento                                        |
+| ------------------------- | ------------------------------------------------ |
+| Desarrollo local          | Este archivo                                     |
 | Estructura modular y MVVM | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
-| Razonamiento de diseño | [ARCHITECTURE.md](./ARCHITECTURE.md) |
-| Reglas runtime shell ↔ MFE | [SHELL-CONTRACT.md](../SHELL-CONTRACT.md) |
+| Razonamiento de diseño    | [ARCHITECTURE.md](./ARCHITECTURE.md)             |
 
 ---
 
 ## Requisitos
 
 | Herramienta | Versión |
-|-------------|---------|
-| Node.js | >= 18 |
-| npm | >= 9 |
-
-```bash
-npm run env:check
-```
+| ----------- | ------- |
+| Node.js     | >= 18   |
+| npm         | >= 9    |
 
 ---
 
@@ -31,7 +26,8 @@ npm ci
 npm run dev
 ```
 
-URL local: **http://localhost:4200**.
+URL local: el servidor de Vite expondrá en el puerto configurado (http://localhost:4200).
+Revisar la salida de consola al ejecutar `npm run dev`.
 
 Build local:
 
@@ -53,81 +49,35 @@ npm run ci
 
 ## Estructura rápida del proyecto
 
-| Ruta | Uso |
-|------|-----|
-| `src/index.ts` | Arranque de aplicación |
-| `src/module/` | Dominios y componentes |
-| `src/shared/` | Reutilización transversal |
-| `src/routing/` | Navegación transversal del arquetipo |
-| `test/` | Tests en raíz |
-| `dist/` | Salida de build |
+| Ruta                        | Uso                                                     |
+| --------------------------- | ------------------------------------------------------- |
+| `src/index.ts`              | Arranque de aplicación y exportación de API             |
+| `src/app/`                  | Composición principal y bootstrap                       |
+| `src/module/ficha-vacunal/` | Dominio principal (componentes, adaptadores, servicios) |
+| `src/shared/`               | Reutilización transversal e infra                       |
+| `src/routing/`              | Router del Custom Element principal                     |
+| `test/`                     | Tests en raíz, en espejo a `src/`                       |
+| `dist/`                     | Salida de build                                         |
 
 Normativa detallada: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 
 ---
 
-## Crear un módulo nuevo
+## Entendiendo el punto de entrada
 
-Ejemplo: módulo `billing`.
+El MFE arranca creando el Web Component en `src/routing/vacunas-ficha-vacunal-router.view.ts`.
+A partir de ahí, se renderiza la capa de composición base y el `src/app/vacunas-ficha-vacunal-home.view.ts`, que invoca la lógica de carga (`bootstrap`) y maneja el estado general del MFE.
 
-```text
-src/module/billing/
-  component/
-  pages/
-  service/
-```
-
-Si necesita navegación, registrar ruta donde aplique en el arquetipo actual (`src/routing/routes.ts`).
-
-Ejemplo real:
-
-```13:18:src/routing/routes.ts
-{
-  path: '/counter',
-  component: 'counter-component',
-  name: 'Counter',
-  action: async () => {
-    await import('../module/counter/counter.view');
-  },
-},
-```
-
----
-
-## Crear un componente nuevo
-
-Ejemplo: `invoice-list` dentro de `billing`.
-
-```text
-src/module/billing/component/invoice-list/
-  invoice-list.view.ts
-  invoice-list.viewmodel.ts
-  css/
-    invoice-list-theme.css.ts
-  events/
-    invoice-list-selection.event.ts
-  model/
-    invoice-item.dto.ts
-```
-
-Ubicación rápida:
-
-- `*.view.ts` → render/UI
-- `*.viewmodel.ts` → estado y orquestación
-- `css/` → estilos del componente
-- `events/` → contratos `CustomEvent`
-- `model/` → tipos locales
-
-Reglas completas: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
+Los componentes específicos viven en `src/module/ficha-vacunal/components/`.
 
 ---
 
 ## Dónde poner tests
 
-Tests en raíz `test/`, con espejo funcional de módulos:
+Tests en raíz `test/`, con espejo funcional:
 
 ```text
-test/module/billing/invoice-list/invoice-list.test.ts
+test/module/ficha-vacunal/components/tarjetero/tarjetero.test.ts
 ```
 
 El runner ejecuta `test/**/*.test.ts`.
@@ -137,41 +87,28 @@ El runner ejecuta `test/**/*.test.ts`.
 ## Flujo diario recomendado
 
 1. `npm run dev`
-2. Cambios en `src/module/` o `src/shared/`
+2. Cambios en `src/module/ficha-vacunal/` o `src/app/`
 3. `npm test`
-4. Antes de MR: `npm run build` o `npm run ci`
+4. Antes de MR: `npm run ci`
 
 Checklist corto:
 
 - [ ] Estructura de archivos alineada con FRONTEND_STRUCTURE
 - [ ] Par `.view.ts` / `.viewmodel.ts` en componentes nuevos
-- [ ] Tests en `test/`
+- [ ] Adaptadores y mapeos separados de las Vistas
+- [ ] Tests actualizados en `test/`
 - [ ] Build y tests en verde
 
 ---
 
 ## Errores frecuentes de estructura
 
-| Error | Acción |
-|-------|--------|
-| Lógica de negocio en `*.view.ts` | Mover a `*.viewmodel.ts` o `service/` |
-| Tests dentro de `src/` | Mover a `test/` |
-| Componentes fuera de `src/module/` | Reubicar por dominio |
-| `shared/` como cajón de sastre | Revisar política `shared/` en FRONTEND_STRUCTURE |
-| Uso de `any` sin justificar | Tipar explícitamente |
-
----
-
-## Comandos útiles
-
-| Comando | Descripción |
-|---------|-------------|
-| `npm ci` | Instalar dependencias |
-| `npm run dev` | Desarrollo local |
-| `npm run build` | Build local |
-| `npm run preview` | Preview de build |
-| `npm test` | Tests |
-| `npm run ci` | Gate local completo |
+| Error                             | Acción                                         |
+| --------------------------------- | ---------------------------------------------- |
+| Lógica de negocio en `*.view.ts`  | Mover a `*.viewmodel.ts` o `service/`          |
+| Tests dentro de `src/`            | Mover a `test/`                                |
+| Custom events sin contrato        | Respetar los eventos en `@shared/contract`     |
+| HTTP fetch directo en componentes | Usar un `adapter/` y pasarlo por un `service/` |
 
 ---
 

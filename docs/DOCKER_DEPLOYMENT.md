@@ -1,29 +1,28 @@
 # CI/CD y despliegue estático
 
-Documento de **pipeline y hosting**. Normativa del paquete publicado: [SHELL-CONTRACT.md](../SHELL-CONTRACT.md) (**D**, **V**, **E1**, **D4**).
+Documento de **pipeline y hosting**.
 
 ---
 
 ## Requisitos
 
-| Requisito | Valor |
-|-----------|--------|
-| Node.js | >= 18 |
-| npm | >= 9 |
-| Lockfile | `package-lock.json` |
+| Requisito | Valor               |
+| --------- | ------------------- |
+| Node.js   | >= 18               |
+| npm       | >= 9                |
+| Lockfile  | `package-lock.json` |
 
 ---
 
 ## Comandos
 
-| Comando | Efecto |
-|---------|--------|
-| `npm ci` | Instalación reproducible |
-| `npm run build` | `typecheck` + `vite build` |
-| `npm run ci` | `typecheck` + `test:ci` + `build` |
-| `npm run clean` | Elimina salida de build, `coverage/`, `out-tsc/` |
+| Comando         | Efecto                            |
+| --------------- | --------------------------------- |
+| `npm ci`        | Instalación reproducible          |
+| `npm run build` | `typecheck` + `vite build`        |
+| `npm run ci`    | `typecheck` + `test:ci` + `build` |
 
-Impacto de estructura frontend en esta capa: el runner usa tests en raíz (`test/**/*.test.ts`).
+El test runner usa la configuración de `web-test-runner.config.mjs` y ejecuta los tests presentes en `test/**/*.test.ts`.
 
 ---
 
@@ -37,15 +36,13 @@ flowchart LR
   D --> E[Smoke HTTP]
 ```
 
-| Fase | Acción | Éxito |
-|------|--------|-------|
-| Install | `npm ci` | Exit 0 |
-| Gate | `npm run ci` | Pipeline verde |
-| Artifact | Publicar salida de `npm run build` | Directorio completo en workspace |
-| Deploy | rsync / S3 / imagen | Copia sin filtrar ficheros |
-| Smoke | GET recursos estáticos | Sin 404 |
-
-Cumplimiento del artefacto: **D2**, **V1**, **V2** — [SHELL-CONTRACT.md](../SHELL-CONTRACT.md).
+| Fase     | Acción                             | Éxito                                    |
+| -------- | ---------------------------------- | ---------------------------------------- |
+| Install  | `npm ci`                           | Exit 0                                   |
+| Gate     | `npm run ci`                       | Pipeline verde                           |
+| Artifact | Publicar salida de `npm run build` | Directorio `dist/` completo en workspace |
+| Deploy   | rsync / S3 / imagen                | Copia sin filtrar ficheros               |
+| Smoke    | GET recursos estáticos             | Sin 404                                  |
 
 ```yaml
 test_and_build:
@@ -69,7 +66,8 @@ deploy_static:
 
 Runner con Chrome/Chromium para `@web/test-runner-puppeteer`.
 
-```6:10:web-test-runner.config.mjs
+```javascript
+// web-test-runner.config.mjs
 files: 'test/**/*.test.ts',
 nodeResolve: true,
 preserveSymlinks: true,
@@ -80,12 +78,12 @@ browsers: [puppeteerLauncher({ launchOptions: { args: ['--no-sandbox', '--disabl
 
 ## Artefacto
 
-| Verificación pipeline | Regla |
-|----------------------|--------|
-| Salida = carpeta `dist/` del job | **D1** |
-| Copia íntegra al hosting | **D2**, **D3** |
-| Release atómico por versión | **V1**, **V2**, **I4** |
-| Fichero entry presente post-build | **E1**, **D4** |
+| Verificación pipeline             | Regla                  |
+| --------------------------------- | ---------------------- |
+| Salida = carpeta `dist/` del job  | **D1**                 |
+| Copia íntegra al hosting          | **D2**, **D3**         |
+| Release atómico por versión       | **V1**, **V2**, **I4** |
+| Fichero entry presente post-build | **E1**, **D4**         |
 
 ---
 
@@ -136,18 +134,6 @@ EXPOSE 8080
 
 ---
 
-## Riesgos de pipeline
-
-| Riesgo | Mitigación |
-|--------|------------|
-| Gate omitido | Rama protegida; `npm run ci` obligatorio |
-| Artefacto truncado | Listado post-deploy; **D2** |
-| Sync mezclando releases | Prefijo por **V1**; sync atómico |
-| `immutable` incorrecto | **V4** |
-| Runner sin navegador | Imagen con Chromium |
-
----
-
 ## Checklist DevOps
 
 - [ ] `npm ci` + `npm run ci` en verde
@@ -155,5 +141,3 @@ EXPOSE 8080
 - [ ] Release atómico (**V1**, **V2**)
 - [ ] Smoke HTTP
 - [ ] URL de release registrada para consumo downstream
-
-Verificación de integración en host: contrato **R7** — [SHELL-CONTRACT.md](../SHELL-CONTRACT.md).

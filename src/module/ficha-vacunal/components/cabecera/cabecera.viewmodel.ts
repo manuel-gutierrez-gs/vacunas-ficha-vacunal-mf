@@ -66,8 +66,8 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
     if (response.errorConsultaHis) {
       return 'technical-error';
     }
-    const tieneDatos = response.alergias.length > 0 || response.contraindicaciones.length > 0;
-    if (tieneDatos) {
+    const hasData = response.alergias.length > 0 || response.listaContraindic.length > 0;
+    if (hasData) {
       return 'has-allergies';
     }
 

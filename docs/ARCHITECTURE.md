@@ -1,7 +1,6 @@
-# Arquitectura del arquetipo microfrontend
+# Arquitectura del microfrontend
 
-Documento **conceptual**. Reglas de runtime: [SHELL-CONTRACT.md](../SHELL-CONTRACT.md).  
-Estándar de organización frontend: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
+Documento **conceptual**. Estándar de organización frontend: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 
 ---
 
@@ -37,16 +36,24 @@ Detalle normativo: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 
 ## Bounded contexts y separación de responsabilidades
 
-- `src/module/` organiza el dominio en unidades de producto.
-- `src/shared/` se limita a reutilización transversal.
-- `src/index.ts` orquesta la carga inicial, no concentra lógica de dominio.
+- `src/app/` actúa como capa de composición principal y arranque local.
+- `src/module/ficha-vacunal/` organiza el dominio funcional en una única unidad de producto.
+- `src/shared/` se limita a reutilización transversal e infraestructura compartida.
+- `src/index.ts` orquesta la carga inicial y expone el contrato, sin concentrar lógica de dominio.
 
 Ejemplo actual del arquetipo:
 
-```1:4:src/index.ts
-import { bootstrapVacunasFichaVacunalMf } from '@app/bootstrap/bootstrap';
-import { defineVacunasFichaVacunalMfElement } from '@app/vacunas-ficha-vacunal-mf.viewmodel';
-void bootstrapVacunasFichaVacunalMf().then(() => defineVacunasFichaVacunalMfElement());
+```typescript
+// src/index.ts
+import './routing/vacunas-ficha-vacunal-router.view';
+import {
+  MF_EVENT_CARD_SELECTED,
+  MF_EVENT_ERROR,
+  MF_EVENT_LOADED,
+  MF_TAG_NAME,
+} from '@shared/contract/vacunas-ficha-vacunal.contract';
+
+export { MF_TAG_NAME, MF_EVENT_LOADED, MF_EVENT_ERROR, MF_EVENT_CARD_SELECTED };
 ```
 
 ---
@@ -58,11 +65,11 @@ MVVM es una decisión de mantenibilidad, no solo de estilo.
 - `*.view.ts`: composición visual y render.
 - `*.viewmodel.ts`: estado y orquestación.
 
-| Beneficio | Impacto |
-|-----------|---------|
-| Menos acoplamiento UI/lógica | Cambios visuales con menos regresión funcional |
-| Revisión especializada | Front visual y lógica revisables por perfiles distintos |
-| Mejor testabilidad | Pruebas más estables por capa |
+| Beneficio                    | Impacto                                                 |
+| ---------------------------- | ------------------------------------------------------- |
+| Menos acoplamiento UI/lógica | Cambios visuales con menos regresión funcional          |
+| Revisión especializada       | Front visual y lógica revisables por perfiles distintos |
+| Mejor testabilidad           | Pruebas más estables por capa                           |
 
 Trade-off: mayor número de archivos y disciplina de naming.
 
@@ -90,32 +97,21 @@ Build particionado con entry estable y chunks variables (**C1–C3**, **V1**, **
 
 ## Riesgos estructurales
 
-| Riesgo | Relación con estándares |
-|--------|--------------------------|
-| Deriva entre equipos | **G1**, **G2** + FRONTEND_STRUCTURE |
-| Lógica en vistas | reglas MVVM en FRONTEND_STRUCTURE |
+| Riesgo                          | Relación con estándares                     |
+| ------------------------------- | ------------------------------------------- |
+| Deriva entre equipos            | **G1**, **G2** + FRONTEND_STRUCTURE         |
+| Lógica en vistas                | reglas MVVM en FRONTEND_STRUCTURE           |
 | Fronteras difusas entre módulos | reglas de modularidad en FRONTEND_STRUCTURE |
-| Runtime inconsistente | **I1–I4**, **L1–L6** |
-| Publicación parcial | **D2**, **V2** |
-
----
-
-## Evolución futura
-
-- Formalizar APIs públicas entre módulos.
-- Extender plantillas de `pages/` y `service/` en el arquetipo.
-- Definir métricas por módulo (complejidad, cobertura, tamaño).
-
-Cambio runtime: contrato. Cambio organizativo interno: FRONTEND_STRUCTURE.
+| Runtime inconsistente           | **I1–I4**, **L1–L6**                        |
+| Publicación parcial             | **D2**, **V2**                              |
 
 ---
 
 ## Documentación por capa
 
-| Pregunta | Documento |
-|----------|-----------|
-| ¿Qué es obligatorio en runtime? | [SHELL-CONTRACT.md](../SHELL-CONTRACT.md) |
+| Pregunta                              | Documento                                        |
+| ------------------------------------- | ------------------------------------------------ |
 | ¿Cómo se organiza el código frontend? | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
-| ¿Cómo integrar en el shell? | [SHELL_INTEGRATION.md](./SHELL_INTEGRATION.md) |
-| ¿Cómo publicar en CI/CD? | [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) |
-| ¿Cómo empezar a desarrollar? | [GETTING_STARTED.md](./GETTING_STARTED.md) |
+| ¿Cómo integrar en el shell?           | [SHELL_INTEGRATION.md](./SHELL_INTEGRATION.md)   |
+| ¿Cómo publicar en CI/CD?              | [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md)   |
+| ¿Cómo empezar a desarrollar?          | [GETTING_STARTED.md](./GETTING_STARTED.md)       |

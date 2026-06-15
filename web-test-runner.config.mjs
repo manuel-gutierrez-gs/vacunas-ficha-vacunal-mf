@@ -23,6 +23,18 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
         if (source.startsWith('lit/')) {
           return `/node_modules/lit/${source.slice('lit/'.length)}`;
         }
+        if (source === 'lit-html') {
+          return '/node_modules/lit-html/lit-html.js';
+        }
+        if (source.startsWith('lit-html/')) {
+          return `/node_modules/lit-html/${source.slice('lit-html/'.length)}`;
+        }
+        if (source === '@lit/reactive-element') {
+          return '/node_modules/@lit/reactive-element/reactive-element.js';
+        }
+        if (source.startsWith('@lit/reactive-element/')) {
+          return `/node_modules/@lit/reactive-element/${source.slice('@lit/reactive-element/'.length)}`;
+        }
 
         const resolveAlias = folder => {
           const subpath = source.slice(folder.length + 1);

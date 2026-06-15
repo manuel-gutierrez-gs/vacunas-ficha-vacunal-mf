@@ -1,6 +1,6 @@
 # Integración con el shell
 
-Guía de **implementación shell ↔ MFE**. Normativa: [SHELL-CONTRACT.md](../SHELL-CONTRACT.md).  
+Guía de **implementación shell ↔ MFE**.
 Estructura interna frontend: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 
 ---
@@ -15,23 +15,9 @@ Estructura interna frontend: [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
 
 ## Impacto de la estructura modular en integración
 
-- El entry de integración permanece en `src/index.ts` (**E4**).
-- El routing de aplicación importa vistas de `src/module/...`; esto alinea navegación y lazy loading por dominio.
-
-Ejemplo real del arquetipo:
-
-```13:18:src/routing/routes.ts
-{
-  path: '/counter',
-  component: 'counter-component',
-  name: 'Counter',
-  action: async () => {
-    await import('../module/counter/counter.view');
-  },
-},
-```
-
-Esta guía no define normas de modularidad interna; ver [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md).
+- El entry público de integración permanece en `src/index.ts` (**E4**).
+- Este archivo importa el router (`src/routing/vacunas-ficha-vacunal-router.view.ts`) el cual registra el custom element principal y engloba la UI.
+- Los tipos y nombres de los eventos se exponen explícitamente desde este entry para facilitar la integración en Typescript por parte del shell.
 
 ---
 
@@ -41,7 +27,7 @@ Esta guía no define normas de modularidad interna; ver [FRONTEND_STRUCTURE.md](
 sequenceDiagram
   participant Shell
   participant Page as Pagina
-  participant Entry as mfe-entry.js
+  participant Entry as vacunas-ficha-vacunal-mf.js
   participant Assets as assets/
 
   Shell->>Page: Lit L5
@@ -51,13 +37,13 @@ sequenceDiagram
   Shell->>Page: E6
 ```
 
-| Orden | Acción | Reglas |
-|-------|--------|--------|
-| 1 | Configurar resolución de `lit` | **L5**, **L1** |
-| 2 | Publicar artefacto en URL base | **D2**, **D6**, **I3** |
-| 3 | Cargar CSS global si aplica | **S4** |
-| 4 | Cargar entry (ESM) | **E5**, **E7** |
-| 5 | Montar custom element | **E6** |
+| Orden | Acción                         | Reglas                 |
+| ----- | ------------------------------ | ---------------------- |
+| 1     | Configurar resolución de `lit` | **L5**, **L1**         |
+| 2     | Publicar artefacto en URL base | **D2**, **D6**, **I3** |
+| 3     | Cargar CSS global si aplica    | **S4**                 |
+| 4     | Cargar entry (ESM)             | **E5**, **E7**         |
+| 5     | Montar custom element          | **E6**                 |
 
 ---
 
@@ -67,24 +53,20 @@ Ver **L1**, **L5**, **L7**.
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "lit": "https://static.ejemplo.internal/shared/lit/2.7.4/lit.min.js",
-    "lit/": "https://static.ejemplo.internal/shared/lit/2.7.4/"
+  {
+    "imports": {
+      "lit": "https://static.ejemplo.internal/shared/lit/2.7.4/lit.min.js",
+      "lit/": "https://static.ejemplo.internal/shared/lit/2.7.4/"
+    }
   }
-}
 </script>
 ```
-
-## Resolver `lit` — bundle del shell
-
-Si el grafo del shell ya expone el specifier `lit` compatible con **L7**, el import map puede ser innecesario. Validar **I1** en consola (sin *Multiple versions of Lit loaded*).
 
 ---
 
 ## URL base del artefacto
 
-`BASE` = raíz donde coexisten `mfe-entry.js` y `assets/` (**D6**, **I3**).
+`BASE` = raíz donde coexisten `vacunas-ficha-vacunal-mf.js` y `assets/` (**D6**, **I3**).
 
 Subruta: **B2**, **B3**. Coordinar `base` de build del MFE y proxy.
 
@@ -96,32 +78,30 @@ Ver **E5**, **S4**, **D2**, **E6**.
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "lit": "https://static.ejemplo.internal/shared/lit/2.7.4/lit.min.js",
-    "lit/": "https://static.ejemplo.internal/shared/lit/2.7.4/"
+  {
+    "imports": {
+      "lit": "https://static.ejemplo.internal/shared/lit/2.7.4/lit.min.js",
+      "lit/": "https://static.ejemplo.internal/shared/lit/2.7.4/"
+    }
   }
-}
 </script>
 
 <div id="mfe-root"></div>
 
 <script type="module">
-  const BASE = 'https://static.ejemplo.internal/mfe-arquetipo/1.0.0';
+  const BASE = 'https://static.ejemplo.internal/vacunas-ficha-vacunal-mf/1.0.0';
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = `${BASE}/assets/index-XXXX.css`;
+  link.href = `${BASE}/assets/style-XXXX.css`;
   document.head.appendChild(link);
 
-  await import(`${BASE}/mfe-entry.js`);
+  await import(`${BASE}/vacunas-ficha-vacunal-mf.js`);
 
   document.getElementById('mfe-root').innerHTML =
     '<vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>';
 </script>
 ```
-
-Ruta CSS: valor de `href` en el artefacto `index.html` del release (**S2**).
 
 ---
 
@@ -130,9 +110,9 @@ Ruta CSS: valor de `href` en el artefacto `index.html` del release (**S2**).
 Ver **E5**, **S4**, **E6**.
 
 ```typescript
-const MFE_BASE = 'https://static.ejemplo.internal/mfe-arquetipo/1.0.0';
+const MFE_BASE = 'https://static.ejemplo.internal/vacunas-ficha-vacunal-mf/1.0.0';
 
-export async function mountArquetipoMfe(
+export async function mountVacunasFichaVacunalMf(
   container: HTMLElement,
   options?: { cssHref?: string }
 ): Promise<void> {
@@ -143,7 +123,7 @@ export async function mountArquetipoMfe(
     document.head.appendChild(link);
   }
 
-  await import(/* @vite-ignore */ `${MFE_BASE}/mfe-entry.js`);
+  await import(/* @vite-ignore */ `${MFE_BASE}/vacunas-ficha-vacunal-mf.js`);
   const el = document.createElement('vacunas-ficha-vacunal-mf');
   el.setAttribute('nuhsa', 'NUHSA001');
   container.replaceChildren(el);
@@ -152,80 +132,23 @@ export async function mountArquetipoMfe(
 
 ---
 
-## Cargar entry — subruta
+## Configuración y Eventos MFE
 
-Ver **B2**, **E5**.
+El componente web emitirá eventos para comunicar su estado al shell:
 
-```typescript
-const MFE_BASE = 'https://dominio/app/mfe';
-await import(`${MFE_BASE}/mfe-entry.js`);
-```
+- `vacunas-ficha-vacunal-mf:loaded`
+- `vacunas-ficha-vacunal-mf:error`
+- `vacunas-ficha-vacunal-mf:card-selected`
 
----
-
-## Cargar entry — script módulo
-
-Ver **E5**, **D6**.
-
-```html
-<script
-  type="module"
-  src="https://static.ejemplo.internal/mfe-arquetipo/1.0.0/mfe-entry.js"
-></script>
-```
-
----
-
-## CSS en runtime
-
-| Modo | Reglas |
-|------|--------|
-| `index.html` del artefacto | **S3** |
-| Solo script | **S4** — `<link href="{BASE}/assets/....css">` |
-
-Estilos de componentes: **S1** (incluidos en JS). Releer `index.html` del release tras cada versión (**S2**).
-
----
-
-## Montaje DOM
-
-Ver **E6**.
-
-```html
-<div id="mfe-root">
-  <vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
-</div>
-```
-
----
-
-## Obtener rutas del release
-
-Inspeccionar artefacto del pipeline:
-
-- `index.html` → `href` CSS (**S2**)
-- Presencia de entry (**E1**)
-- Listado `assets/` (**D4**)
-
-Publicación del artefacto: [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) (**D2**, **V1**).
+La lógica de bootstrap inicializa el MFE obteniendo la configuración de runtime; si falla el proceso, se emite el evento de error.
 
 ---
 
 ## Depuración
 
-| Síntoma | Reglas a verificar |
-|---------|-------------------|
-| `Failed to resolve module specifier "lit"` | **L4**, **L5** |
-| 404 en `assets/*.js` | **D2**, **D3**, **D6**, **B2**, **I3** |
-| Pantalla en blanco tras entry | **E7**, **C4**, **I2**, **L7** |
-| Estilos globales ausentes | **S4**, **S5** |
-| *Multiple versions of Lit loaded* | **I1**, **L6**, **L3** |
-| OK en hosting estático, falla en host | **L5**, **R7** |
-
-No aplicar **L6** en el artefacto MFE.
-
----
-
-## Verificación
-
-Checklist shell: contrato **Verificación pre-release — Shell** (**R7**).
+| Síntoma                                    | Reglas a verificar                     |
+| ------------------------------------------ | -------------------------------------- |
+| `Failed to resolve module specifier "lit"` | **L4**, **L5**                         |
+| 404 en `assets/*.js`                       | **D2**, **D3**, **D6**, **B2**, **I3** |
+| Pantalla en blanco tras entry              | **E7**, **C4**, **I2**, **L7**         |
+| _Multiple versions of Lit loaded_          | **I1**, **L6**, **L3**                 |

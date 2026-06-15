@@ -1,218 +1,197 @@
 # Estructura modular frontend — estándar oficial
 
-**Ámbito:** organización del código fuente **dentro** de este repositorio (frontend interno).  
-**No forma parte** del contrato shell ↔ MFE ([SHELL-CONTRACT.md](../SHELL-CONTRACT.md)).
+**Ámbito:** organización del código fuente **dentro** de este repositorio (frontend interno).
 
 **Relación con otras capas:**
 
-| Documento | Rol |
-|-----------|-----|
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Por qué existe esta estructura y trade-offs |
-| [GETTING_STARTED.md](./GETTING_STARTED.md) | Primeros pasos prácticos |
-| [SHELL_INTEGRATION.md](./SHELL_INTEGRATION.md) | Carga del artefacto en el host |
+| Documento                                      | Rol                                         |
+| ---------------------------------------------- | ------------------------------------------- |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)           | Por qué existe esta estructura y trade-offs |
+| [GETTING_STARTED.md](./GETTING_STARTED.md)     | Primeros pasos prácticos                    |
+| [SHELL_INTEGRATION.md](./SHELL_INTEGRATION.md) | Carga del artefacto en el host              |
 
 ---
 
 ## 1. Objetivos del estándar
 
-- **Modularidad por dominio:** cada carpeta bajo `src/module/<nombre-modulo>/` representa un contexto acotado de producto.
+- **Modularidad por dominio:** la carpeta bajo `src/module/ficha-vacunal/` representa un contexto acotado de producto.
 - **MVVM obligatorio:** separación estricta entre presentación (`.view.ts`) y lógica/estado (`.viewmodel.ts`).
 - **Escalabilidad en equipos grandes:** convenciones predecibles, revisiones homogéneas y ownership claro.
-- **Testabilidad:** tests fuera de `src/`, espejo del árbol de módulos.
-- **Reutilización controlada:** `src/shared/` solo para código compartido entre módulos, con límites explícitos.
+- **Testabilidad:** tests fuera de `src/`, en `test/`, siendo un espejo del árbol funcional.
+- **Reutilización controlada:** `src/shared/` solo para código compartido entre módulos, infra, o config, con límites explícitos.
+- **Capa App independiente:** `src/app/` actúa como punto de composición general y orquestador interno.
 
 ---
 
 ## 2. Estructura oficial de carpetas
 
-Árbol objetivo (convención normativa). Los nombres entre `<>` son sustituibles.
+Árbol objetivo real basado en el dominio de ficha vacunal:
 
-```
+```text
 project-root/
   src/
-    index.ts                    # Entry de aplicación (importa módulos, tema, routing)
-    environment.ts              # Configuración de entorno (si aplica)
-    module/
-      <module-name>/
-        component/
-          <component-name>/
-            <component-name>.view.ts
-            <component-name>.viewmodel.ts
-            css/
-              <component-name>-theme.css.ts
-            events/
-              <component-name>-<event>.event.ts
-            model/
-              *.ts
-        pages/                    # Opcional: vistas de página del módulo
-        service/                  # Opcional: servicios del módulo
-    routing/                      # Opcional: rutas transversales al shell del MFE
-    shared/
-      component/
+    index.ts                    # Entry publico del MFE (exporta eventos y registra el router)
+    app/                        # Capa de composición del MFE
+      bootstrap/                # Lógica de arranque interno
+      css/
       model/
-      service/
-      template/
+      ui/
+      vacunas-ficha-vacunal-home.view.ts
+      vacunas-ficha-vacunal-home.viewmodel.ts
+    module/
+      ficha-vacunal/            # Dominio del producto
+        adapter/                # Adaptadores de API, mapeadores, HTTP
+        cache/                  # Capa de caché en memoria
+        components/             # Componentes UI de dominio
+          <nombre-componente>/
+            <nombre>.view.ts
+            <nombre>.viewmodel.ts
+            css/
+            model/
+            event/
+        domain/                 # Entidades y reglas de negocio puras
+        model/                  # Interfaces y DTOs
+        service/                # Servicios de acceso a datos
+        utils/                  # Utilidades especificas del dominio
+    routing/                    # Router base del componente web (vacunas-ficha-vacunal-router.view.ts)
+    shared/                     # Lógica transversal
+      config/
+      contract/
+      errors/
+      theme/
+      ui/
   test/
-    <module-name>/
-      <component-name>/
-        *.test.ts
+    app/
+    helpers/
+    module/
+    stubs/
 ```
 
 **Reglas de raíz:**
 
-| ID | Regla |
-|----|--------|
-| FS1 | Todo código de dominio de producto bajo **`src/module/`** (obligatorio para nuevas piezas). |
-| FS2 | **`src/index.ts`** es el único punto de arranque de aplicación importado por el build hacia `mfe-entry.js` (coherente con **E4** del contrato). |
-| FS3 | **`test/`** en raíz del repo; **prohibido** alojar tests de producto dentro de `src/`. |
-| FS4 | **`src/shared/`** solo para reutilización **entre** módulos; no como comodín global. |
-
-**Nota sobre el arquetipo actual:** puede coexistir `src/routing/` como capa transversal de navegación del MFE; las nuevas rutas y vistas de dominio deben vivir bajo el módulo que las posee, salvo decisión de arquitectura documentada en [ARCHITECTURE.md](./ARCHITECTURE.md).
+| ID  | Regla                                                                                                      |
+| --- | ---------------------------------------------------------------------------------------------------------- |
+| FS1 | Todo código de dominio de producto vive bajo **`src/module/ficha-vacunal/`**.                              |
+| FS2 | **`src/index.ts`** es el único entrypoint exportado por el build; solo orquesta importaciones y el router. |
+| FS3 | **`test/`** está en la raíz del repo; **prohibido** alojar tests de producto dentro de `src/`.             |
+| FS4 | **`src/shared/`** solo para reutilización e infraestructura, **no** para reglas de negocio del MFE.        |
 
 ---
 
 ## 3. Responsabilidades por capa
 
-| Capa | Ubicación típica | Responsabilidad |
-|------|------------------|-----------------|
-| Entry | `src/index.ts` | Orquestar imports de módulos, tema global, registro de routing si aplica |
-| Módulo | `src/module/<name>/` | Bounded context: componentes, páginas y servicios del dominio |
-| Componente | `.../component/<name>/` | Unidad UI + lógica de presentación (MVVM) |
-| Vista | `*.view.ts` | Solo render, plantillas Lit, estilos asociados al componente |
-| ViewModel | `*.viewmodel.ts` | Estado, derivados, orquestación de eventos, llamadas a servicios |
-| Tema CSS (Lit) | `css/*-theme.css.ts` | Tokens y estilos del componente (CSSResult) |
-| Eventos | `events/*.event.ts` | Definición de **CustomEvent** y contratos de `detail` |
-| Modelo | `model/*.ts` | DTOs, tipos locales al componente o al módulo |
-| Páginas | `pages/` | Composición de alto nivel del módulo (opcional) |
-| Servicios módulo | `service/` | Acceso a datos, APIs; **no** en la vista |
-| Shared | `src/shared/` | Ver sección 7 |
-| Tests | `test/<module>/<component>/` | Espejo funcional de `src/module/` |
+| Capa           | Ubicación típica            | Responsabilidad                                                          |
+| -------------- | --------------------------- | ------------------------------------------------------------------------ |
+| Entry          | `src/index.ts`              | Exportar el contrato público y cargar el entry del routing.              |
+| App            | `src/app/`                  | Composición principal, vistas maestras (Home) y proceso de bootstrap.    |
+| Router         | `src/routing/`              | Definir y registrar el Custom Element raíz `<vacunas-ficha-vacunal-mf>`. |
+| Módulo         | `src/module/ficha-vacunal/` | Bounded context: componentes, adaptadores, y servicios del dominio.      |
+| Componente     | `.../components/<name>/`    | Unidad UI + lógica de presentación (MVVM).                               |
+| Vista          | `*.view.ts`                 | Solo render, plantillas Lit, estilos asociados al componente.            |
+| ViewModel      | `*.viewmodel.ts`            | Estado, derivados, orquestación de eventos, llamadas a servicios.        |
+| Tema CSS (Lit) | `css/*-theme.css.ts`        | Tokens y estilos del componente (CSSResult).                             |
+| Eventos        | `src/shared/events/`        | Emisión y tipado de CustomEvents.                                        |
+| Modelo         | `.../model/*.ts`            | DTOs, tipos y agregados del dominio.                                     |
+| Adaptadores    | `.../adapter/`              | Traducción entre servicios externos y el dominio.                        |
+| Servicios      | `.../service/`              | Acceso a datos, orquestación de llamadas HTTP.                           |
+| Shared         | `src/shared/`               | Lógica transversal, utilidades técnicas, log, contrato.                  |
+| Tests          | `test/`                     | Espejo funcional de `src/`.                                              |
 
 ---
 
 ## 4. Patrón MVVM obligatorio
 
-| ID | Regla |
-|----|--------|
-| MV1 | Cada componente de producto tiene **`.view.ts`** y **`.viewmodel.ts`** emparejados (mismo prefijo de nombre). |
-| MV2 | **`.view.ts`:** solo UI — `render()`, plantillas `html`, registro de estilos, delegación de eventos a métodos del viewmodel. |
+| ID  | Regla                                                                                                                                                |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MV1 | Cada componente de producto tiene **`.view.ts`** y **`.viewmodel.ts`** emparejados (mismo prefijo de nombre).                                        |
+| MV2 | **`.view.ts`:** solo UI — `render()`, plantillas `html`, registro de estilos, delegación de eventos a métodos del viewmodel.                         |
 | MV3 | **`.viewmodel.ts`:** estado reactivo (`@property`, `@state`), lógica de negocio de UI, llamadas a `service/`, transformación de datos para la vista. |
-| MV4 | **Prohibido** en `.view.ts`: `fetch`, clientes HTTP directos, reglas de negocio complejas, acceso directo a APIs sin capa de servicio acordada. |
-| MV5 | **Prohibido** en `.viewmodel.ts`: markup Lit extenso (salvo helpers mínimos); la vista debe concentrar el template. |
+| MV4 | **Prohibido** en `.view.ts`: fetch, clientes HTTP directos, reglas de negocio complejas, llamadas a repositorios.                                    |
+| MV5 | **Prohibido** en `.viewmodel.ts`: markup Lit extenso (salvo helpers mínimos); la vista debe concentrar el template.                                  |
 
 ---
 
 ## 5. Convenciones de nombrado
 
-| Elemento | Convención | Ejemplo |
-|----------|-------------|---------|
-| Módulo | kebab-case o nombre de dominio acordado | `billing`, `user-profile` |
-| Carpeta componente | kebab-case alineada con tag o nombre lógico | `counter`, `invoice-list` |
-| Vista | `<nombre>.view.ts` | `counter.view.ts` |
-| ViewModel | `<nombre>.viewmodel.ts` | `counter.viewmodel.ts` |
-| Tema | `css/<nombre>-theme.css.ts` | `counter-theme.css.ts` |
-| Evento | `<componente>-<evento>.event.ts` | `counter-click.event.ts` |
-| Custom element | Definir en `.view.ts` o módulo según convención del equipo; tag en kebab-case | `counter-component` |
-| Tests | Mismo esqueleto bajo `test/` + sufijo `.test.ts` | `test/module/counter/counter.test.ts` |
+| Elemento           | Convención                                       | Ejemplo                                                  |
+| ------------------ | ------------------------------------------------ | -------------------------------------------------------- |
+| Módulo             | kebab-case                                       | `ficha-vacunal`                                          |
+| Carpeta componente | kebab-case alineada con tag o nombre lógico      | `tarjetero`, `cabecera`                                  |
+| Vista              | `<nombre>.view.ts`                               | `tarjetero.view.ts`                                      |
+| ViewModel          | `<nombre>.viewmodel.ts`                          | `tarjetero.viewmodel.ts`                                 |
+| Tema               | `css/<nombre>-theme.css.ts`                      | `tarjetero-theme.css.ts`                                 |
+| Evento             | Tipado de contrato                               | `vacunas-ficha-vacunal-mf:card-selected`                 |
+| Tests              | Mismo esqueleto bajo `test/` + sufijo `.test.ts` | `test/module/ficha-vacunal/components/tarjetero.test.ts` |
 
 ---
 
 ## 6. Reglas de modularidad
 
-| ID | Regla |
-|----|--------|
-| M1 | Un módulo **no** importa implementaciones internas de otro módulo salvo interfaces/tipos en `shared/` o API pública explícita del otro módulo (acordar en revisión). |
-| M2 | Evitar dependencias circulares entre módulos; extraer a `shared/` si es transversal. |
-| M3 | Nuevas features **preferentemente** como nuevo subárbol bajo `src/module/<nuevo>/` en lugar de acumular en un único módulo genérico. |
-| M4 | `environment.ts` y configuración global: mínimo imprescindible; lógica de dominio en módulos. |
+| ID  | Regla                                                                                                          |
+| --- | -------------------------------------------------------------------------------------------------------------- |
+| M1  | El código debe mantenerse estrictamente dentro del módulo de su dominio (`ficha-vacunal`).                     |
+| M2  | Evitar dependencias circulares entre archivos; extraer modelos a `model/` si es necesario.                     |
+| M3  | Utilizar adaptadores (`adapter/`) para transformar datos de la API antes de pasarlos al dominio o componentes. |
 
 ---
 
 ## 7. Política de `src/shared/`
 
-| ID | Regla |
-|----|--------|
-| SH1 | Solo código usado por **dos o más** módulos o por entry + módulo sin acoplar dominios. |
-| SH2 | **Prohibido** usar `shared/` como vertedero de utilidades sin dueño (`utils.ts` genéricos). |
-| SH3 | Preferir `shared/component/`, `shared/model/`, `shared/service/`, `shared/template/` según naturaleza. |
-| SH4 | Cada añadido en `shared/` debe justificarse en revisión (qué módulos consumen y por qué no vive en un solo módulo). |
+| ID  | Regla                                                                                                   |
+| --- | ------------------------------------------------------------------------------------------------------- |
+| SH1 | Solo para lógica técnica (logs, tracking, configuración, decoradores) y el contrato (eventos, nombres). |
+| SH2 | **Prohibido** usar `shared/` para modelos de dominio de Ficha Vacunal.                                  |
+| SH3 | Preferir subcarpetas descriptivas como `config/`, `log/`, `events/`.                                    |
 
 ---
 
 ## 8. Estrategia de tests
 
-| ID | Regla |
-|----|--------|
-| T1 | Tests bajo **`test/`** en la raíz; patrón del arquetipo: **`test/**/*.test.ts`** (configuración Web Test Runner). |
-| T2 | Estructura de carpetas **espejo** de `src/module/<module>/<component>/` cuando aplique. |
-| T3 | Los tests importan módulos desde `src/`; no duplicar implementación en `test/`. |
-| T4 | Cobertura y ejecución en CI vía `npm run test:ci` / `npm run ci` (ver [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md)). |
+| ID  | Regla                                                                                                                |
+| --- | -------------------------------------------------------------------------------------------------------------------- |
+| T1  | Tests bajo **`test/`** en la raíz; patrón del arquetipo: **`test/**/\*.test.ts`\*\* (configuración Web Test Runner). |
+| T2  | Estructura de carpetas **espejo** de `src/` cuando aplique (ej. `test/module/`, `test/app/`).                        |
+| T3  | Los tests importan módulos desde `src/`; no duplicar implementación en `test/`.                                      |
+| T4  | Cobertura y ejecución en CI vía `npm run test:ci` o `npm run ci`.                                                    |
 
 ---
 
 ## 9. Antipatrones prohibidos
 
-| ID | Antipatrón |
-|----|------------|
-| AP1 | Lógica de negocio o HTTP en `.view.ts` |
-| AP2 | Tests de producto dentro de `src/` |
-| AP3 | Componentes de dominio fuera de `src/module/` sin excepción arquitectónica aprobada |
-| AP4 | Uso de `any` sin justificación documentada en revisión |
-| AP5 | Ficheros `utils.ts` / `helpers.ts` genéricos sin responsabilidad clara |
-| AP6 | `fetch` o cliente HTTP directo en vista; usar capa de servicio / wrapper corporativo acordado |
-| AP7 | CustomEvent definidos al vuelo en la vista sin fichero en `events/` cuando el evento es contrato del componente |
+| ID  | Antipatrón                                                                                            |
+| --- | ----------------------------------------------------------------------------------------------------- |
+| AP1 | Lógica de negocio o HTTP directo en `.view.ts`                                                        |
+| AP2 | Tests dentro de la carpeta `src/`                                                                     |
+| AP3 | Uso de `any` generalizado sin justificación                                                           |
+| AP4 | Romper la separación de `adapter/` o `service/` y llamar la API en el ViewModel de un componente      |
+| AP5 | CustomEvents inventados fuera del contrato en `src/shared/contract/vacunas-ficha-vacunal.contract.ts` |
 
 ---
 
-## 10. Ejemplos completos
+## 10. Ejemplo de componente (tarjetero)
 
-### 10.1 Módulo `invoices` con componente `invoice-list`
-
-```
-src/module/invoices/
-  component/
-    invoice-list/
-      invoice-list.view.ts
-      invoice-list.viewmodel.ts
-      css/
-        invoice-list-theme.css.ts
-      events/
-        invoice-list-selection.event.ts
-      model/
-        invoice-row.dto.ts
-  service/
-    invoice-api.service.ts
+```text
+src/module/ficha-vacunal/components/tarjetero/
+  tarjetero.view.ts
+  tarjetero.viewmodel.ts
+  css/
+    tarjetero-theme.css.ts
 ```
 
+```text
+test/module/ficha-vacunal/components/tarjetero/
+  tarjetero.view.test.ts
 ```
-test/module/invoices/
-  invoice-list/
-    invoice-list.test.ts
-```
-
-### 10.2 Fragmento de responsabilidad (ilustrativo)
 
 **Vista:** importa viewmodel, declara template, delega clicks.  
-**ViewModel:** propiedades, carga de datos vía `service/`, emite eventos tipados desde `events/`.
+**ViewModel:** propiedades, carga de datos vía servicio, procesa la data.
 
 ---
 
 ## 11. Checklist de revisión técnica
 
-- [ ] Nuevo código de dominio bajo `src/module/<modulo>/` (**FS1**)
-- [ ] Par `.view.ts` / `.viewmodel.ts` presente (**MV1**)
+- [ ] Par `.view.ts` / `.viewmodel.ts` presente en componentes nuevos (**MV1**)
 - [ ] Sin HTTP ni negocio pesado en la vista (**MV4**)
-- [ ] CustomEvent en `events/` si define contrato reutilizable (**AP7**)
+- [ ] Eventos disparados están en el contrato (**AP5**)
 - [ ] Tests en `test/` con espejo de rutas (**T1–T2**)
-- [ ] `shared/` solo si cumple **SH1–SH4**
-- [ ] Sin antipatrones **AP1–AP7**
-
----
-
-## 12. Evolución futura del estándar
-
-- Ampliar `pages/` y `service/` con plantillas de referencia en el arquetipo.
-- Documentar política de **lazy import** por módulo alineada con chunks del build.
-- Formalizar convención para `src/routing/` vs rutas por módulo (requiere actualizar este documento y [ARCHITECTURE.md](./ARCHITECTURE.md)).
-
-Cualquier cambio sustantivo en esta estructura debe reflejarse aquí **antes** de generalizarlo en el código del arquetipo.
+- [ ] Sin antipatrones **AP1–AP5**

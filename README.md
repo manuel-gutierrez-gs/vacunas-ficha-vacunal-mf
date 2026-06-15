@@ -42,8 +42,16 @@ Campos minimos:
 
 ```json
 {
-  "urlApiFichaVacunal": "/api/vacunas/ficha-vacunal",
-  "urlApiConfigPacientes": "/api/vacunas/configuracion-pacientes"
+  "urlApiAlergiasYContraindicacionesS039": "http://vacunas.des.sas.junta-andalucia.es/consulta-alergias-contraindicaciones-api/api/v1",
+  "urlApiConfigAccionVacunal": "http://accion-vacunal-api.oc-vacunas.10.200.201.76.nip.io/accion-vacunal-api/api/v1",
+  "urlApiConfigCalendarios": "http://calendario-vacunal-api.oc-vacunas.10.200.201.76.nip.io/calendario-vacunal-api/api/v1",
+  "urlApiConfigPacientes": "http://configuracion-de-paciente-api.oc-vacunas.10.200.201.76.nip.io/configuracion-de-paciente-api/api/v1",
+  "urlApiContraindicaciones": "http://contraindicaciones-api.oc-vacunas.10.200.201.76.nip.io/contraindicaciones-api/api/v1",
+  "urlApiCriterio": "http://criterios-vacunacion-paciente-api.oc-vacunas.10.200.201.76.nip.io/criterios-vacunacion-paciente-api/api/v1",
+  "urlApiFichaVacunal": "http://ficha-vacunal-api.oc-vacunas.10.200.201.76.nip.io/ficha-vacunal-api/api/v1",
+  "urlApiMarcasComerciales": "http://consulta-marcas-comerciales-api.oc-vacunas.10.200.201.76.nip.io/consulta-marcas-comerciales-api/api/v1",
+  "urlApiProductosInmunizacion": "http://consulta-productos-inmunizacion-api.oc-vacunas.10.200.201.76.nip.io/consulta-productos-inmunizacion-api/api/v1",
+  "urlApiReaccionesAdversas": "http://reacciones-adversas-api.oc-vacunas.10.200.201.76.nip.io/reacciones-adversas-api/api/v1"
 }
 ```
 
@@ -52,8 +60,7 @@ Si falta o es invalido, el MF falla en arranque con `CONFIG_MISSING` o `CONFIG_I
 ## API publica
 
 - Custom element: `vacunas-ficha-vacunal-mf`
-- Funcion de registro: `defineVacunasFichaVacunalMfElement`
-- Eventos:
+- Eventos definidos en el contrato:
   - `vacunas-ficha-vacunal-mf:loaded`
   - `vacunas-ficha-vacunal-mf:error`
   - `vacunas-ficha-vacunal-mf:card-selected`
@@ -62,8 +69,9 @@ Si falta o es invalido, el MF falla en arranque con `CONFIG_MISSING` o `CONFIG_I
 
 ```text
 src/
-  app/                     # composicion y root del MF
-  module/ficha-vacunal/    # dominio funcional (adapter/service/model/components)
+  app/                     # composicion y root del MF (bootstrap, model, ui, vistas principales)
+  module/ficha-vacunal/    # dominio funcional (adapter, cache, components, model, service, utils)
+  routing/                 # enrutador base del MF y custom element
   shared/                  # infraestructura transversal
-  index.ts                 # entrypoint unico y API publica
+  index.ts                 # entrypoint unico y exportacion de la API publica
 ```

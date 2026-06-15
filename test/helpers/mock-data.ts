@@ -10,6 +10,7 @@ export function createMockConfig(
     urlApiConfigPacientes: 'https://mock.local/config',
     urlApiConfigAccionVacunal: 'https://mock.local/acciones',
     urlApiConfigCalendarios: 'https://mock.local/calendarios',
+    urlApiAlergiasYContraindicacionesS039: 'http://mock-url',
     ...overrides,
   };
 }

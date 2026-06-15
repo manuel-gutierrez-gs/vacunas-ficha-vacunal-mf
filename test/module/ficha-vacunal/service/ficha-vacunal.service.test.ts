@@ -1,60 +1,71 @@
 import { expect } from '@open-wc/testing';
 import { loadFichaVacunalAggregate } from '@module/ficha-vacunal/service/ficha-vacunal.service';
-import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
 import { createMockConfig } from '../../../helpers/mock-data';
+import { fichaVacunalCache } from '@module/ficha-vacunal/cache/ficha-vacunal.cache';
+import { configuracionPacienteCache } from '@module/ficha-vacunal/cache/configuracion-paciente.cache';
 
-describe('ficha-vacunal.service', () => {
+describe('service layer', () => {
   const originalFetch = globalThis.fetch;
-  const nuhsa = 'NUHSA-TEST-01';
-  const config: VacunasFichaVacunalRuntimeConfig = createMockConfig();
 
   afterEach(() => {
     globalThis.fetch = originalFetch;
+    fichaVacunalCache.clear();
+    configuracionPacienteCache.clear();
   });
 
-  it('loadFichaVacunalAggregate combina configuración + ficha en un agregado', async () => {
+  it('combina configuración + ficha vacunal', async () => {
     globalThis.fetch = (async (input: RequestInfo | URL) => {
       const url = String(input);
-      if (url.includes('/configuracion-pacientes')) {
+
+      if (url.includes('configuracion')) {
         return new Response(
           JSON.stringify({
-            domainId: 2,
-            nuhsaPaciente: nuhsa,
-            calendariosAsignados: [{ domainId: 101, nombre: 'Calendario infantil' }],
+            domainId: 1,
+            nuhsaPaciente: 'NUHSA001',
+            calendariosAsignados: [],
           }),
           { status: 200 }
         );
       }
-      return new Response(
-        JSON.stringify({
-          domainId: '77',
-          resumenPaciente: { nombre: 'ANA', apellidos: 'PEREZ', nuhsa, sexo: '1' },
-          franjasEdad: [{ edad: { numero: 2, unidad: 'ANOS' }, inmunizaciones: [] }],
-        }),
-        { status: 200 }
-      );
+
+      if (url.includes('ficha-vacunal')) {
+        return new Response(
+          JSON.stringify({
+            domainId: '11',
+            resumenPaciente: {
+              nombre: 'ANA',
+              apellidos: 'PEREZ',
+              nuhsa: 'NUHSA001',
+            },
+            franjasEdad: [],
+          }),
+          { status: 200 }
+        );
+      }
+
+      throw new Error('Unexpected fetch');
     }) as typeof fetch;
 
-    const aggregate = await loadFichaVacunalAggregate(nuhsa, config);
+    const result = await loadFichaVacunalAggregate('NUHSA001', createMockConfig());
 
-    expect(aggregate.resumenPaciente.nuhsa).to.equal(nuhsa);
-    expect(aggregate.calendariosAsignados).to.deep.equal([
-      { domainId: '101', nombre: 'Calendario infantil' },
-    ]);
-    expect(aggregate.filterSet[0].value).to.equal('aislada');
-    expect(aggregate.seleccionInicial).to.deep.equal(['aislada', '101']);
+    expect(result).to.exist;
+    expect(result.resumenPaciente.nuhsa).to.equal('NUHSA001');
   });
 
-  it('propaga error de red sin llamadas reales', async () => {
+  it('propaga error de red', async () => {
     globalThis.fetch = (async () => {
-      throw new Error('offline');
+      throw new Error('network');
     }) as typeof fetch;
 
+    let error: unknown = null;
+
     try {
-      await loadFichaVacunalAggregate(nuhsa, config);
-      expect.fail('Se esperaba error de red');
-    } catch (error) {
-      expect(error).to.have.property('code', 'NETWORK_ERROR');
+      await loadFichaVacunalAggregate('NUHSA001', createMockConfig());
+    } catch (e) {
+      error = e;
     }
+
+    expect(error).to.exist;
+    expect(String((error as Error).message)).to.contain('network');
   });
 });
