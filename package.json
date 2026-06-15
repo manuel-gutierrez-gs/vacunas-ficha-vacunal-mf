@@ -12,7 +12,7 @@
   },
   "scripts": {
     "env:check": "node -v && npm -v",
-    "clean": "rimraf dist coverage out-tsc",
+    "clean": "rimraf dist coverage out-tsc node_modules package-lock.json",
     "dev": "vite",
     "start": "vite",
     "start:wds": "wds",
@@ -42,17 +42,19 @@
     "@sas/wc-stic-modal": "1.75.0",
     "@sas/wc-stic-navigation": "1.75.0",
     "@sas/wc-stic-notification-v2": "1.75.0",
-    "@sas/wc-stic-sheet": "1.75.0",
     "@sas/wc-stic-radio-group": "1.75.0",
     "@sas/wc-stic-result": "1.75.0",
+    "@sas/wc-stic-segmented-control": "1.75.0",
     "@sas/wc-stic-select-v2": "1.75.0",
+    "@sas/wc-stic-sheet": "1.75.0",
     "@sas/wc-stic-tag": "1.75.0",
+    "@sas/wc-stic-table": "1.75.0",
     "@sas/wc-stic-tag-set": "1.75.0",
     "@sas/wc-stic-text": "1.75.0",
     "@sas/wc-stic-theme": "1.75.0"
   },
   "peerDependencies": {
-    "lit": "^2.7.4"
+    "lit": "2.7.4"
   },
   "devDependencies": {
     "@open-wc/testing": "4.0.0",

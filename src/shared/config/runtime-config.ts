@@ -5,6 +5,7 @@ export interface VacunasFichaVacunalRuntimeConfig {
   urlApiConfigPacientes: string;
   urlApiConfigAccionVacunal: string;
   urlApiConfigCalendarios: string;
+  urlApiAlergiasYContraindicacionesS039: string;
 }
 
 export const RUNTIME_CONFIG_URL = '/config/config-maps.json';
@@ -21,6 +22,7 @@ export function validateRuntimeConfig(config: unknown): VacunasFichaVacunalRunti
   const urlApiConfigPacientes = c.urlApiConfigPacientes;
   const urlApiConfigAccionVacunal = c.urlApiConfigAccionVacunal;
   const urlApiConfigCalendarios = c.urlApiConfigCalendarios;
+  const urlApiAlergiasYContraindicacionesS039 = c.urlApiAlergiasYContraindicacionesS039;
 
   if (typeof urlApiFichaVacunal !== 'string' || !urlApiFichaVacunal.trim()) {
     throw new VacunasFichaVacunalMfError('CONFIG_INVALID', 'urlApiFichaVacunal es obligatorio');
@@ -31,11 +33,27 @@ export function validateRuntimeConfig(config: unknown): VacunasFichaVacunalRunti
   }
 
   if (typeof urlApiConfigAccionVacunal !== 'string' || !urlApiConfigAccionVacunal.trim()) {
-    throw new VacunasFichaVacunalMfError('CONFIG_INVALID', 'urlApiConfigAccionVacunal es obligatorio');
+    throw new VacunasFichaVacunalMfError(
+      'CONFIG_INVALID',
+      'urlApiConfigAccionVacunal es obligatorio'
+    );
   }
 
   if (typeof urlApiConfigCalendarios !== 'string' || !urlApiConfigCalendarios.trim()) {
-    throw new VacunasFichaVacunalMfError('CONFIG_INVALID', 'urlApiConfigCalendarios es obligatorio');
+    throw new VacunasFichaVacunalMfError(
+      'CONFIG_INVALID',
+      'urlApiConfigCalendarios es obligatorio'
+    );
+  }
+
+  if (
+    typeof urlApiAlergiasYContraindicacionesS039 !== 'string' ||
+    !urlApiAlergiasYContraindicacionesS039.trim()
+  ) {
+    throw new VacunasFichaVacunalMfError(
+      'CONFIG_INVALID',
+      'urlApiAlergiasYContraindicacionesS039 es obligatorio'
+    );
   }
 
   return {
@@ -43,6 +61,7 @@ export function validateRuntimeConfig(config: unknown): VacunasFichaVacunalRunti
     urlApiConfigPacientes: urlApiConfigPacientes.trim(),
     urlApiConfigAccionVacunal: urlApiConfigAccionVacunal.trim(),
     urlApiConfigCalendarios: urlApiConfigCalendarios.trim(),
+    urlApiAlergiasYContraindicacionesS039: urlApiAlergiasYContraindicacionesS039.trim(),
   };
 }
 
@@ -103,7 +122,6 @@ export function resolveRuntimeConfig(
   return cachedConfig;
 }
 
-/** Reinicia la caché de configuración (tests). */
 export function resetRuntimeConfigCache(): void {
   cachedConfig = null;
   loadPromise = null;

@@ -6,19 +6,21 @@ import {
   SticMWCRippleRemoveEventListener,
   SticRippleView,
 } from '@sas/wc-stic-ripple';
-import { LitElement } from 'lit';
+import { html, LitElement } from 'lit';
 import { property, queryAsync } from 'lit/decorators.js';
 import { ClassInfo } from 'lit/directives/class-map.js';
-import {
-  VacunasAlergiaButtonClickEvent,
-  VacunasAlergiaButtonClickEventData,
-} from './event/alergia-button-click.event';
 import type { ButtonSize } from './model/alergia-button.model';
 import {
   VARIANT_CONFIG,
   VacunasAlergiaButtonVariant,
   VacunasAlergiaButtonVariantConfig,
 } from './model/alergia-button-variant';
+import { VacunasModalHostViewModel } from '../modal-host/modal-host.viewmodel';
+import {
+  VacunasModalOpenEvent,
+  VacunasModalOpenEventData,
+} from './event/alergia-button-modal-open.event';
+import '../modal/alergias-contraindicaciones/alergias-contraindicaciones.view';
 
 export class VacunasAlergiaButtonViewModel extends LitElement {
   @property({ type: String }) public label: string = '';
@@ -28,6 +30,7 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
   @property({ type: String }) public iconFontType!: FontType;
   @property({ type: Boolean, reflect: true }) public iconFilled: boolean = false;
   @property({ type: String, reflect: true }) public variant?: VacunasAlergiaButtonVariant;
+  @property({ type: String }) public nuhsa: string = '';
 
   @queryAsync('stic-ripple')
   protected sticRipple!: Promise<SticRippleView | null>;
@@ -39,6 +42,17 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     SticMWCRippleAddEventListener(this, this.rippleHandlers);
+
+    const host = VacunasModalHostViewModel.instance;
+
+    host?.registerSlot(
+      'alergias-contraindicaciones',
+      (props?: Record<string, any>) => html`
+        <vacunas-alergias-contraindicaciones-modal
+          .nuhsa=${props?.nuhsa ?? ''}
+        ></vacunas-alergias-contraindicaciones-modal>
+      `
+    );
   }
 
   disconnectedCallback(): void {
@@ -73,8 +87,14 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
   }
 
   protected clickHandler(_e: Event) {
-    this.dispatchEvent(
-      new VacunasAlergiaButtonClickEvent(new VacunasAlergiaButtonClickEventData(this.label ?? ''))
-    );
+    const payload: VacunasModalOpenEventData = {
+      id: 'alergias-modal',
+      slotKey: 'alergias-contraindicaciones',
+      title: 'Alergias y contraindicaciones',
+      description: '',
+      size: 'md',
+      props: { nuhsa: this.nuhsa },
+    };
+    this.dispatchEvent(new VacunasModalOpenEvent(payload));
   }
 }
