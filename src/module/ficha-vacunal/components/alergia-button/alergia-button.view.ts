@@ -72,7 +72,7 @@ export class VacunasAlergiaButtonView extends VacunasAlergiaButtonViewModel {
   ): TemplateResult {
     return html`
       <div class="badge-anchor">
-        <stic-tooltip content=${tooltip} position="below" fixed>
+        <stic-tooltip content=${tooltip} position="below">
           <div class="icon-badge">
             <stic-icon
               .icon=${icon}

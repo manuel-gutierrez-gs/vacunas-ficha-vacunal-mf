@@ -3,6 +3,8 @@ import {
   TipoAlergiaContraindicacion,
 } from '../model/alergias-y-contraindicaciones.model';
 
+import { html } from 'lit';
+
 export function estadoAlergiaContraindicacionToTexto(
   estado: EstadoAlergiaContraindicacion | string | undefined
 ): string {
@@ -48,4 +50,20 @@ export function formatearFechaAlergiasYContraindicaciones(fecha: string): string
   const anio = date.getUTCFullYear();
 
   return `${dia}/${mes}/${anio}`;
+}
+
+export function renderNivelCertezaTag(nivel: string) {
+  switch (nivel) {
+    case 'ACEPTADA':
+      return html`<stic-tag text="Confirmada" color="green" hideIcon></stic-tag>`;
+
+    case 'RECHAZADA':
+      return html`<stic-tag text="Rechazada" color="red" hideIcon></stic-tag>`;
+
+    case 'PROPUESTA':
+      return html`<stic-tag text="Sospecha" color="yellow" hideIcon></stic-tag>`;
+
+    default:
+      return '';
+  }
 }

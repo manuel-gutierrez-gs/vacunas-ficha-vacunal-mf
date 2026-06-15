@@ -8,7 +8,7 @@ import {
 } from '../../model/ficha-vacunal.model';
 
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
-import { fetchAlergiasContraindicaciones } from '../../adapter/api/alergias-contraindicaciones.api';
+import { fetchAlergiasContraindicacionesCached } from '../../adapter/api/alergias-contraindicaciones.api';
 import type { VacunasAlergiaButtonVariant } from '../alergia-button/model/alergia-button-variant';
 import { AlergiasContraindicacionesResponse } from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
 
@@ -51,7 +51,7 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
   private async loadAlergiasVariant(nuhsa: string) {
     try {
       const config = resolveRuntimeConfig((this as any).runtimeConfig);
-      const response = await fetchAlergiasContraindicaciones(nuhsa, config);
+      const response = await fetchAlergiasContraindicacionesCached(nuhsa, config);
       if (this.nuhsaDisplay !== nuhsa) return;
       this.alergiasVariant = this.calcularEstadoAlergias(response);
     } catch (error) {

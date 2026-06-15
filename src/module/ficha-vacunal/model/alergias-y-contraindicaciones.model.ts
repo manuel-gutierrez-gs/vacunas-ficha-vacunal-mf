@@ -1,6 +1,6 @@
 export interface AlergiasContraindicacionesResponse {
   alergias: Alergia[];
-  contraindicaciones: Contraindicacion[];
+  listaContraindic: Contraindicacion[];
   errorConsultaHis: boolean;
 }
 

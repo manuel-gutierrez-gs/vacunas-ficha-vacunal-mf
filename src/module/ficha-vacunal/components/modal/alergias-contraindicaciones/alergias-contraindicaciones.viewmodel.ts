@@ -14,12 +14,18 @@ import {
   SticSegmentedControlClickEventData,
 } from '@sas/wc-stic-segmented-control';
 
-import { Alergia, Contraindicacion } from '../../../model/alergias-y-contraindicaciones.model';
+import {
+  Alergia,
+  Contraindicacion,
+} from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
 
-import { formatearFechaAlergiasYContraindicaciones } from '../../../utils/alergias-y-contraindicaciones';
+import {
+  formatearFechaAlergiasYContraindicaciones,
+  renderNivelCertezaTag,
+} from '@module/ficha-vacunal/utils/alergias-y-contraindicaciones';
 
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
-import { fetchAlergiasContraindicaciones } from '../../../adapter/api/alergias-contraindicaciones.api';
+import { fetchAlergiasContraindicacionesCached } from '@module/ficha-vacunal/adapter/api/alergias-contraindicaciones.api';
 
 export interface RegistroAlergiaContraindicacion {
   id: string;
@@ -50,12 +56,17 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
 
   private _loadedNuhsa?: string;
 
-  async updated(changedProperties: Map<string | number | symbol, unknown>) {
+  updated(changedProperties: Map<string | symbol, unknown>) {
     super.updated(changedProperties);
 
-    if (changedProperties.has('nuhsa') && this.nuhsa && this.nuhsa !== this._loadedNuhsa) {
-      this._loadedNuhsa = this.nuhsa;
-      this.loadData(this.nuhsa);
+    if (!this.nuhsa) return;
+
+    if (changedProperties.has('nuhsa')) {
+      if (this.nuhsa !== this._loadedNuhsa) {
+        this._loadedNuhsa = this.nuhsa;
+
+        this.loadData(this.nuhsa);
+      }
     }
   }
 
@@ -67,12 +78,12 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
 
     try {
       const config = resolveRuntimeConfig((this as any).runtimeConfig);
-      const apiResponse = await fetchAlergiasContraindicaciones(nuhsa, config);
+      const apiResponse = await fetchAlergiasContraindicacionesCached(nuhsa, config);
 
       if (this.nuhsa !== nuhsa) return;
 
       this._actualizarListadoAlergias(apiResponse.alergias ?? []);
-      this._actualizarListadoContraindicaciones(apiResponse.contraindicaciones ?? []);
+      this._actualizarListadoContraindicaciones(apiResponse.listaContraindic ?? []);
     } catch (e) {
       if (this.nuhsa !== nuhsa) return;
 
@@ -88,20 +99,20 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
   }
 
   private _actualizarListadoAlergias(alergias: Alergia[]) {
-    this.listadoAlergiasInicial = alergias.map((a, i) => ({
-      id: `al-${i}`,
-      nombre: a.descripcion,
-      nivelCerteza: String(a.estado),
-      fechaRegistro: formatearFechaAlergiasYContraindicaciones(a.fechaDeteccion),
+    this.listadoAlergiasInicial = alergias.map((alergia, index) => ({
+      id: `alergia-${index}`,
+      nombre: alergia.descripcion,
+      nivelCerteza: String(alergia.estado),
+      fechaRegistro: formatearFechaAlergiasYContraindicaciones(alergia.fechaDeteccion),
     }));
   }
 
-  private _actualizarListadoContraindicaciones(contra: Contraindicacion[]) {
-    this.listadoContraindicacionesInicial = contra.map((c, i) => ({
-      id: `co-${i}`,
-      nombre: c.descripcion,
-      nivelCerteza: String(c.estado),
-      fechaRegistro: formatearFechaAlergiasYContraindicaciones(c.fechaDeteccion),
+  private _actualizarListadoContraindicaciones(contraindicaciones: Contraindicacion[]) {
+    this.listadoContraindicacionesInicial = contraindicaciones.map((contraindicacion, index) => ({
+      id: `contraindicacion-${index}`,
+      nombre: contraindicacion.descripcion,
+      nivelCerteza: String(contraindicacion.estado),
+      fechaRegistro: formatearFechaAlergiasYContraindicaciones(contraindicacion.fechaDeteccion),
     }));
   }
 
@@ -138,6 +149,7 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
         new DataCellImpl({
           cellDetail: new StringDataCellDetailImpl({
             cellPropertyExpression: x => x.nivelCerteza,
+            dataFormater: ((s: string) => renderNivelCertezaTag(s)) as any,
           }),
         }),
         new DataCellImpl({
@@ -147,10 +159,5 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
         }),
       ],
     });
-  }
-
-  protected _onRowClick(e: Event) {
-    const row = (e as CustomEvent).detail?.data;
-    if (row) this.selectedRegistro = row;
   }
 }

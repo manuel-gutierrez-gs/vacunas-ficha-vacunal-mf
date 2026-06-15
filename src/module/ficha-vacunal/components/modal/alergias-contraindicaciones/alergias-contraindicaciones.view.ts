@@ -47,7 +47,6 @@ export class AlergiasContraindicacionesModalView extends AlergiasContraindicacio
                       .dataRow=${this.getDataRow()}
                       .dataSource=${lista as any}
                       .selectedKey=${this.selectedRegistro?.id ?? null}
-                      @table:detail=${this._onRowClick}
                     ></stic-table>
                   </div>
                 `}
