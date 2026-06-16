@@ -4,6 +4,8 @@ import { fetchAccionVacunalCached } from '@module/ficha-vacunal/adapter/api/acci
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
 
 import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
+import { PacienteContextRequestEvent } from '@shared/context/paciente-context';
+import type { PacienteContext } from '@shared/context/paciente-context';
 
 import {
   VacunasFichaVacunalMfError,
@@ -38,7 +40,6 @@ import {
   MF_EVENT_NAVIGATE_DETALLE,
   type MfNavigateDetalleEventDetail,
 } from '@shared/contract/vacunas-ficha-vacunal.contract';
-import type { VacunasFichaVacunalHost } from '@module/ficha-vacunal/host/vacunas-ficha-vacunal.host';
 
 export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
@@ -53,26 +54,44 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
   private loadGeneration = 0;
   private _loadedAccionId?: string;
+  private _unsubscribeContext?: () => void;
+
   connectedCallback(): void {
     super.connectedCallback();
     verifySticThemeLoaded();
 
-    if (!this.nuhsa) {
-      const router = this.closest('vacunas-ficha-vacunal-mf') as VacunasFichaVacunalHost;
-      if (router && router.nuhsa) {
-        this.nuhsa = router.nuhsa;
-      } else if (router && router.getAttribute('nuhsa')) {
-        this.nuhsa = router.getAttribute('nuhsa') ?? '';
-      }
-      if (router && router.runtimeConfig) {
-        this.runtimeConfig = router.runtimeConfig;
-      }
-    }
+    const event = new PacienteContextRequestEvent(this.handleContextChange, true);
+    this.dispatchEvent(event);
+    this._unsubscribeContext = event.unsubscribe;
+  }
 
-    void this.bootstrap();
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._unsubscribeContext) {
+      this._unsubscribeContext();
+      this._unsubscribeContext = undefined;
+    }
+  }
+
+  private handleContextChange = (context: PacienteContext): void => {
+    if (this.nuhsa !== context.nuhsa) {
+      this.nuhsa = context.nuhsa;
+    }
+    if (this.runtimeConfig !== context.runtimeConfig) {
+      this.runtimeConfig = context.runtimeConfig;
+    }
+  };
+
+  protected firstUpdated(changedProperties: Map<string | number | symbol, unknown>): void {
+    super.firstUpdated(changedProperties);
+    if (!this.nuhsa) {
+      // Force bootstrap on first update if nuhsa was not set, to show the error state.
+      void this.bootstrap();
+    }
   }
 
   updated(changed: Map<string, unknown>): void {
+    super.updated(changed);
     if (changed.has('nuhsa') || changed.has('runtimeConfig')) {
       void this.bootstrap();
     }

@@ -23,6 +23,8 @@ import { MF_EVENT_NAVIGATE_HOME } from '@shared/contract/vacunas-ficha-vacunal.c
 import { fetchAccionVacunalCached } from '@module/ficha-vacunal/adapter/api/accion-vacunal.api';
 import { resolveRuntimeConfig } from '@shared/index';
 import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
+import { PacienteContextRequestEvent } from '@shared/context/paciente-context';
+import type { PacienteContext } from '@shared/context/paciente-context';
 
 export class FichaVacunalDetalleViewModel extends LitElement {
   @state() aliasProductoInmunizacion?: string;
@@ -35,9 +37,14 @@ export class FichaVacunalDetalleViewModel extends LitElement {
 
   private _loadedId?: string;
   private runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
+  private _unsubscribeContext?: () => void;
 
   override connectedCallback(): void {
     super.connectedCallback();
+
+    const event = new PacienteContextRequestEvent(this.handleContextChange, true);
+    this.dispatchEvent(event);
+    this._unsubscribeContext = event.unsubscribe;
 
     const routerLocation = (this as { location?: RouterLocation }).location;
     const id = routerLocation?.params?.id;
@@ -52,6 +59,18 @@ export class FichaVacunalDetalleViewModel extends LitElement {
       this.loadDetalle(id);
     }
   }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._unsubscribeContext) {
+      this._unsubscribeContext();
+      this._unsubscribeContext = undefined;
+    }
+  }
+
+  private handleContextChange = (context: PacienteContext): void => {
+    this.runtimeConfig = context.runtimeConfig;
+  };
 
   private async loadDetalle(id: string): Promise<void> {
     const config = resolveRuntimeConfig(this.runtimeConfig);

@@ -12,6 +12,8 @@ import { fetchAlergiasContraindicacionesCached } from '../../adapter/api/alergia
 import type { VacunasAlergiaButtonVariant } from '../alergia-button/model/alergia-button-variant';
 import type { AlergiasContraindicacionesResponse } from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
 import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
+import { PacienteContextRequestEvent } from '@shared/context/paciente-context';
+import type { PacienteContext } from '@shared/context/paciente-context';
 
 export class FichaVacunalCabeceraViewModel extends LitElement {
   @property({ type: Object }) resumenPaciente: ResumenPaciente = {};
@@ -38,6 +40,27 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
   get nuhsaDisplay(): string {
     return this.resumenPaciente.nuhsa ?? '';
   }
+
+  private _unsubscribeContext?: () => void;
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    const event = new PacienteContextRequestEvent(this.handleContextChange, true);
+    this.dispatchEvent(event);
+    this._unsubscribeContext = event.unsubscribe;
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._unsubscribeContext) {
+      this._unsubscribeContext();
+      this._unsubscribeContext = undefined;
+    }
+  }
+
+  private handleContextChange = (context: PacienteContext): void => {
+    this.runtimeConfig = context.runtimeConfig;
+  };
 
   async updated(changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(changedProperties);
