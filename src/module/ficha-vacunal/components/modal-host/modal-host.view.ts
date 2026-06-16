@@ -22,7 +22,7 @@ export class VacunasModalHostView extends VacunasModalHostViewModel {
         .description=${this.modal.description || ''}
         .size=${this.modal.size || 'md'}
         .slotKey=${this.modal.slotKey}
-        @vacunas-modal:close=${this.handleClose}
+        @vacunas-modal:close=${this.handleCloseEvent}
       >
         ${renderer(this.modal.props)}
       </vacunas-modal>
