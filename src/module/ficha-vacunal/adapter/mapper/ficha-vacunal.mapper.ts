@@ -40,7 +40,10 @@ export function mapFichaVacunalResponse(data: unknown): FichaVacunalData {
       }),
     };
   } catch (cause) {
-    throw new VacunasFichaVacunalMfError('MAPPING_ERROR', `Error al mapear ficha vacunal: ${String(cause)}`);
+    throw new VacunasFichaVacunalMfError(
+      'MAPPING_ERROR',
+      `Error al mapear ficha vacunal: ${String(cause)}`
+    );
   }
 }
 
@@ -56,17 +59,14 @@ function mapInmunizacion(data: unknown): Inmunizacion {
     documentada: Boolean(inmu.documentada),
     efectosAdversosRegistrados: Boolean(inmu.efectosAdversosRegistrados),
     fecha: String(inmu.fecha ?? ''),
-    localizacion: loc
-      ? { codigo: loc.codigo, denominacion: loc.denominacion }
-      : undefined,
+    localizacion: loc ? { codigo: loc.codigo, denominacion: loc.denominacion } : undefined,
     negacionDePaciente: Boolean(inmu.negacionDePaciente),
     productoInmunizacion: {
       alias: producto?.alias ?? '',
       codigoSnomedCT: producto?.codigoSnomedCT,
     },
     situacion: inmu.situacion as SituacionEnum,
-    accionVacunalId:
-      inmu.accionVacunalId != null ? String(inmu.accionVacunalId) : undefined,
+    accionVacunalId: inmu.accionVacunalId != null ? String(inmu.accionVacunalId) : undefined,
     detalleSituacion: inmu.detalleSituacion as string | undefined,
   };
 }

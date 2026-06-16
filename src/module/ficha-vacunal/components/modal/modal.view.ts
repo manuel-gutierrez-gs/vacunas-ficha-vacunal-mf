@@ -1,4 +1,5 @@
-import { CSSResultGroup, CSSResultOrNative, html, TemplateResult } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative, TemplateResult } from 'lit';
+import { html } from 'lit';
 import '@sas/wc-stic-modal';
 import { VacunasModalTheme } from './css/modal-theme.css';
 import { VacunasModalViewModel } from './modal.viewmodel';

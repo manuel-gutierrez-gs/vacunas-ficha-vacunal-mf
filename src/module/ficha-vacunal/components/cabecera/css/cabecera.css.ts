@@ -1,4 +1,5 @@
-import { CSSResult, css, CSSResultOrNative } from 'lit';
+import type { CSSResult, CSSResultOrNative } from 'lit';
+import { css } from 'lit';
 
 export class FichaVacunalCabeceraThemeCss {
   static cssBase: CSSResult = css`

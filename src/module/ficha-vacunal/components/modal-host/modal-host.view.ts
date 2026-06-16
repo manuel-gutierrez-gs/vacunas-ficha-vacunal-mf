@@ -1,4 +1,5 @@
-import { html, nothing, TemplateResult } from 'lit';
+import type { TemplateResult } from 'lit';
+import { html, nothing } from 'lit';
 import { VacunasModalHostViewModel } from './modal-host.viewmodel';
 import '../modal/modal.view';
 

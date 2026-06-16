@@ -1,4 +1,5 @@
-import { css, CSSResult, CSSResultOrNative } from 'lit';
+import type { CSSResult, CSSResultOrNative } from 'lit';
+import { css } from 'lit';
 
 export class tarjeteroThemeCss {
   static cssBase: CSSResult = css`

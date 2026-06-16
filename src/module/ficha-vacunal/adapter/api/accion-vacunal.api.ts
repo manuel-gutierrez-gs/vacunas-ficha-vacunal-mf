@@ -3,6 +3,7 @@ import { httpGetJson } from '../http/http-client';
 import { mapAccionVacunalResponse } from '../mapper/accion-vacunal.mapper';
 import type { AccionVacunal } from '../../model/accion-vacunal.model';
 import { accionVacunalCache } from '../../cache/accion-vacunal.cache';
+import type { AccionVacunalDTO } from './dto/accion-vacunal.dto';
 
 export async function fetchAccionVacunalById(
   id: number,
@@ -10,7 +11,7 @@ export async function fetchAccionVacunalById(
 ): Promise<AccionVacunal> {
   const url = `${config.urlApiConfigAccionVacunal}/acciones/${id}`;
 
-  const raw = await httpGetJson<unknown>(url);
+  const raw = await httpGetJson<AccionVacunalDTO>(url);
 
   return mapAccionVacunalResponse(raw);
 }

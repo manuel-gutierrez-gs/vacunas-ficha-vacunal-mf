@@ -10,12 +10,16 @@ import {
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
 import { fetchAlergiasContraindicacionesCached } from '../../adapter/api/alergias-contraindicaciones.api';
 import type { VacunasAlergiaButtonVariant } from '../alergia-button/model/alergia-button-variant';
-import { AlergiasContraindicacionesResponse } from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
+import type { AlergiasContraindicacionesResponse } from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
+import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
 
 export class FichaVacunalCabeceraViewModel extends LitElement {
   @property({ type: Object }) resumenPaciente: ResumenPaciente = {};
 
   @property({ type: String }) alergiasVariant: VacunasAlergiaButtonVariant = 'loading';
+
+  private _loadedNuhsa?: string;
+  private runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
   get nombreCompleto(): string {
     const { nombre = '', apellidos = '' } = this.resumenPaciente;
@@ -35,8 +39,6 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
     return this.resumenPaciente.nuhsa ?? '';
   }
 
-  private _loadedNuhsa?: string;
-
   async updated(changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(changedProperties);
 
@@ -50,11 +52,12 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
 
   private async loadAlergiasVariant(nuhsa: string) {
     try {
-      const config = resolveRuntimeConfig((this as any).runtimeConfig);
+      const config = resolveRuntimeConfig(this.runtimeConfig);
       const response = await fetchAlergiasContraindicacionesCached(nuhsa, config);
       if (this.nuhsaDisplay !== nuhsa) return;
       this.alergiasVariant = this.calcularEstadoAlergias(response);
     } catch (error) {
+      console.error('Error al obtener alergias o contraindicaciones: ', error);
       if (this.nuhsaDisplay !== nuhsa) return;
       this.alergiasVariant = 'technical-error';
     }

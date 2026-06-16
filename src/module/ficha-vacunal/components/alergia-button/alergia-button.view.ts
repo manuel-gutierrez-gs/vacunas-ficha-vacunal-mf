@@ -1,4 +1,5 @@
-import { CSSResultGroup, CSSResultOrNative, html, nothing, TemplateResult } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative, TemplateResult } from 'lit';
+import { html, nothing } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '@sas/wc-stic-icon';

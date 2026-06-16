@@ -1,4 +1,5 @@
-import { CSSResult, CSSResultOrNative, css } from 'lit';
+import type { CSSResult, CSSResultOrNative } from 'lit';
+import { css } from 'lit';
 
 export class VacunasFichaVacunalRouterTheme {
   static cssBase: CSSResult = css`

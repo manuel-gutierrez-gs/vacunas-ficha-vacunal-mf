@@ -2,7 +2,6 @@ import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { puppeteerLauncher } from '@web/test-runner-puppeteer';
 import { fileURLToPath } from 'url';
 
-
 export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   files: 'test/**/*.test.ts',
   nodeResolve: true,
@@ -12,7 +11,9 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
     '@shared/': fileURLToPath(new URL('./src/shared/', import.meta.url)),
     '@module/': fileURLToPath(new URL('./src/module/', import.meta.url)),
   },
-  browsers: [puppeteerLauncher({ launchOptions: { args: ['--no-sandbox', '--disable-setuid-sandbox'] } })],
+  browsers: [
+    puppeteerLauncher({ launchOptions: { args: ['--no-sandbox', '--disable-setuid-sandbox'] } }),
+  ],
   plugins: [
     {
       name: 'resolve-ts-path-aliases',
@@ -71,8 +72,10 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
       },
     },
     esbuildPlugin({
-      ts: true, json: true, js: true, tsconfig: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
+      ts: true,
+      json: true,
+      js: true,
+      tsconfig: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
     }),
   ],
 });
-

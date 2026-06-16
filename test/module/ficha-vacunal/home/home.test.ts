@@ -48,7 +48,7 @@ describe('home layer', () => {
       return new Response('{}', { status: 200 });
     }) as typeof fetch;
 
-    const el = document.createElement('vacunas-ficha-vacunal-home') as any;
+    const el = document.createElement('vacunas-ficha-vacunal-home');
 
     el.nuhsa = 'NUHSA001';
     el.runtimeConfig = createMockConfig();
@@ -63,7 +63,7 @@ describe('home layer', () => {
   });
 
   it('error NUHSA_MISSING', async () => {
-    const el = document.createElement('vacunas-ficha-vacunal-home') as any;
+    const el = document.createElement('vacunas-ficha-vacunal-home');
 
     el.runtimeConfig = createMockConfig();
 
@@ -80,7 +80,7 @@ describe('home layer', () => {
       return new Response('not found', { status: 404 });
     }) as typeof fetch;
 
-    const el = document.createElement('vacunas-ficha-vacunal-home') as any;
+    const el = document.createElement('vacunas-ficha-vacunal-home');
 
     el.nuhsa = 'NUHSA001';
 

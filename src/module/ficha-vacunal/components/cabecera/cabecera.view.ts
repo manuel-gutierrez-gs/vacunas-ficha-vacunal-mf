@@ -1,4 +1,5 @@
-import { CSSResultGroup, CSSResultOrNative, html } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
+import { html } from 'lit';
 import { FichaVacunalCabeceraViewModel } from './cabecera.viewmodel';
 import { FichaVacunalCabeceraThemeCss } from './css/cabecera.css';
 import '@sas/wc-stic-divider';

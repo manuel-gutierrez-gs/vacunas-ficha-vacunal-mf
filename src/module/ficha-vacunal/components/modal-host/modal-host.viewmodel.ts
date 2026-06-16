@@ -1,7 +1,8 @@
-import { LitElement, TemplateResult } from 'lit';
+import type { TemplateResult } from 'lit';
+import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
-import { VacunasModalInstance } from './model/modal-instance.model';
-import { VacunasModalOpenEvent } from '../alergia-button/event/alergia-button-modal-open.event';
+import type { ModalSlotProps, SlotMap, VacunasModalInstance } from './model/modal-instance.model';
+import type { VacunasModalOpenEvent } from '../alergia-button/event/alergia-button-modal-open.event';
 import { VacunasModalCloseEvent } from '../modal/event/modal-close.event';
 
 export class VacunasModalHostViewModel extends LitElement {
@@ -9,13 +10,13 @@ export class VacunasModalHostViewModel extends LitElement {
 
   @state() protected modal: VacunasModalInstance | null = null;
 
-  protected slotRegistry: Record<string, (props?: Record<string, any>) => TemplateResult> = {};
+  protected slotRegistry: Record<string, (props?: unknown) => TemplateResult> = {};
 
-  public registerSlot(
-    key: string,
-    renderer: (props?: Record<string, any>) => TemplateResult
+  public registerSlot<K extends keyof SlotMap>(
+    key: K,
+    renderer: (props?: SlotMap[K]) => TemplateResult
   ): void {
-    this.slotRegistry[key] = renderer;
+    this.slotRegistry[key as string] = renderer as (props?: unknown) => TemplateResult;
   }
 
   private handleOpenEvent = (event: Event): void => {
@@ -31,7 +32,7 @@ export class VacunasModalHostViewModel extends LitElement {
       description: customEvent.detail.description,
       size: customEvent.detail.size,
       slotKey: customEvent.detail.slotKey,
-      props: customEvent.detail.props,
+      props: customEvent.detail.props as ModalSlotProps,
     };
   };
 

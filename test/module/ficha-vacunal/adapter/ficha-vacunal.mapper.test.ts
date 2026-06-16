@@ -37,7 +37,9 @@ describe('ficha-vacunal.mapper', () => {
     expect(mapped.franjasEdad).to.have.length(1);
     expect(mapped.franjasEdad[0].edad.numero).to.equal(6);
     expect(mapped.franjasEdad[0].inmunizaciones[0].calendario).to.equal('12');
-    expect(mapped.franjasEdad[0].inmunizaciones[0].productoInmunizacion.alias).to.equal('Hexavalente');
+    expect(mapped.franjasEdad[0].inmunizaciones[0].productoInmunizacion.alias).to.equal(
+      'Hexavalente'
+    );
   });
 
   it('lanza MAPPING_ERROR cuando la forma es inválida', () => {

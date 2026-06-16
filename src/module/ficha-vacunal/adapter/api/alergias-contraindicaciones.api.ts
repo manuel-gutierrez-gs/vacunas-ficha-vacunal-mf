@@ -24,7 +24,7 @@ export function fetchAlergiasContraindicacionesCached(
     return Promise.resolve(AlergiasContraindicacionesCache.get(nuhsa)!);
   }
 
-  const promise = fetchAlergiasContraindicaciones(nuhsa, config).catch((error) => {
+  const promise = fetchAlergiasContraindicaciones(nuhsa, config).catch(error => {
     AlergiasContraindicacionesCache.clear(nuhsa);
     throw error;
   });

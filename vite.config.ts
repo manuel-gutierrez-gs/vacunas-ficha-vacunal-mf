@@ -19,7 +19,7 @@ export default defineConfig({
 
   build: {
     lib: {
-      entry: 'src/index.ts',  
+      entry: 'src/index.ts',
       fileName: () => 'vacunas-ficha-vacunal-mf.js',
       formats: ['es'],
     },

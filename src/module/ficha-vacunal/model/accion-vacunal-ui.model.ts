@@ -1,5 +1,5 @@
 import type { AccionVacunal } from './accion-vacunal.model';
-import { DetalleFichaVacunalSeleccionada } from './detalle-ficha-vacunal-seleccionada.model';
+import type { DetalleFichaVacunalSeleccionada } from './detalle-ficha-vacunal-seleccionada.model';
 
 export interface AccionVacunalUI {
   detalleAccionVacunal: AccionVacunal;

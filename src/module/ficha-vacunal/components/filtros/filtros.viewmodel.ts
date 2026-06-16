@@ -1,20 +1,13 @@
-import {
-  CSSResultGroup,
-  CSSResultOrNative,
-  LitElement,
-} from 'lit';
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
+import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { FiltrosThemeCss } from './css/filtros.css';
 
-import type {
-  FilterChipDefinition,
-} from '../../model/ficha-vacunal-aggregate.model';
+import type { FilterChipDefinition } from '../../model/ficha-vacunal-aggregate.model';
 
 export class FiltrosViewModel extends LitElement {
-  static finalizeStyles = (
-    styles?: CSSResultGroup
-  ): CSSResultOrNative[] => [
+  static finalizeStyles = (styles?: CSSResultGroup): CSSResultOrNative[] => [
     ...super.finalizeStyles(styles),
     ...FiltrosThemeCss.filtrosThemeCss,
   ];
@@ -22,9 +15,7 @@ export class FiltrosViewModel extends LitElement {
   @property({ attribute: false }) filterSet: FilterChipDefinition[] = [];
 
   protected onValuesChanged(e: CustomEvent): void {
-    const selectedValues = this.parseSelectedValuesFromFiltersArea(
-      e.detail
-    );
+    const selectedValues = this.parseSelectedValuesFromFiltersArea(e.detail);
 
     this.dispatchEvent(
       new CustomEvent('filtros-actualizados', {
@@ -36,9 +27,7 @@ export class FiltrosViewModel extends LitElement {
   }
 
   protected onSetDefault(e: CustomEvent): void {
-    const defaultValues = this.parseSelectedValuesFromFiltersArea(
-      e.detail
-    );
+    const defaultValues = this.parseSelectedValuesFromFiltersArea(e.detail);
 
     this.dispatchEvent(
       new CustomEvent('filtros-eliminados', {
@@ -49,9 +38,7 @@ export class FiltrosViewModel extends LitElement {
     );
   }
 
-  protected parseSelectedValuesFromFiltersArea(
-    detail: unknown[]
-  ): string[] {
+  protected parseSelectedValuesFromFiltersArea(detail: unknown[]): string[] {
     return detail
       .map((filtro: unknown) => {
         const f = filtro as {
@@ -63,9 +50,7 @@ export class FiltrosViewModel extends LitElement {
 
         if (Array.isArray(valor)) {
           return valor.map((item: unknown) =>
-            this.getDomainIdFromFiltro(
-              (item as { idFilter: string }).idFilter
-            )
+            this.getDomainIdFromFiltro((item as { idFilter: string }).idFilter)
           );
         }
 

@@ -1,7 +1,7 @@
 import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
-import type { FranjaEdad, Inmunizacion } from '../../model/ficha-vacunal.model';
+import type { FranjaEdad } from '../../model/ficha-vacunal.model';
 import { filterFranjasBySeleccion } from '../../service/franja-filter.service';
 import { unidadEdadToTexto } from '../../model/ficha-vacunal.model';
 

@@ -1,4 +1,5 @@
-import { CSSResultGroup, CSSResultOrNative, html } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
+import { html } from 'lit';
 import { VacunasFichaVacunalRouterTheme } from './css/vacunas-ficha-vacunal-router-theme.css';
 import { VacunasFichaVacunalRouterViewModel } from './vacunas-ficha-vacunal-router.viewmodel';
 

@@ -1,4 +1,5 @@
-import { html, CSSResultGroup, CSSResultOrNative } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
+import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { FichaVacunalDetalleViewModel } from './detalle.viewmodel';
 import { FichaVacunalDetalleTheme } from './css/detalle.css';

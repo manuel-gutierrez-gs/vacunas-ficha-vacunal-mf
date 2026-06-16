@@ -1,17 +1,18 @@
-export interface AccionVacunal {
-  domainId?: string;
+import type {
+  DatosNoVacunacionDTO,
+  DatosProgramacionDTO,
+  DatosVacunacionDTO,
+} from '../adapter/api/dto/accion-vacunal.dto';
 
-  tipoAccionVacunal:
-    | 'VACUNACION'
-    | 'NO_VACUNACION'
-    | 'PROGRAMACION';
+export interface AccionVacunal {
+  domainId?: number;
+
+  tipoAccionVacunal: 'VACUNACION' | 'NO_VACUNACION' | 'PROGRAMACION';
 
   calendario?: string;
-
   fechaAccion?: string;
 
   comentarios?: string;
-
   descripcion?: string;
 
   localizacion?: {
@@ -29,7 +30,7 @@ export interface AccionVacunal {
     alias?: string;
   };
 
-  datosVacunacion?: any;
-  datosNoVacunacion?: any;
-  datosProgramacion?: any;
+  datosVacunacion?: DatosVacunacionDTO;
+  datosNoVacunacion?: DatosNoVacunacionDTO;
+  datosProgramacion?: DatosProgramacionDTO;
 }

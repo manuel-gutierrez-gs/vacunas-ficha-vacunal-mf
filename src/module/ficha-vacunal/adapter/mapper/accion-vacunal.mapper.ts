@@ -1,7 +1,7 @@
 import type { AccionVacunal } from '../../model/accion-vacunal.model';
+import type { AccionVacunalDTO } from '../api/dto/accion-vacunal.dto';
 
-export function mapAccionVacunalResponse(data: any): AccionVacunal {
-
+export function mapAccionVacunalResponse(data: AccionVacunalDTO): AccionVacunal {
   const base = {
     domainId: data.domainId,
     fechaAccion: data.fechaAccion,
@@ -13,7 +13,6 @@ export function mapAccionVacunalResponse(data: any): AccionVacunal {
   };
 
   switch (data.tipoAccionVacunal) {
-
     case 'VACUNACION':
       return {
         ...base,
@@ -39,8 +38,6 @@ export function mapAccionVacunalResponse(data: any): AccionVacunal {
       };
 
     default:
-      throw new Error(
-        `Tipo desconocido: ${data.tipoAccionVacunal}`
-      );
+      throw new Error(`Tipo desconocido: ${data.tipoAccionVacunal}`);
   }
 }

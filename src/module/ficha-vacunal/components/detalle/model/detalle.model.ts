@@ -78,3 +78,23 @@ export const DEFAULT_LUGAR_VACUNACION: LugarVacunacion = 'andalucia';
 export const DEFAULT_LOTE_CONOCIDO: LoteConocido = 'si';
 
 export const DEFAULT_TIPO_LOTE_DOCUMENTADO: TipoLoteDocumentado = 'registrado';
+
+export interface RouterLocation {
+  params?: {
+    id?: string;
+    situacion?: string;
+  };
+}
+
+export interface RadioItem {
+  checked: boolean;
+  value: TipoAccion;
+  disabled: boolean;
+  label: string;
+}
+
+export interface RadioGroupChangeDetail {
+  radioItems: RadioItem[];
+  group: string;
+  valid: boolean;
+}

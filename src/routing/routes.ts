@@ -1,4 +1,5 @@
-import { SticRoute, sticBaseRoutes } from '@sas/lib-stic-route';
+import type { SticRoute } from '@sas/lib-stic-route';
+import { sticBaseRoutes } from '@sas/lib-stic-route';
 
 export const ROUTES: SticRoute[] = [
   {

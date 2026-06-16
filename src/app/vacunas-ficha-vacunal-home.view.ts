@@ -42,9 +42,19 @@ export class VacunasFichaVacunalHomeView extends VacunasFichaVacunalHomeViewMode
             <div class="mf-root__header-title">Ficha Vacunación</div>
 
             <div class="mf-root__header-actions">
-              <stic-icon-button class="mf-root__actions-button" icon="settings" size="md" disabled></stic-icon-button>
+              <stic-icon-button
+                class="mf-root__actions-button"
+                icon="settings"
+                size="md"
+                disabled
+              ></stic-icon-button>
               <stic-divider vertical></stic-divider>
-              <stic-icon-button class="mf-root__actions-button" icon="download" size="md" disabled></stic-icon-button>
+              <stic-icon-button
+                class="mf-root__actions-button"
+                icon="download"
+                size="md"
+                disabled
+              ></stic-icon-button>
               <stic-button
                 label="Nueva vacuna aislada"
                 variant="primary"

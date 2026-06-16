@@ -18,6 +18,9 @@ export function mapConfiguracionPacienteResponse(data: unknown): ConfiguracionPa
       }),
     };
   } catch (cause) {
-    throw new VacunasFichaVacunalMfError('MAPPING_ERROR', `Error al mapear configuración paciente: ${String(cause)}`);
+    throw new VacunasFichaVacunalMfError(
+      'MAPPING_ERROR',
+      `Error al mapear configuración paciente: ${String(cause)}`
+    );
   }
 }

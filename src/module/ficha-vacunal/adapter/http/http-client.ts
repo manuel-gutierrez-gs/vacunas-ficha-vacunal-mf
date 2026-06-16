@@ -1,5 +1,4 @@
 import { VacunasFichaVacunalMfError } from '@shared/errors/mf-error';
-import { html } from 'lit';
 
 export async function httpGetJson<T>(url: string): Promise<T> {
   let response: Response;

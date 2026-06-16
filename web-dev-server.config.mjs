@@ -12,7 +12,10 @@ export default /** @type {import('@web/dev-server').DevServerConfig} */ ({
 
   plugins: [
     esbuildPlugin({
-      ts: true, json: true, js: true, tsconfig: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
+      ts: true,
+      json: true,
+      js: true,
+      tsconfig: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
     }),
   ],
 

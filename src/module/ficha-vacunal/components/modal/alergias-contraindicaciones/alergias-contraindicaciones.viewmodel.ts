@@ -9,12 +9,12 @@ import {
   StringDataCellDetailImpl,
 } from '@sas/wc-stic-table';
 
-import {
+import type {
   SticSegmentedControlDataSource,
   SticSegmentedControlClickEventData,
 } from '@sas/wc-stic-segmented-control';
 
-import {
+import type {
   Alergia,
   Contraindicacion,
 } from '@module/ficha-vacunal/model/alergias-y-contraindicaciones.model';
@@ -26,25 +26,16 @@ import {
 
 import { resolveRuntimeConfig } from '@shared/config/runtime-config';
 import { fetchAlergiasContraindicacionesCached } from '@module/ficha-vacunal/adapter/api/alergias-contraindicaciones.api';
-
-export interface RegistroAlergiaContraindicacion {
-  id: string;
-  nombre: string;
-  nivelCerteza: string;
-  fechaRegistro: string;
-}
+import type { VacunasFichaVacunalRuntimeConfig } from '@shared/config/runtime-config';
+import type { RegistroAlergiaContraindicacion } from './model/mode-alergias-contraindicaciones.model';
 
 export class AlergiasContraindicacionesViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
-
-  @property({ type: Array }) listadoAlergiasInicial: any[] = [];
-
-  @property({ type: Array }) listadoContraindicacionesInicial: any[] = [];
-
+  @property({ type: Array }) listadoAlergiasInicial: RegistroAlergiaContraindicacion[] = [];
+  @property({ type: Array }) listadoContraindicacionesInicial: RegistroAlergiaContraindicacion[] =
+    [];
   @property({ type: Boolean }) isLoading = false;
-
   @property({ type: String }) errorMessage = '';
-
   @property({ type: Object }) selectedRegistro: RegistroAlergiaContraindicacion | null = null;
 
   protected selectedTab: 'alergias' | 'contraindicaciones' = 'alergias';
@@ -55,6 +46,7 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
   ];
 
   private _loadedNuhsa?: string;
+  private runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
   updated(changedProperties: Map<string | symbol, unknown>) {
     super.updated(changedProperties);
@@ -77,14 +69,15 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
     this.isLoading = true;
 
     try {
-      const config = resolveRuntimeConfig((this as any).runtimeConfig);
+      const config = resolveRuntimeConfig(this.runtimeConfig);
       const apiResponse = await fetchAlergiasContraindicacionesCached(nuhsa, config);
 
       if (this.nuhsa !== nuhsa) return;
 
       this._actualizarListadoAlergias(apiResponse.alergias ?? []);
       this._actualizarListadoContraindicaciones(apiResponse.listaContraindic ?? []);
-    } catch (e) {
+    } catch (error) {
+      console.error('Error al obtener alergias o contraindicaciones: ', error);
       if (this.nuhsa !== nuhsa) return;
 
       this.errorMessage =
@@ -149,7 +142,9 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
         new DataCellImpl({
           cellDetail: new StringDataCellDetailImpl({
             cellPropertyExpression: x => x.nivelCerteza,
-            dataFormater: ((s: string) => renderNivelCertezaTag(s)) as any,
+            dataFormater: ((s: string) => renderNivelCertezaTag(s)) as unknown as (
+              value: string
+            ) => string,
           }),
         }),
         new DataCellImpl({

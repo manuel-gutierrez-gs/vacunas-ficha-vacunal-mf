@@ -8,9 +8,7 @@ export interface TarjetaIcon {
   icon: string | { name: string; path: string; viewbox: string };
 }
 
-export const SITUACION_TAG_MAP: Partial<
-  Record<SituacionEnum, { color: string; icon: string }>
-> = {
+export const SITUACION_TAG_MAP: Partial<Record<SituacionEnum, { color: string; icon: string }>> = {
   [SituacionEnum.ADMINISTRADA]: { color: 'green', icon: 'check_circle' },
   [SituacionEnum.ATRASADA]: { color: 'orange', icon: 'warning' },
   [SituacionEnum.EXCLUIDA]: { color: 'red', icon: 'error' },
@@ -25,4 +23,11 @@ export interface TarjetaSelectedPayload {
   accionVacunalId?: string;
   productoInmunizacionAlias?: string;
   situacionEnum?: string;
+}
+
+export interface TagItem {
+  value: string;
+  text: string;
+  icon: string;
+  color: string;
 }

@@ -1,4 +1,4 @@
-import { VacunasModalInstance } from '../../modal-host/model/modal-instance.model';
+import type { VacunasModalInstance } from '../../modal-host/model/modal-instance.model';
 
 export class VacunasModalOpenEvent extends CustomEvent<VacunasModalInstance> {
   static readonly eventName = 'vacunas-modal:open';

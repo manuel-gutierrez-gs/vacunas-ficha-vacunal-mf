@@ -18,5 +18,4 @@ export class FichaVacunalSheetViewModel extends LitElement {
   get itemsReacciones() {
     return this.model.reacciones;
   }
-
 }

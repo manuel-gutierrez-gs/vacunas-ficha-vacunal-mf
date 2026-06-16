@@ -1,4 +1,5 @@
-import { CSSResult, CSSResultOrNative, css } from 'lit';
+import type { CSSResult, CSSResultOrNative } from 'lit';
+import { css } from 'lit';
 
 export class FiltrosThemeCss {
   static cssBase: CSSResult = css`
@@ -7,7 +8,5 @@ export class FiltrosThemeCss {
     }
   `;
 
-  static filtrosThemeCss: CSSResultOrNative[] = [
-    FiltrosThemeCss.cssBase,
-  ];
+  static filtrosThemeCss: CSSResultOrNative[] = [FiltrosThemeCss.cssBase];
 }

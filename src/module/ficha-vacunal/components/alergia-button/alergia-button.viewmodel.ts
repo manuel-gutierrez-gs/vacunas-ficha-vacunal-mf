@@ -1,25 +1,23 @@
 import { isNotStringEmpty, isStringEmpty } from '@sas/lib-stic-kernel';
-import { FontType } from '@sas/wc-stic-icon';
+import type { FontType } from '@sas/wc-stic-icon';
+import type { SticRippleView } from '@sas/wc-stic-ripple';
 import {
   SticMWCRippleAddEventListener,
   SticMWCRippleHandler,
   SticMWCRippleRemoveEventListener,
-  SticRippleView,
 } from '@sas/wc-stic-ripple';
 import { html, LitElement } from 'lit';
 import { property, queryAsync } from 'lit/decorators.js';
-import { ClassInfo } from 'lit/directives/class-map.js';
-import type { ButtonSize } from './model/alergia-button.model';
-import {
-  VARIANT_CONFIG,
+import type { ClassInfo } from 'lit/directives/class-map.js';
+import type { AlergiasContraindicacionesSlotProps, ButtonSize } from './model/alergia-button.model';
+import type {
   VacunasAlergiaButtonVariant,
   VacunasAlergiaButtonVariantConfig,
 } from './model/alergia-button-variant';
+import { VARIANT_CONFIG } from './model/alergia-button-variant';
 import { VacunasModalHostViewModel } from '../modal-host/modal-host.viewmodel';
-import {
-  VacunasModalOpenEvent,
-  VacunasModalOpenEventData,
-} from './event/alergia-button-modal-open.event';
+import type { VacunasModalOpenEventData } from './event/alergia-button-modal-open.event';
+import { VacunasModalOpenEvent } from './event/alergia-button-modal-open.event';
 import '../modal/alergias-contraindicaciones/alergias-contraindicaciones.view';
 
 export class VacunasAlergiaButtonViewModel extends LitElement {
@@ -43,11 +41,11 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
     super.connectedCallback();
     SticMWCRippleAddEventListener(this, this.rippleHandlers);
 
-    const host = VacunasModalHostViewModel.instance;
+    const modalHost = VacunasModalHostViewModel.instance;
 
-    host?.registerSlot(
+    modalHost?.registerSlot(
       'alergias-contraindicaciones',
-      (props?: Record<string, any>) => html`
+      (props?: AlergiasContraindicacionesSlotProps) => html`
         <vacunas-alergias-contraindicaciones-modal
           .nuhsa=${props?.nuhsa ?? ''}
         ></vacunas-alergias-contraindicaciones-modal>
@@ -87,7 +85,7 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
   }
 
   protected clickHandler(_e: Event) {
-    const payload: VacunasModalOpenEventData = {
+    const payload: VacunasModalOpenEventData<AlergiasContraindicacionesSlotProps> = {
       id: 'alergias-modal',
       slotKey: 'alergias-contraindicaciones',
       title: 'Alergias y contraindicaciones',

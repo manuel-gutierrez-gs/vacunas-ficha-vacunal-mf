@@ -1,4 +1,5 @@
-import { css, CSSResult } from 'lit';
+import type { CSSResult } from 'lit';
+import { css } from 'lit';
 
 export class FichaVacunalDetalleTheme {
   static base: CSSResult = css`

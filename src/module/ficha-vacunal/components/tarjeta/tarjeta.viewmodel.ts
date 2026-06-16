@@ -1,8 +1,8 @@
+import type { SticRippleView } from '@sas/wc-stic-ripple';
 import {
   SticMWCRippleAddEventListener,
   SticMWCRippleHandler,
   SticMWCRippleRemoveEventListener,
-  SticRippleView,
 } from '@sas/wc-stic-ripple';
 import { LitElement, html } from 'lit';
 import { property, queryAsync } from 'lit/decorators.js';
@@ -13,13 +13,9 @@ import {
   type Inmunizacion,
 } from '../../model/ficha-vacunal.model';
 
-import {
-  SITUACION_TAG_MAP,
-  type TarjetaIcon,
-} from './model/tarjeta.model';
+import { SITUACION_TAG_MAP, type TagItem, type TarjetaIcon } from './model/tarjeta.model';
 
 export class TarjetaViewModel extends LitElement {
-
   @property({ attribute: false }) data!: Inmunizacion;
 
   @queryAsync('stic-ripple')
@@ -68,8 +64,7 @@ export class TarjetaViewModel extends LitElement {
 
     return {
       'ficha-vacunal-card': true,
-      'ficha-vacunal-card--administrada':
-        situacion === SituacionEnum.ADMINISTRADA && !aislada,
+      'ficha-vacunal-card--administrada': situacion === SituacionEnum.ADMINISTRADA && !aislada,
       'ficha-vacunal-card--administrada-aislada':
         situacion === SituacionEnum.ADMINISTRADA && aislada,
       'ficha-vacunal-card--no-administrada':
@@ -77,18 +72,14 @@ export class TarjetaViewModel extends LitElement {
       'ficha-vacunal-card--no-administrada-aislada':
         situacion === SituacionEnum.NO_ADMINISTRADA && aislada,
       'ficha-vacunal-card--pendiente':
-        (
-          situacion === SituacionEnum.FUERA_PLAZO ||
+        (situacion === SituacionEnum.FUERA_PLAZO ||
           situacion === SituacionEnum.PENDIENTE_EN_PLAZO ||
           situacion === SituacionEnum.PENDIENTE_AUN_NO_EN_PLAZO ||
-          situacion === SituacionEnum.PENDIENTE_PRIMERA_DOSIS
-        ) && !aislada,
-      'ficha-vacunal-card--excluida':
-        situacion === SituacionEnum.EXCLUIDA && !aislada,
-      'ficha-vacunal-card--excluida-aislada':
-        situacion === SituacionEnum.EXCLUIDA && aislada,
-      'ficha-vacunal-card--programada':
-        situacion === SituacionEnum.PROGRAMADA && aislada,
+          situacion === SituacionEnum.PENDIENTE_PRIMERA_DOSIS) &&
+        !aislada,
+      'ficha-vacunal-card--excluida': situacion === SituacionEnum.EXCLUIDA && !aislada,
+      'ficha-vacunal-card--excluida-aislada': situacion === SituacionEnum.EXCLUIDA && aislada,
+      'ficha-vacunal-card--programada': situacion === SituacionEnum.PROGRAMADA && aislada,
     };
   }
 
@@ -111,19 +102,14 @@ export class TarjetaViewModel extends LitElement {
       { condition: !!d.negacionDePaciente, value: 'Negación', icon: 'person_cancel' },
     ];
 
-    return configs
-      .filter(c => c.condition)
-      .map(({ value, icon }) => ({ value, icon }));
+    return configs.filter(c => c.condition).map(({ value, icon }) => ({ value, icon }));
   }
 
   protected getTagSetDataSource() {
-    const tags: any[] = [];
+    const tags: TagItem[] = [];
     const situacion = this.data?.situacion;
 
-    if (
-      situacion &&
-      situacion !== SituacionEnum.PENDIENTE_PRIMERA_DOSIS
-    ) {
+    if (situacion && situacion !== SituacionEnum.PENDIENTE_PRIMERA_DOSIS) {
       const cfg = SITUACION_TAG_MAP[situacion];
       if (cfg) {
         tags.push({
@@ -153,12 +139,7 @@ export class TarjetaViewModel extends LitElement {
     }
 
     return html`
-      <svg
-        viewBox=${cardIcon.icon.viewbox}
-        width="20"
-        height="20"
-        fill="currentColor"
-      >
+      <svg viewBox=${cardIcon.icon.viewbox} width="20" height="20" fill="currentColor">
         <path d=${cardIcon.icon.path}></path>
       </svg>
     `;

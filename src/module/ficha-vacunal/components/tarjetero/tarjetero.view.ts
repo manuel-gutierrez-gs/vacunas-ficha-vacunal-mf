@@ -1,5 +1,5 @@
-
-import { CSSResultGroup, CSSResultOrNative, html } from 'lit';
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
+import { html } from 'lit';
 
 import { TarjeteroViewModel } from './tarjetero.viewmodel';
 import { tarjeteroThemeCss } from './css/tarjetero.css';
@@ -29,17 +29,12 @@ export class TarjeteroView extends TarjeteroViewModel {
                 <div class="ficha-vacunal-tarjetero__cards">
                   ${franja.inmunizaciones.map(vacunaData => {
                     return html`
-                      <ficha-vacunal-tarjeta
-                        .data=${vacunaData}
-                      ></ficha-vacunal-tarjeta>
+                      <ficha-vacunal-tarjeta .data=${vacunaData}></ficha-vacunal-tarjeta>
                     `;
                   })}
                 </div>
 
-                ${index !== franjas.length - 1
-                    ? html`<stic-divider></stic-divider>`
-                    : null}
-
+                ${index !== franjas.length - 1 ? html`<stic-divider></stic-divider>` : null}
               </div>
             `
           )}

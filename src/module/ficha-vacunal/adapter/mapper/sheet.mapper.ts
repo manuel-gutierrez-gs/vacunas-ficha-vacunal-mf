@@ -2,6 +2,9 @@ import { html } from 'lit';
 import type { AccionVacunalUI } from '../../model/accion-vacunal-ui.model';
 import { formatDate } from '../../utils/date.utils';
 import { getNombreProfesional, capitalize } from '../../utils/string.utils';
+import type { ReaccionAdversaDTO } from '../api/dto/reaccion-adversa.dto';
+
+type SheetModeInput = AccionVacunalUI['detalleFichaVacunalSeleccionada'];
 
 export interface SheetItem {
   id: string;
@@ -25,9 +28,7 @@ type SheetMode =
   | 'EXCLUIDA'
   | 'NEGACION';
 
-export function mapAccionVacunalToSheetModel(
-  accion: AccionVacunalUI | null
-): SheetModel {
+export function mapAccionVacunalToSheetModel(accion: AccionVacunalUI | null): SheetModel {
   if (!accion) {
     return { datosSuperiores: [], reacciones: [] };
   }
@@ -42,7 +43,8 @@ export function mapAccionVacunalToSheetModel(
     id: 'calendario',
     data: {
       headline: 'Calendario',
-      supportingText: accion.calendarioNombre || html`<stic-tag text="Aislada" color="grey"></stic-tag>`,
+      supportingText:
+        accion.calendarioNombre || html`<stic-tag text="Aislada" color="grey"></stic-tag>`,
     },
   });
 
@@ -50,7 +52,7 @@ export function mapAccionVacunalToSheetModel(
     id: 'accion',
     data: {
       headline: 'Acción',
-      supportingText: capitalize(d.tipoAccionVacunal)  ?? 'Sin especificar',
+      supportingText: capitalize(d.tipoAccionVacunal) ?? 'Sin especificar',
     },
   });
 
@@ -58,8 +60,7 @@ export function mapAccionVacunalToSheetModel(
     id: 'profesional',
     data: {
       headline: 'Profesional',
-      supportingText:
-        getNombreProfesional(d.profesional) || 'Sin profesional asignado',
+      supportingText: getNombreProfesional(d.profesional) || 'Sin profesional asignado',
     },
   });
 
@@ -150,7 +151,8 @@ export function mapAccionVacunalToSheetModel(
         id: 'contraindicacion',
         data: {
           headline: 'Contraindicación',
-          supportingText: d.datosNoVacunacion?.contraindicacion.detalleContraindicacion ?? 'Sin especificar',
+          supportingText:
+            d.datosNoVacunacion?.contraindicacion?.detalleContraindicacion ?? 'Sin especificar',
         },
       });
 
@@ -188,7 +190,7 @@ export function mapAccionVacunalToSheetModel(
   return {
     datosSuperiores,
     reacciones:
-      d.datosVacunacion?.reaccionesAdversas?.map((item: any, index: number) => ({
+      d.datosVacunacion?.reaccionesAdversas?.map((item: ReaccionAdversaDTO, index: number) => ({
         id: String(index + 1),
         data: {
           headline: item.nombre,
@@ -198,16 +200,7 @@ export function mapAccionVacunalToSheetModel(
   };
 }
 
-function hasDocumentada(accion: AccionVacunalUI): boolean {
-  return Boolean((accion as any)?.detalleAccionVacunal?.documentada);
-}
-
-function hasPrivada(accion: AccionVacunalUI): boolean {
-  return Boolean((accion as any)?.detalleAccionVacunal?.administradaPorEntePrivado);
-}
-
-function resolveMode(d: any): SheetMode {
-
+function resolveMode(d: SheetModeInput): SheetMode {
   if (d.negacionDePaciente) return 'NEGACION';
 
   if (d.situacion === 'EXCLUIDA') return 'EXCLUIDA';
@@ -225,5 +218,4 @@ function resolveMode(d: any): SheetMode {
   }
 
   return 'ADMINISTRADA';
-
 }

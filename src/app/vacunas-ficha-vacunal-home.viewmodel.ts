@@ -38,6 +38,7 @@ import {
   MF_EVENT_NAVIGATE_DETALLE,
   type MfNavigateDetalleEventDetail,
 } from '@shared/contract/vacunas-ficha-vacunal.contract';
+import type { VacunasFichaVacunalHost } from '@module/ficha-vacunal/host/vacunas-ficha-vacunal.host';
 
 export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
@@ -57,11 +58,11 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
     verifySticThemeLoaded();
 
     if (!this.nuhsa) {
-      const router = this.closest('vacunas-ficha-vacunal-mf') as any;
+      const router = this.closest('vacunas-ficha-vacunal-mf') as VacunasFichaVacunalHost;
       if (router && router.nuhsa) {
         this.nuhsa = router.nuhsa;
       } else if (router && router.getAttribute('nuhsa')) {
-        this.nuhsa = router.getAttribute('nuhsa');
+        this.nuhsa = router.getAttribute('nuhsa') ?? '';
       }
       if (router && router.runtimeConfig) {
         this.runtimeConfig = router.runtimeConfig;

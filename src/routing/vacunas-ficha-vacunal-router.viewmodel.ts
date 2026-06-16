@@ -1,16 +1,18 @@
-import { SticRoute, SticRouterViewModel } from '@sas/lib-stic-route';
+import type { SticRoute } from '@sas/lib-stic-route';
+import { SticRouterViewModel } from '@sas/lib-stic-route';
 import { ROUTES } from './routes';
 import { property } from 'lit/decorators.js';
 
+import type { MfNavigateDetalleEventDetail } from '@shared/contract/vacunas-ficha-vacunal.contract';
 import {
   MF_EVENT_NAVIGATE_HOME,
   MF_EVENT_NAVIGATE_DETALLE,
-  MfNavigateDetalleEventDetail,
 } from '@shared/contract/vacunas-ficha-vacunal.contract';
+import type { VacunasFichaVacunalRuntimeConfig } from '@shared/index';
 
 export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
   @property({ type: String }) route = '';
-  @property({ attribute: false }) runtimeConfig?: any;
+  @property({ attribute: false }) runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
   protected _routes: SticRoute[] = ROUTES;
 

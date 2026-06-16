@@ -16,7 +16,7 @@ export const vacunasFichaVacunalHomeStyles = [
     }
 
     .mf-root__body {
-      background-color: #FFF;
+      background-color: #fff;
       border-radius: 25px;
       flex: 1;
       margin: 1.5em;
