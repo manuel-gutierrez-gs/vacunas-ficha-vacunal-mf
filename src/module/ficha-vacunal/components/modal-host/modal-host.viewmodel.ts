@@ -15,7 +15,7 @@ export class VacunasModalHostViewModel extends LitElement {
 
   @state() protected modal: VacunasModalInstance | null = null;
 
-  private _nuhsa?: string;
+  public _nuhsa?: string;
   private _unsubscribeContext?: () => void;
 
   protected isResetting = false;
