@@ -18,6 +18,7 @@ export default defineConfig({
   },
 
   build: {
+    minify: 'esbuild',
     lib: {
       entry: 'src/index.ts',
       fileName: () => 'vacunas-ficha-vacunal-mf.js',
@@ -25,10 +26,9 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: ['lit', /^lit\//, /^@sas\//],
+      external: [/^lit/, /^@material\//, /^@sas\//],
       output: {
-        entryFileNames: 'vacunas-ficha-vacunal-mf.js',
-        chunkFileNames: 'assets/[name].js',
+        inlineDynamicImports: true,
       },
     },
   },

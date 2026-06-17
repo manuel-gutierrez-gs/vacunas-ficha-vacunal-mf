@@ -3,10 +3,8 @@ import { css } from 'lit';
 export const vacunasFichaVacunalHomeStyles = [
   css`
     :host {
-      background-color: rgb(238, 238, 238);
       display: block;
       font-family: 'Noto Sans', sans-serif;
-      min-height: 200px;
     }
 
     .mf-root {
@@ -19,7 +17,6 @@ export const vacunasFichaVacunalHomeStyles = [
       background-color: #fff;
       border-radius: 25px;
       flex: 1;
-      margin: 1.5em;
       overflow: hidden;
       padding: 1.5em;
     }
