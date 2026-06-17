@@ -1,7 +1,4 @@
-import type { Inmunizacion } from '../../../model/ficha-vacunal.model';
 import { SituacionEnum } from '../../../model/ficha-vacunal.model';
-
-export type TarjetaData = Inmunizacion;
 
 export interface TarjetaIcon {
   value: string;
@@ -18,12 +15,6 @@ export const SITUACION_TAG_MAP: Partial<Record<SituacionEnum, { color: string; i
   [SituacionEnum.PENDIENTE_AUN_NO_EN_PLAZO]: { color: 'orange', icon: 'warning' },
   [SituacionEnum.PROGRAMADA]: { color: 'orange', icon: 'schedule' },
 };
-
-export interface TarjetaSelectedPayload {
-  accionVacunalId?: string;
-  productoInmunizacionAlias?: string;
-  situacionEnum?: string;
-}
 
 export interface TagItem {
   value: string;

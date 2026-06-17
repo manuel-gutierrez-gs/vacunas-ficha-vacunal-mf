@@ -1,42 +1,4 @@
-import {
-  EstadoAlergiaContraindicacion,
-  TipoAlergiaContraindicacion,
-} from '../model/alergias-y-contraindicaciones.model';
-
 import { html } from 'lit';
-
-export function estadoAlergiaContraindicacionToTexto(
-  estado: EstadoAlergiaContraindicacion | string | undefined
-): string {
-  switch (estado) {
-    case EstadoAlergiaContraindicacion.PROPUESTA:
-      return 'Sospecha';
-
-    case EstadoAlergiaContraindicacion.ACEPTADA:
-      return 'Confirmada';
-
-    case EstadoAlergiaContraindicacion.RECHAZADA:
-      return 'Rechazada';
-
-    default:
-      return 'Desconocido';
-  }
-}
-
-export function tipoAlergiaContraindicacionToTexto(
-  tipo: TipoAlergiaContraindicacion | string | undefined
-): string {
-  switch (tipo) {
-    case TipoAlergiaContraindicacion.PRINCIPIO_ACTIVO:
-      return 'Principio activo';
-
-    case TipoAlergiaContraindicacion.MEDICAMENTO:
-      return 'Medicamento';
-
-    default:
-      return '';
-  }
-}
 
 export function formatearFechaAlergiasYContraindicaciones(fecha: string): string {
   const fechaLimpia = fecha.replace('[UTC]', '');
