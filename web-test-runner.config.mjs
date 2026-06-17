@@ -14,6 +14,10 @@ export default /** @type {import("@web/test-runner").TestRunnerConfig} */ ({
   browsers: [
     puppeteerLauncher({ launchOptions: { args: ['--no-sandbox', '--disable-setuid-sandbox'] } }),
   ],
+  coverageConfig: {
+    include: ['src/**/*'],
+    exclude: ['node_modules/**', 'packages/**'],
+  },
   plugins: [
     {
       name: 'resolve-ts-path-aliases',
