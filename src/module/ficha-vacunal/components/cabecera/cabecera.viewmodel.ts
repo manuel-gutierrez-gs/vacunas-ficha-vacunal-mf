@@ -20,7 +20,7 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
 
   @property({ type: String }) alergiasVariant: VacunasAlergiaButtonVariant = 'loading';
 
-  private _loadedNuhsa?: string;
+  private _contextNuhsa = '';
   private runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
   get nombreCompleto(): string {
@@ -60,28 +60,23 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
 
   private handleContextChange = (context: PacienteContext): void => {
     this.runtimeConfig = context.runtimeConfig;
-  };
-
-  async updated(changedProperties: Map<string | number | symbol, unknown>) {
-    super.updated(changedProperties);
-
-    if (changedProperties.has('resumenPaciente') && this.nuhsaDisplay) {
-      if (this.nuhsaDisplay !== this._loadedNuhsa) {
-        this._loadedNuhsa = this.nuhsaDisplay;
-        await this.loadAlergiasVariant(this.nuhsaDisplay);
+    if (this._contextNuhsa !== context.nuhsa) {
+      this._contextNuhsa = context.nuhsa;
+      if (this._contextNuhsa) {
+        void this.loadAlergiasVariant(this._contextNuhsa);
       }
     }
-  }
+  };
 
   private async loadAlergiasVariant(nuhsa: string) {
     try {
       const config = resolveRuntimeConfig(this.runtimeConfig);
       const response = await fetchAlergiasContraindicacionesCached(nuhsa, config);
-      if (this.nuhsaDisplay !== nuhsa) return;
+      if (this._contextNuhsa !== nuhsa) return;
       this.alergiasVariant = this.calcularEstadoAlergias(response);
     } catch (error) {
       console.error('Error al obtener alergias o contraindicaciones: ', error);
-      if (this.nuhsaDisplay !== nuhsa) return;
+      if (this._contextNuhsa !== nuhsa) return;
       this.alergiasVariant = 'technical-error';
     }
   }

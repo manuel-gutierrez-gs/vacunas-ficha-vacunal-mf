@@ -107,6 +107,21 @@ Build particionado con entry estable y chunks variables (**C1–C3**, **V1**, **
 
 ---
 
+## Identidad del Paciente: PacienteContext
+
+Históricamente, el sistema utilizaba un modelo de _prop drilling_ (paso de atributos en cascada por el árbol UI) y una doble fuente de verdad (propiedades en componentes versus la respuesta de las APIs en `resumenPaciente.nuhsa`). Esto podía generar inconsistencias en el ciclo de vida y condiciones de carrera.
+
+Para consolidar la identidad de manera estricta, el sistema emplea **`PacienteContext`** (basado en el patrón Provider/Consumer de DOM Events) como la **única fuente funcional de identidad del paciente**:
+
+1. **Origen (Shell):** El Shell host inyecta el `nuhsa` en el atributo del custom element raíz (`<vacunas-ficha-vacunal-mf nuhsa="NUHSA001">`).
+2. **Provider (Router/App):** El MFE actúa como Provider y fija la identidad en el contexto.
+3. **Consumo funcional (Componentes):** Cualquier componente (por profundo que esté, como Modales) que necesite realizar peticiones de red debe suscribirse al `PacienteContext`. **Queda prohibido el prop drilling del NUHSA**.
+4. **Separación de Presentación:** Los DTOs devueltos por las APIs (ej. `resumenPaciente.nuhsa`) son información puramente **presentacional**. Se pueden usar para renderizar el ID en pantalla, pero **nunca** para alimentar la lógica de fetch de otros dominios.
+
+Este modelo aporta coherencia total de estado, elimina dependencias ocultas entre componentes alejados, simplifica las firmas de eventos/slots, y garantiza que todas las peticiones red apuntan inequívocamente a un único paciente por instancia de la aplicación.
+
+---
+
 ## Documentación por capa
 
 | Pregunta                              | Documento                                        |

@@ -26,7 +26,6 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: [/^lit/, /^@material\//, /^@sas\//],
       output: {
         inlineDynamicImports: true,
       },

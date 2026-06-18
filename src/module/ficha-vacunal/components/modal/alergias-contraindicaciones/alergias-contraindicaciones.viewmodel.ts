@@ -32,7 +32,6 @@ import { PacienteContextRequestEvent } from '@shared/context/paciente-context';
 import type { PacienteContext } from '@shared/context/paciente-context';
 
 export class AlergiasContraindicacionesViewModel extends LitElement {
-  @property({ type: String }) nuhsa = '';
   @property({ type: Array }) listadoAlergiasInicial: RegistroAlergiaContraindicacion[] = [];
   @property({ type: Array }) listadoContraindicacionesInicial: RegistroAlergiaContraindicacion[] =
     [];
@@ -47,7 +46,7 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
     { id: 'contraindicaciones', label: 'Contraindicaciones' },
   ];
 
-  private _loadedNuhsa?: string;
+  private _contextNuhsa = '';
   private runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
   private _unsubscribeContext?: () => void;
 
@@ -68,21 +67,13 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
 
   private handleContextChange = (context: PacienteContext): void => {
     this.runtimeConfig = context.runtimeConfig;
-  };
-
-  updated(changedProperties: Map<string | symbol, unknown>) {
-    super.updated(changedProperties);
-
-    if (!this.nuhsa) return;
-
-    if (changedProperties.has('nuhsa')) {
-      if (this.nuhsa !== this._loadedNuhsa) {
-        this._loadedNuhsa = this.nuhsa;
-
-        this.loadData(this.nuhsa);
+    if (this._contextNuhsa !== context.nuhsa) {
+      this._contextNuhsa = context.nuhsa;
+      if (this._contextNuhsa) {
+        void this.loadData(this._contextNuhsa);
       }
     }
-  }
+  };
 
   private async loadData(nuhsa: string) {
     this.listadoAlergiasInicial = [];
@@ -94,20 +85,20 @@ export class AlergiasContraindicacionesViewModel extends LitElement {
       const config = resolveRuntimeConfig(this.runtimeConfig);
       const apiResponse = await fetchAlergiasContraindicacionesCached(nuhsa, config);
 
-      if (this.nuhsa !== nuhsa) return;
+      if (this._contextNuhsa !== nuhsa) return;
 
       this._actualizarListadoAlergias(apiResponse.alergias ?? []);
       this._actualizarListadoContraindicaciones(apiResponse.listaContraindic ?? []);
     } catch (error) {
       console.error('Error al obtener alergias o contraindicaciones: ', error);
-      if (this.nuhsa !== nuhsa) return;
+      if (this._contextNuhsa !== nuhsa) return;
 
       this.errorMessage =
         'No se ha podido recuperar la información de alergias y contraindicaciones.';
       this._actualizarListadoAlergias([]);
       this._actualizarListadoContraindicaciones([]);
     } finally {
-      if (this.nuhsa === nuhsa) {
+      if (this._contextNuhsa === nuhsa) {
         this.isLoading = false;
       }
     }

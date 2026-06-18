@@ -70,6 +70,10 @@ A partir de ahí, se renderiza la capa de composición base y el `src/app/vacuna
 
 Los componentes específicos viven en `src/module/ficha-vacunal/components/`.
 
+**Nota sobre la Identidad del Paciente (`PacienteContext`):**
+Todo componente que requiera conocer el identificador del paciente (NUHSA) para realizar consultas de red debe **suscribirse a `PacienteContext`** (por ejemplo, disparando un `PacienteContextRequestEvent`).
+El _prop drilling_ del NUHSA a lo largo del árbol UI está terminantemente prohibido por diseño para evitar problemas de sincronía, y los DTOs de APIs como `resumenPaciente` deben emplearse exclusivamente como data presentacional, nunca funcional.
+
 ---
 
 ## Dónde poner tests

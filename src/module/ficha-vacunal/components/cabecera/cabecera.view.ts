@@ -40,7 +40,6 @@ export class VacFichaVacunalCabeceraView extends FichaVacunalCabeceraViewModel {
           <vacunas-alergia-button
             label="Alergias/Contraind."
             .variant=${this.alergiasVariant}
-            .nuhsa=${this.nuhsaDisplay}
           ></vacunas-alergia-button>
         </div>
       </div>

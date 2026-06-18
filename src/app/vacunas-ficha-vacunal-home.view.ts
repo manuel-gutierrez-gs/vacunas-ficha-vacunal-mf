@@ -33,6 +33,9 @@ export class VacunasFichaVacunalHomeView extends VacunasFichaVacunalHomeViewMode
 
     return html`
       <div class="mf-root">
+        <ficha-vacunal-cabecera
+          .resumenPaciente=${aggregate.resumenPaciente}
+        ></ficha-vacunal-cabecera>
         <div class="mf-root__body">
           <div class="mf-root__body-header">
             <div class="mf-root__header-title">Ficha Vacunación</div>

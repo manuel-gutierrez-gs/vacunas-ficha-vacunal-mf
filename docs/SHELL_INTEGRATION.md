@@ -125,7 +125,7 @@ export async function mountVacunasFichaVacunalMf(
 
   await import(/* @vite-ignore */ `${MFE_BASE}/vacunas-ficha-vacunal-mf.js`);
   const el = document.createElement('vacunas-ficha-vacunal-mf');
-  el.setAttribute('nuhsa', 'NUHSA001');
+  el.setAttribute('nuhsa', 'NUHSA001'); // Este atributo inicializa internamente el PacienteContext
   container.replaceChildren(el);
 }
 ```

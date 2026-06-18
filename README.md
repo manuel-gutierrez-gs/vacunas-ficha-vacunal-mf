@@ -1,6 +1,6 @@
 # vacunas-ficha-vacunal-mf
 
-Microfrontend de ficha vacunal basado en Lit y arquitectura MVVM. Expone un custom element para integrarse en un shell host.
+Microfrontend de ficha vacunal basado en Lit, arquitectura MVVM, y un modelo de identidad centralizada mediante `PacienteContext`. Expone un custom element para integrarse en un shell host.
 
 ## Arranque local
 

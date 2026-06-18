@@ -165,6 +165,8 @@ project-root/
 | AP3 | Uso de `any` generalizado sin justificación                                                           |
 | AP4 | Romper la separación de `adapter/` o `service/` y llamar la API en el ViewModel de un componente      |
 | AP5 | CustomEvents inventados fuera del contrato en `src/shared/contract/vacunas-ficha-vacunal.contract.ts` |
+| AP6 | Prop drilling del NUHSA (identidad del paciente). Debe usarse `PacienteContext` en lógicas de red.    |
+| AP7 | Usar DTOs de API (ej. `resumenPaciente.nuhsa`) como origen funcional de llamadas a otros servicios.   |
 
 ---
 

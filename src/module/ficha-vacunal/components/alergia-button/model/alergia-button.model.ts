@@ -1,5 +1,3 @@
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-export type AlergiasContraindicacionesSlotProps = {
-  nuhsa?: string;
-};
+export type AlergiasContraindicacionesSlotProps = Record<string, never>;

@@ -28,7 +28,6 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
   @property({ type: String }) public iconFontType!: FontType;
   @property({ type: Boolean, reflect: true }) public iconFilled: boolean = false;
   @property({ type: String, reflect: true }) public variant?: VacunasAlergiaButtonVariant;
-  @property({ type: String }) public nuhsa: string = '';
 
   @queryAsync('stic-ripple')
   protected sticRipple!: Promise<SticRippleView | null>;
@@ -45,10 +44,8 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
 
     modalHost?.registerSlot(
       'alergias-contraindicaciones',
-      (props?: AlergiasContraindicacionesSlotProps) => html`
-        <vacunas-alergias-contraindicaciones-modal
-          .nuhsa=${props?.nuhsa ?? ''}
-        ></vacunas-alergias-contraindicaciones-modal>
+      (_props?: AlergiasContraindicacionesSlotProps) => html`
+        <vacunas-alergias-contraindicaciones-modal></vacunas-alergias-contraindicaciones-modal>
       `
     );
   }
@@ -91,7 +88,7 @@ export class VacunasAlergiaButtonViewModel extends LitElement {
       title: 'Alergias y contraindicaciones',
       description: '',
       size: 'md',
-      props: { nuhsa: this.nuhsa },
+      props: {},
     };
     this.dispatchEvent(new VacunasModalOpenEvent(payload));
   }

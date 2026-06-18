@@ -5,15 +5,15 @@ import { AlergiasContraindicacionesCache } from '@module/ficha-vacunal/cache/ale
 import { createMockConfig } from '../../../../../helpers/mock-data';
 import type { GenericDataRowImpl, HeaderRowImpl } from '@sas/wc-stic-table';
 import type { RegistroAlergiaContraindicacion } from '@module/ficha-vacunal/components/modal/alergias-contraindicaciones/model/mode-alergias-contraindicaciones.model';
+import type { PacienteContext } from '@shared/context/paciente-context';
 
 type TestAPI = Omit<AlergiasContraindicacionesModalView, never> & {
-  nuhsa: string;
   errorMessage: string;
   isLoading: boolean;
   listadoAlergiasInicial: unknown[];
   selectedTab: string;
 
-  _loadedNuhsa: string;
+  _contextNuhsa: string;
 
   runtimeConfig: ReturnType<typeof createMockConfig>;
 
@@ -21,6 +21,7 @@ type TestAPI = Omit<AlergiasContraindicacionesModalView, never> & {
   getHeaderRow: () => HeaderRowImpl;
   getDataRow: () => GenericDataRowImpl<RegistroAlergiaContraindicacion>;
   loadData: (nuhsa: string) => Promise<void>;
+  handleContextChange: (context: PacienteContext) => void;
 };
 
 const asApi = (el: AlergiasContraindicacionesModalView) => el as unknown as TestAPI;
@@ -49,10 +50,10 @@ describe('alergias-contraindicaciones branches', () => {
     el.remove();
   });
 
-  it('updated ignores if nuhsa is empty', async () => {
+  it('ignores if nuhsa from context is empty', async () => {
     const api = asApi(el);
 
-    api._loadedNuhsa = 'old';
+    api._contextNuhsa = 'old';
 
     let called = false;
     globalThis.fetch = (async () => {
@@ -60,18 +61,16 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response();
     }) as unknown as typeof fetch;
 
-    api.nuhsa = '';
-    el.requestUpdate();
+    api.handleContextChange({ nuhsa: '', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
 
     expect(called).to.be.false;
   });
 
-  it('updated ignores if nuhsa is same as loaded', async () => {
+  it('ignores if nuhsa from context is same as loaded', async () => {
     const api = asApi(el);
 
-    api._loadedNuhsa = '123';
-    api.nuhsa = '123';
+    api._contextNuhsa = '123';
 
     let called = false;
     globalThis.fetch = (async () => {
@@ -79,13 +78,13 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response();
     }) as unknown as typeof fetch;
 
-    el.requestUpdate();
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
 
     expect(called).to.be.false;
   });
 
-  it('updated calls loadData if nuhsa changed', async () => {
+  it('calls loadData if nuhsa from context changed', async () => {
     const api = asApi(el);
 
     let called = false;
@@ -94,7 +93,7 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response('{}', { status: 200 });
     }) as unknown as typeof fetch;
 
-    api.nuhsa = '123';
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
 
     expect(called).to.be.true;
@@ -103,20 +102,23 @@ describe('alergias-contraindicaciones branches', () => {
   it('loadData ignores response if nuhsa changed mid-flight', async () => {
     const api = asApi(el);
 
-    let resolve: (v: Response) => void;
+    let resolve1: (v: Response) => void;
+    let callCount = 0;
 
-    globalThis.fetch = () =>
-      new Promise<Response>(r => {
-        resolve = r;
+    globalThis.fetch = () => {
+      callCount++;
+      return new Promise<Response>(r => {
+        if (callCount === 1) resolve1 = r;
       });
+    };
 
-    api.nuhsa = '123';
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
 
-    api.nuhsa = '456';
+    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
 
-    resolve!(
+    resolve1!(
       new Response(
         JSON.stringify({
           alergias: [{ descripcion: 'A', fechaDeteccion: '2020-01-01' }],
@@ -135,7 +137,7 @@ describe('alergias-contraindicaciones branches', () => {
       throw new Error('fail');
     }) as unknown as typeof fetch;
 
-    api.nuhsa = '123';
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
     await el.updateComplete;
     await new Promise(r => setTimeout(r, 10));
 
@@ -145,20 +147,23 @@ describe('alergias-contraindicaciones branches', () => {
   it('loadData aborts if nuhsa changed mid-flight', async () => {
     const api = asApi(el);
 
-    let reject: (e: Error) => void;
+    let reject1: (e: Error) => void;
+    let callCount = 0;
 
-    globalThis.fetch = () =>
-      new Promise((_, r) => {
-        reject = r;
+    globalThis.fetch = () => {
+      callCount++;
+      return new Promise((_, r) => {
+        if (callCount === 1) reject1 = r;
       });
+    };
 
     const p = api.loadData('123');
 
     await new Promise(r => setTimeout(r, 0));
 
-    api.nuhsa = '456';
+    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig });
 
-    reject!(new Error('fail'));
+    reject1!(new Error('fail'));
 
     await p.catch(() => {});
 
