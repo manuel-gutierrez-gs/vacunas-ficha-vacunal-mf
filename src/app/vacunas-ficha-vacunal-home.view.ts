@@ -4,6 +4,7 @@ import '@module/ficha-vacunal/components/tarjetero/tarjetero.view';
 import '@module/ficha-vacunal/components/sheet/sheet.view';
 
 import { html, nothing } from 'lit';
+import { when } from 'lit/directives/when.js';
 
 import { vacunasFichaVacunalHomeStyles } from './css/vacunas-ficha-vacunal-home.css';
 import { VacunasFichaVacunalHomeViewModel } from './vacunas-ficha-vacunal-home.viewmodel';
@@ -32,10 +33,16 @@ export class VacunasFichaVacunalHomeView extends VacunasFichaVacunalHomeViewMode
     const { aggregate, seleccion } = this.readyState;
 
     return html`
-      <div class="mf-root">
-        <ficha-vacunal-cabecera
-          .resumenPaciente=${aggregate.resumenPaciente}
-        ></ficha-vacunal-cabecera>
+      <div class="mf-root ${this.hasHeader ? 'mf-root--has-header' : 'mf-root--no-header'}">
+        ${when(
+          this.hasHeader,
+          () => html`
+            <ficha-vacunal-cabecera
+              .resumenPaciente=${aggregate.resumenPaciente}
+            ></ficha-vacunal-cabecera>
+          `,
+          () => nothing
+        )}
         <div class="mf-root__body">
           <div class="mf-root__body-header">
             <div class="mf-root__header-title">Ficha Vacunación</div>

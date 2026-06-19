@@ -74,6 +74,14 @@ Los componentes específicos viven en `src/module/ficha-vacunal/components/`.
 Todo componente que requiera conocer el identificador del paciente (NUHSA) para realizar consultas de red debe **suscribirse a `PacienteContext`** (por ejemplo, disparando un `PacienteContextRequestEvent`).
 El _prop drilling_ del NUHSA a lo largo del árbol UI está terminantemente prohibido por diseño para evitar problemas de sincronía, y los DTOs de APIs como `resumenPaciente` deben emplearse exclusivamente como data presentacional, nunca funcional.
 
+**Configuración rápida desde el host:**
+Puedes jugar con las propiedades reactivas del MFE manipulando el custom element desde la consola u otros scripts JS, como apagar y encender la cabecera dinámicamente:
+
+```javascript
+const mf = document.querySelector('vacunas-ficha-vacunal-mf');
+mf.hasHeader = false; // Se oculta instantáneamente sin recarga de página
+```
+
 ---
 
 ## Dónde poner tests

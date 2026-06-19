@@ -3,6 +3,7 @@ import type { VacunasFichaVacunalRuntimeConfig } from '../config/runtime-config'
 export interface PacienteContext {
   nuhsa: string;
   runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
+  hasHeader: boolean;
 }
 
 export type PacienteContextCallback = (context: PacienteContext) => void;

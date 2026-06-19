@@ -15,6 +15,10 @@ export const vacunasFichaVacunalHomeStyles = [
       display: flex;
     }
 
+    .mf-root--no-header {
+      background-color: #fff;
+    }
+
     .mf-root__body {
       background-color: #fff;
       border-radius: 25px;
@@ -22,6 +26,10 @@ export const vacunasFichaVacunalHomeStyles = [
       margin: 1.5em;
       overflow: hidden;
       padding: 1.5em;
+    }
+
+    .mf-root--no-header .mf-root__body {
+      margin: 0;
     }
 
     .mf-root__body-header {

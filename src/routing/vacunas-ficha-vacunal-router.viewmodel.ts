@@ -20,6 +20,7 @@ export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
   @property({ type: String }) route = '';
   @property({ type: String, reflect: true }) nuhsa = '';
   @property({ attribute: false }) runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
+  @property({ type: Boolean }) hasHeader = true;
 
   private _contextSubscribers = new Set<PacienteContextCallback>();
 
@@ -41,7 +42,11 @@ export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
 
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
-    if (changedProperties.has('nuhsa') || changedProperties.has('runtimeConfig')) {
+    if (
+      changedProperties.has('nuhsa') ||
+      changedProperties.has('runtimeConfig') ||
+      changedProperties.has('hasHeader')
+    ) {
       this.notifyContextSubscribers();
     }
   }
@@ -64,6 +69,7 @@ export class VacunasFichaVacunalRouterViewModel extends SticRouterViewModel {
     return {
       nuhsa: this.nuhsa,
       runtimeConfig: this.runtimeConfig,
+      hasHeader: this.hasHeader,
     };
   }
 

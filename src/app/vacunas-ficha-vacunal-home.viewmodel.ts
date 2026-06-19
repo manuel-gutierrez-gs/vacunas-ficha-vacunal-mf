@@ -45,6 +45,8 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
   @property({ type: String }) nuhsa = '';
   @property({ attribute: false }) runtimeConfig?: VacunasFichaVacunalRuntimeConfig;
 
+  @state() hasHeader = true;
+
   @state() status: PublicElementStatus = 'idle';
   @state() errorState: PublicElementErrorState | null = null;
   @state() readyState: PublicElementReadyState | null = null;
@@ -80,6 +82,9 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
     if (this.runtimeConfig !== context.runtimeConfig) {
       this.runtimeConfig = context.runtimeConfig;
     }
+    if (this.hasHeader !== context.hasHeader) {
+      this.hasHeader = context.hasHeader;
+    }
   };
 
   protected firstUpdated(changedProperties: Map<string | number | symbol, unknown>): void {
@@ -92,6 +97,7 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
   updated(changed: Map<string, unknown>): void {
     super.updated(changed);
+
     if (changed.has('nuhsa') || changed.has('runtimeConfig')) {
       void this.bootstrap();
     }

@@ -122,6 +122,17 @@ Este modelo aporta coherencia total de estado, elimina dependencias ocultas entr
 
 ---
 
+## Configuración de UI: `hasHeader`
+
+Además de la identidad, características visuales externas como la visibilidad de la cabecera (`hasHeader`) se integran utilizando la misma arquitectura de propagación estricta para evitar estado duplicado:
+
+1. **Router ViewModel**: Recibe la configuración desde el host vía atributo HTML (`hasHeader`) o propiedad Lit (`.hasHeader`).
+2. **PacienteContext**: El router expone el valor actual de `hasHeader` inyectándolo en el contexto global, junto al `nuhsa`.
+3. **Home ViewModel**: Se suscribe al contexto y mantiene sincronizado un estado interno reactivo de la UI principal.
+4. **Home View**: Consume el estado reactivo (`this.hasHeader`) empleando la directiva `when` de Lit para no exponer lógica compleja directamente en la vista final.
+
+---
+
 ## Documentación por capa
 
 | Pregunta                              | Documento                                        |

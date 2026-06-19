@@ -34,6 +34,20 @@ npm run typecheck
 <vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
 ```
 
+Para controlar la visibilidad de la cabecera del MF, se utiliza la propiedad `hasHeader` (`true` por defecto):
+
+```html
+<!-- HTML (atributo booleano) -->
+<vacunas-ficha-vacunal-mf nuhsa="NUHSA001" hasHeader></vacunas-ficha-vacunal-mf>
+```
+
+```typescript
+// Lit (property assignment)
+html`
+  <vacunas-ficha-vacunal-mf .nuhsa=${'NUHSA001'} .hasHeader=${false}></vacunas-ficha-vacunal-mf>
+`;
+```
+
 ## Runtime config (`config/config-maps.json`)
 
 El MF lee la configuracion en runtime desde `/config/config-maps.json` antes de registrarse.

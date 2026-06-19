@@ -61,7 +61,7 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response();
     }) as unknown as typeof fetch;
 
-    api.handleContextChange({ nuhsa: '', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
 
     expect(called).to.be.false;
@@ -78,7 +78,7 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response();
     }) as unknown as typeof fetch;
 
-    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
 
     expect(called).to.be.false;
@@ -93,7 +93,7 @@ describe('alergias-contraindicaciones branches', () => {
       return new Response('{}', { status: 200 });
     }) as unknown as typeof fetch;
 
-    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
 
     expect(called).to.be.true;
@@ -112,10 +112,10 @@ describe('alergias-contraindicaciones branches', () => {
       });
     };
 
-    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
 
-    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
 
     resolve1!(
@@ -137,7 +137,7 @@ describe('alergias-contraindicaciones branches', () => {
       throw new Error('fail');
     }) as unknown as typeof fetch;
 
-    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '123', runtimeConfig: api.runtimeConfig, hasHeader: true });
     await el.updateComplete;
     await new Promise(r => setTimeout(r, 10));
 
@@ -161,7 +161,7 @@ describe('alergias-contraindicaciones branches', () => {
 
     await new Promise(r => setTimeout(r, 0));
 
-    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig });
+    api.handleContextChange({ nuhsa: '456', runtimeConfig: api.runtimeConfig, hasHeader: true });
 
     reject1!(new Error('fail'));
 

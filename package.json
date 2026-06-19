@@ -13,7 +13,7 @@
     ".": "./dist/vacunas-ficha-vacunal-mf.js"
   },
   "scripts": {
-    "build": "npm run typecheck && vite build",
+    "build": "npm run typecheck && npx -y rimraf dist && vite build",
     "build:dev": "vite build --mode development",
     "ci": "npm run typecheck && npm run test:ci && npm run build",
     "clean": "npx -y rimraf dist coverage out-tsc node_modules package-lock.json",

@@ -130,6 +130,17 @@ export async function mountVacunasFichaVacunalMf(
 }
 ```
 
+### Integración con Lit en el Host
+
+Si el framework del shell/host utiliza Lit, la recomendación es usar el binding directo de propiedades en lugar de manipular atributos string:
+
+```typescript
+import { html } from 'lit';
+
+// Dentro del render del componente shell
+html` <vacunas-ficha-vacunal-mf .nuhsa=${nuhsa} .hasHeader=${false}></vacunas-ficha-vacunal-mf> `;
+```
+
 ---
 
 ## Configuración y Eventos MFE

@@ -99,6 +99,16 @@ project-root/
 
 ---
 
+## 3.1. API del Custom Element
+
+El componente raíz expone su contrato de integración vía el custom element `<vacunas-ficha-vacunal-mf>` con las siguientes propiedades:
+
+- **`nuhsa`** (`String`): Identificador del paciente. Propiedad funcional requerida.
+- **`hasHeader`** (`Boolean`): Controla la visibilidad de la cabecera. Por defecto su comportamiento es `true`. Uso: `<vacunas-ficha-vacunal-mf hasHeader>`.
+- **`runtimeConfig`** (`Object`): Configuración de las APIs.
+
+---
+
 ## 4. Patrón MVVM obligatorio
 
 | ID  | Regla                                                                                                                                                |
