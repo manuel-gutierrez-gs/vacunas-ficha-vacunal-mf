@@ -8,6 +8,12 @@ export default defineConfig({
   plugins: [
     {
       name: 'copy-runtime-config',
+      configureServer(server) {
+        server.middlewares.use('/src/shared/config/environments-configmap.json', (_request, response) => {
+          response.setHeader('Content-Type', 'application/json');
+          response.end(readFileSync(resolve(__dirname, 'environments-configmap.json'), 'utf8'));
+        });
+      },
       generateBundle() {
         this.emitFile({
           type: 'asset',
