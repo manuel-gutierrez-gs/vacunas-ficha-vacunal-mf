@@ -1,12 +1,9 @@
 import '@sas/wc-stic-filters-area';
 import { html } from 'lit';
-import { STICTheme } from '@sas/wc-stic-theme';
 import { FiltrosViewModel } from './filtros.viewmodel';
 
 export class FiltrosView extends FiltrosViewModel {
   render() {
-    new STICTheme().loadHeadStyles();
-
     return html`
       <div class="ficha-vacunal-filtros">
         <stic-filters-area

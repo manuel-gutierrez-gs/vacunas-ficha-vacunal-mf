@@ -13,8 +13,6 @@ import {
   toMfErrorMessage,
 } from '@shared/errors/mf-error';
 
-import { verifySticThemeLoaded } from '@shared/ui/stic-theme-loader';
-
 import { LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
@@ -60,7 +58,6 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback();
-    verifySticThemeLoaded();
 
     const event = new PacienteContextRequestEvent(this.handleContextChange, true);
     this.dispatchEvent(event);
@@ -90,7 +87,6 @@ export class VacunasFichaVacunalHomeViewModel extends LitElement {
   protected firstUpdated(changedProperties: Map<string | number | symbol, unknown>): void {
     super.firstUpdated(changedProperties);
     if (!this.nuhsa) {
-      // Force bootstrap on first update if nuhsa was not set, to show the error state.
       void this.bootstrap();
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "@sas/vacunas-ficha-vacunal-mf",
-  "version": "0.0.0-SNAPSHOT.1",
+  "version": "1.0.0",
   "description": "no-description",
   "author": "SAS",
   "license": "SAS",
@@ -34,6 +34,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@sas/lib-lib-stic-microfrontend-validator": "0.3.3",
+    "@sas/lib-stic-capabilities": "0.3.3",
     "@sas/lib-stic-kernel": "1.75.0",
     "@sas/lib-stic-route": "1.75.0",
     "@sas/wc-stic-breadcrumbs": "1.75.0",
@@ -44,6 +46,7 @@
     "@sas/wc-stic-icon": "1.75.0",
     "@sas/wc-stic-infinity-scroll": "1.75.0",
     "@sas/wc-stic-input-v2": "1.75.0",
+    "@sas/wc-stic-microfrontend": "0.3.3",
     "@sas/wc-stic-modal": "1.75.0",
     "@sas/wc-stic-navigation": "1.75.0",
     "@sas/wc-stic-notification-v2": "1.75.0",

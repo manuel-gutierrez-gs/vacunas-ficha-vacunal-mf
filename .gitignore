@@ -1,6 +1,7 @@
 ## editors
 /.idea
 /.vscode
+/.a*
 
 #plugins
 .prettierrc

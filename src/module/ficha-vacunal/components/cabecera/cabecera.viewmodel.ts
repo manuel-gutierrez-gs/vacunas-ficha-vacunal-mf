@@ -92,10 +92,6 @@ export class FichaVacunalCabeceraViewModel extends LitElement {
       return 'has-allergies';
     }
 
-    // TODO: 'verify' queda reservado para futuras reglas de negocio cuando exista un criterio
-    // explícito para diferenciar:
-    // * sin alergias conocidas
-    // * sin información registrada
     return 'no-allergies';
   }
 }

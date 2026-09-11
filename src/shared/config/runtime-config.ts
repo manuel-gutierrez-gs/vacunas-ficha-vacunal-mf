@@ -8,7 +8,7 @@ export interface VacunasFichaVacunalRuntimeConfig {
   urlApiAlergiasYContraindicacionesS039: string;
 }
 
-export const RUNTIME_CONFIG_URL = '/config/config-maps.json';
+export const RUNTIME_CONFIG_URL = new URL('environments-configmap.json', import.meta.url).href;
 
 let cachedConfig: VacunasFichaVacunalRuntimeConfig | null = null;
 let loadPromise: Promise<VacunasFichaVacunalRuntimeConfig> | null = null;

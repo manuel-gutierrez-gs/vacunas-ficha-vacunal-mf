@@ -1,7 +1,23 @@
+import { readFileSync } from 'fs';
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: './',
+
+  plugins: [
+    {
+      name: 'copy-runtime-config',
+      generateBundle() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'environments-configmap.json',
+          source: readFileSync(resolve(__dirname, 'environments-configmap.json'), 'utf8'),
+        });
+      },
+    },
+  ],
+
   resolve: {
     preserveSymlinks: true,
     alias: {
@@ -28,6 +44,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         inlineDynamicImports: true,
+      },
+      input: {
+        main: resolve(__dirname, 'index.html'),
       },
     },
   },

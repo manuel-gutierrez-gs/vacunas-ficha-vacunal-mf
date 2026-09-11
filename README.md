@@ -2,11 +2,20 @@
 
 Microfrontend de ficha vacunal basado en Lit, arquitectura MVVM, y un modelo de identidad centralizada mediante `PacienteContext`. Expone un custom element para integrarse en un shell host.
 
-## Arranque local
+## Instalacion y arranque local
+
+El repositorio incluye `package-lock.json`, por lo que la instalación reproducible puede hacerse con:
 
 ```bash
-npm ci
+npm install
 npm run dev
+```
+
+En desarrollo, el entrypoint del documento local es `/src/index.ts`. El custom element puede montarse así:
+
+```html
+<script type="module" src="/src/index.ts"></script>
+<vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
 ```
 
 ## Build
@@ -15,7 +24,17 @@ npm run dev
 npm run build
 ```
 
-Genera `dist/vacunas-ficha-vacunal-mf.js`.
+El build genera el bundle y los recursos publicables en `dist/`:
+
+```text
+dist/
+  vacunas-ficha-vacunal-mf.js
+  style.css
+  index.html
+  environments-configmap.json
+```
+
+Vite utiliza `base: './'`, por lo que las referencias generadas a los recursos son relativas y permiten publicar el artefacto bajo una ruta anidada.
 
 ## Tests
 
@@ -26,13 +45,17 @@ npm run typecheck
 
 ## Integracion en shell host
 
-1. Servir `dist/` y cargar `vacunas-ficha-vacunal-mf.js` como modulo ES.
-2. Asegurar que el host sirve `config/config-maps.json`.
-3. Montar el custom element:
+El consumidor carga el bundle como módulo ES y monta el custom element:
 
 ```html
+<script
+  type="module"
+  src="https://cdn.example.com/mfe/vacunas-ficha-vacunal-mf/vacunas-ficha-vacunal-mf.js"
+></script>
 <vacunas-ficha-vacunal-mf nuhsa="NUHSA001"></vacunas-ficha-vacunal-mf>
 ```
+
+También puede cargarse mediante `await import(...)` desde el host. El consumidor no necesita proporcionar el runtime config: el MF obtiene automáticamente `environments-configmap.json` junto a su propio bundle.
 
 Para controlar la visibilidad de la cabecera del MF, se utiliza la propiedad `hasHeader` (`true` por defecto):
 
@@ -48,11 +71,25 @@ html`
 `;
 ```
 
-## Runtime config (`config/config-maps.json`)
+## Runtime config (`environments-configmap.json`)
 
-El MF lee la configuracion en runtime desde `/config/config-maps.json` antes de registrarse.
+El MF carga automáticamente `environments-configmap.json` antes de inicializar su contenido. La URL se resuelve respecto al módulo ESM del MF mediante:
 
-Campos minimos:
+```ts
+new URL('environments-configmap.json', import.meta.url).href;
+```
+
+Por tanto, la resolución sigue la ubicación del bundle y no depende de `document.baseURI` ni de una ruta absoluta del host consumidor:
+
+```text
+MFE bundle
+    ↓
+import.meta.url
+    ↓
+environments-configmap.json
+```
+
+Campos utilizados por el MF:
 
 ```json
 {
@@ -69,15 +106,63 @@ Campos minimos:
 }
 ```
 
-Si falta o es invalido, el MF falla en arranque con `CONFIG_MISSING` o `CONFIG_INVALID`.
+Si el recurso falta o su contenido no es válido, el MF falla en arranque con `CONFIG_MISSING` o `CONFIG_INVALID`.
 
 ## API publica
 
 - Custom element: `vacunas-ficha-vacunal-mf`
-- Eventos definidos en el contrato:
-  - `vacunas-ficha-vacunal-mf:loaded`
-  - `vacunas-ficha-vacunal-mf:error`
-  - `vacunas-ficha-vacunal-mf:card-selected`
+- Propiedades principales: `nuhsa` y `hasHeader`.
+- Evento público de error del MF: `vacunas-ficha-vacunal-mf:error` (`MF_EVENT_ERROR`). Es el evento externo incluido en la configuración de `Isolated`.
+
+Los eventos de carga, selección, navegación y contexto forman parte de la coordinación interna del MF o de contratos internos de composición; no deben tratarse como eventos externos publicados por la capability `Isolated`.
+
+## Arquitectura del root
+
+La composición actual del root es:
+
+```text
+LitElement
+    ↓
+SticMicrofrontendViewModel
+    ↓
+VacunasFichaVacunalRouterViewModel
+    ↓
+VacunasFichaVacunalRouterView
+```
+
+El routing se integra mediante composición con `VacunasFichaVacunalRouterDelegate`. Las rutas funcionales actuales son:
+
+- `/`: vista principal `vacunas-ficha-vacunal-home`.
+- `/detalle/:id/:situacion`: detalle de ficha vacunal.
+
+El MF configura la capability STIC `Isolated` mediante `CreateIsolatedCapability`, habilitada con `activateHostTheming: true`. Esto permite integrarlo como microfrontend aislado dentro de un host.
+
+## Theming
+
+- **Standalone:** el MF verifica y carga el theme STIC local.
+- **Integrado en host o iframe:** el MF no carga directamente el theme local; `activateHostTheming: true` permite utilizar el theme proporcionado por el host.
+
+## Deployment
+
+El flujo de publicación es:
+
+```text
+src/
+    ↓
+vite build
+    ↓
+dist/
+    ├── vacunas-ficha-vacunal-mf.js
+    ├── style.css
+    ├── index.html
+    └── environments-configmap.json
+    ↓
+Docker
+    ↓
+Nginx
+```
+
+El `Dockerfile` publica `dist/` en `/usr/share/nginx/html/` y el servidor utiliza `nginx.conf`. El bundle y sus recursos pueden servirse desde una ruta anidada del CDN o del host.
 
 ## Arquitectura resumida
 
