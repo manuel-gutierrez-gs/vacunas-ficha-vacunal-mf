@@ -1,7 +1,7 @@
 {
   "name": "@sas/vacunas-ficha-vacunal-mf",
   "version": "1.0.0",
-  "description": "no-description",
+  "description": "Microfrontend encargado de la ficha vacunal del paciente",
   "author": "SAS",
   "license": "SAS",
   "type": "module",
